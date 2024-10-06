@@ -6,6 +6,7 @@ import "./index.css";
 import ReactDOM from "react-dom/client";
 import React from "react";
 import Matthew from "./Matthew.tsx";
+import About from "./About.tsx";
 
 const router = createBrowserRouter([
   {
@@ -15,6 +16,10 @@ const router = createBrowserRouter([
   {
     path: "/matthew",
     element: <Matthew />,
+  },
+  {
+    path: "/about",
+    element: <About />,
   },
 ]);
 
