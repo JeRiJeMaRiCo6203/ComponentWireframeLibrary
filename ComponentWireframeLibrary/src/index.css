@@ -2,6 +2,25 @@
 @tailwind components;
 @tailwind utilities;
 
+textarea {
+  min-width: 480px
+}
+
+.desktop{
+  width: 480px !important;
+  height: 270px !important;
+}
+
+.mobile{
+  width: 270px !important;
+  height: 480px !important;
+}
+
+.canvas{
+  word-wrap: break-word;
+  overflow-y: scroll;
+}
+
 :root {
   
 }
