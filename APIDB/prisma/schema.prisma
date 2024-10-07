@@ -1,0 +1,34 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model categories {
+  id                 Int                  @id @default(autoincrement())
+  name               String               @db.VarChar(100)
+  wireframe_category wireframe_category[]
+}
+
+model wireframe_category {
+  wireframe_id Int
+  category_id  Int
+  categories   categories @relation(fields: [category_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  wireframes   wireframes @relation(fields: [wireframe_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@id([wireframe_id, category_id])
+}
+
+model wireframes {
+  id                 Int                  @id @default(autoincrement())
+  title              String               @db.VarChar(255)
+  codestringhtml     String?
+  codestringreact    String?
+  codestringlaravel  String?
+  codestringcss      String?
+  cover              String?
+  wireframe_category wireframe_category[]
+}
