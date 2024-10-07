@@ -15,12 +15,10 @@ app.use(cors());
 // API dibangunkan untuk mengakses data dari database
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
-  
 });
 // localhost:3000 -> base route
 // localhost:3000/users -> users route
 // localhost:3000/products -> products route
-
 // route, (request handler, response handler)
 
 /*
@@ -102,7 +100,7 @@ app.get("/", (request, response) => {
 app.get("/api/wireframesAndCategories/", async (request, response) => {
   try {
     const wireframesQuery = await prisma.$queryRaw`
-        SELECT w.id, w.title, w."codestringHtml", w."codestringReact", w."codestringCSS", w."codestringLaravel", w.cover, array_agg(c.name) AS categories
+        SELECT w.id, w.title, w."codestringhtml", w."codestringreact", w."codestringcss", w."codestringlaravel", w.cover, array_agg(c.name) AS categories
         FROM wireframes w
         JOIN wireframe_category wc ON w.id = wc.wireframe_id
         JOIN categories c ON wc.category_id = c.id
@@ -216,7 +214,7 @@ app.get("/api/wireframesByCategory", async (request, response) => {
     // If no categories are provided, return all wireframes
     if (!categories) {
       const wireframesQuery = await prisma.$queryRaw`
-        SELECT w.id, w.title, w."codestringHtml", w."codestringReact", w."codestringCSS", w."codestringLaravel", w.cover, array_agg(c.name) AS categories
+        SELECT w.id, w.title, w."codestringhtml", w."codestringreact", w."codestringcss", w."codestringlaravel", w.cover, array_agg(c.name) AS categories
         FROM wireframes w
         JOIN wireframe_category wc ON w.id = wc.wireframe_id
         JOIN categories c ON wc.category_id = c.id
@@ -234,7 +232,7 @@ app.get("/api/wireframesByCategory", async (request, response) => {
     // Use IN clause to filter wireframes by categories in SQL query
     const wireframesQuery = await prisma.$queryRaw(
       Prisma.sql`
-        SELECT w.id, w.title, w."codestringHtml", w."codestringReact", w."codestringCSS", w."codestringLaravel", w.cover, array_agg(c.name) AS categories
+        SELECT w.id, w.title, w."codestringhtml", w."codestringreact", w."codestringcss", w."codestringlaravel", w.cover, array_agg(c.name) AS categories
         FROM wireframes w
         JOIN wireframe_category wc ON w.id = wc.wireframe_id
         JOIN categories c ON wc.category_id = c.id
@@ -408,7 +406,7 @@ app.get("/api/search/", async (request, response) => {
       // Step 2: Perform Search with PRIORITY on title match first, then categories
       searchResults = await prisma.$queryRaw(
         Prisma.sql`
-          SELECT w.id, w.title, w."codestringHtml", w."codestringReact", w."codestringCSS", w."codestringLaravel", w.cover, array_agg(c.name) AS categories,
+          SELECT w.id, w.title, w."codestringhtml", w."codestringreact", w."codestringcss", w."codestringlaravel", w.cover, array_agg(c.name) AS categories,
           CASE
             WHEN w.title ILIKE ANY(ARRAY[${Prisma.join(
               keywordsArray.map((k) => `%${k}%`)
