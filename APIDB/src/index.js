@@ -11,6 +11,7 @@ envconfig.config();
 
 const PORT = process.env.PORT || 3000;
 app.use(cors());
+app.use(express.json());
 
 // API dibangunkan untuk mengakses data dari database
 app.listen(PORT, () => {
@@ -444,3 +445,57 @@ app.get("/api/search/", async (request, response) => {
       .send({ error: "An error occurred while searching wireframes." });
   }
 });
+
+// api insert wireframe, category, and wireframe_category
+app.post("/api/insert/", async (request, response) => {
+  const { wireframe, category } = request.body;
+
+  if (!wireframe || !category) {
+    return response.status(400).send({
+      error: "Missing required wireframe or category data.",
+    });
+  }
+  
+  try {
+    // Use a transaction to insert data into multiple tables
+    const [newWireframe, newCategory ] = await prisma.$transaction([
+      prisma.wireframes.create({
+        data: {
+          title: wireframe.title,
+          codestringhtml: wireframe.codestringhtml,
+          codestringreact: wireframe.codestringreact,
+          codestringcss: wireframe.codestringcss,
+          codestringlaravel: wireframe.codestringlaravel,
+          cover: wireframe.cover,
+        },
+      }),
+      prisma.categories.create({
+        data: {
+          name: category.name
+        },
+      }),
+    ]);
+
+    const newWireframeCategory = await prisma.wireframe_category.create({
+      data: {
+        wireframe_id: newWireframe.id,
+        category_id: newCategory.id,
+      },
+    });
+
+    response.send({
+      wireframe: newWireframe,
+      category: newCategory,
+      wireframeCategory: newWireframeCategory,
+      message: "Wireframe, Category, and Wireframe-Category successfully inserted.",
+    });
+  } catch (error) {
+    response.status(500).send({
+      error: "An error occurred during the insert operation",
+      details: error.message,
+    });
+  }
+});
+
+// api update wireframe and category by id
+// api delete wireframe and category by id
