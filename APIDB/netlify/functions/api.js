@@ -1,11 +1,24 @@
-import express from "express";
-import dotenv from "dotenv";
-import { Prisma, PrismaClient } from "@prisma/client";
-import cors from "cors";
+// import express, {Router} from "express";
+// import dotenv from "dotenv";
+// import { Prisma, PrismaClient } from "@prisma/client";
+// import cors from "cors";
+// import serverless from "serverless-http";
 
+// const prisma = new PrismaClient();
+// const envconfig = dotenv;
+// const app = express();
+// const router = Router();
+
+const express = require("express");
+const dotenv = require("dotenv");
+const { PrismaClient } = require("@prisma/client");
+const cors = require("cors");
+const serverless = require("serverless-http");
+const  Context = require("@netlify/functions");
 const prisma = new PrismaClient();
 const envconfig = dotenv;
 const app = express();
+const router = express.Router(); // Use express.Router() directly
 
 envconfig.config();
 
@@ -13,14 +26,14 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
-// API dibangunkan untuk mengakses data dari database
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
 // localhost:3000 -> base route
 // localhost:3000/users -> users route
 // localhost:3000/products -> products route
 // route, (request handler, response handler)
+// API dibangunkan untuk mengakses data dari database
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
 
 /*
 app.get('/api/users', (request, response) => {
@@ -76,10 +89,8 @@ app.get('/api/creatures/:param', async (request, response) => {
       response.status(500).send({ error: 'An error occurred while fetching creatures.' });
     }
 });
-*/
 
 // get all wireframes
-/*
 app.get('/api/wireframes/', async (request, response) => { 
     try {
       const wireframesQuery = await prisma.wireframes.findMany();
@@ -94,11 +105,11 @@ app.get('/api/wireframes/', async (request, response) => {
 
 // base endpoint
 app.get("/", (request, response) => {
-  response.status(201).send({ message: "Hello!" });
+  response.status(201).send({ message: "Hello! API is running..." });
 });
 
 // get all wireframes and categories
-app.get("/api/wireframesAndCategories/", async (request, response) => {
+app.get("/wireframesAndCategories/", async (request, response) => {
   try {
     const wireframesQuery = await prisma.$queryRaw`
         SELECT w.id, w.title, w."codestringhtml", w."codestringreact", w."codestringcss", w."codestringlaravel", w.cover, array_agg(c.name) AS categories
@@ -119,7 +130,7 @@ app.get("/api/wireframesAndCategories/", async (request, response) => {
 });
 
 // get wireframe by id
-app.get("/api/wireframes/:id", async (request, response) => {
+app.get("/wireframes/:id", async (request, response) => {
   //const { id } = request.params;
   const id = parseInt(request.params.id);
 
@@ -159,7 +170,7 @@ app.get("/api/wireframes/:id", async (request, response) => {
 });
 
 // get all wireframes or by params
-app.get("/api/wireframes/", async (request, response) => {
+app.get("/wireframes/", async (request, response) => {
   try {
     const { filter, value } = request.query; // Extract query parameters
     console.log(request.query);
@@ -207,7 +218,7 @@ app.get("/api/wireframes/", async (request, response) => {
 });
 
 // get wireframe by category (in dan includes)
-app.get("/api/wireframesByCategory", async (request, response) => {
+app.get("/wireframesByCategory", async (request, response) => {
   try {
     // Extract the categories from the query parameters
     const { categories } = request.query;
@@ -300,7 +311,7 @@ app.get("/api/wireframesByCategory", async (request, response) => {
 });
 
 // get all categories or by params
-app.get("/api/categories/", async (request, response) => {
+app.get("/categories/", async (request, response) => {
   try {
     const { filter, value } = request.query; // Extract query parameters
     console.log(request.query);
@@ -343,7 +354,7 @@ app.get("/api/categories/", async (request, response) => {
 });
 
 // get categories by id
-app.get("/api/categories/:id", async (request, response) => {
+app.get("/categories/:id", async (request, response) => {
   const id = parseInt(request.params.id);
 
   try {
@@ -373,7 +384,7 @@ app.get("/api/categories/:id", async (request, response) => {
 });
 
 // search wireframes or categories by keyword, suggestion with ILIKE and searching with IN
-app.get("/api/search/", async (request, response) => {
+app.get("/search/", async (request, response) => {
   try {
     const { keyword } = request.query;
     console.log(keyword);
@@ -447,7 +458,7 @@ app.get("/api/search/", async (request, response) => {
 });
 
 // api insert wireframe, category, and wireframe_category
-app.post("/api/insert/", async (request, response) => {
+app.post("/insert/", async (request, response) => {
   const { wireframe, category } = request.body;
 
   if (!wireframe || !category) {
@@ -499,3 +510,14 @@ app.post("/api/insert/", async (request, response) => {
 
 // api update wireframe and category by id
 // api delete wireframe and category by id
+
+app.use('/api', router);
+
+const handler = serverless(app);
+
+exports.handler = async (event, context) => {
+  const result = await handler(event, context);
+  return result;
+}
+
+// export const handler = serverless(app);

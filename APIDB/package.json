@@ -1,25 +1,33 @@
 {
   "name": "api-db",
   "version": "1.0.0",
-  "main": "./src/index.js",
+  "main": "./functions/api.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start:dev": "nodemon ./src/index.js",
-    "start": "node ./src/index.js"
+    "build": "npx prisma generate",
+    "dev": "netlify dev",
+    "start:dev": "nodemon ./functions/api.js",
+    "start": "node ./functions/api.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@netlify/functions": "^2.8.2",
     "@prisma/client": "^5.20.0",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
-    "express": "^4.19.2"
+    "express": "^4.19.2",
+    "netlify-cli": "^17.36.4",
+    "netlify-plugin-prisma-provider": "^0.3.0",
+    "serverless-http": "^3.2.0",
+    "touch": "^3.1.1"
   },
   "devDependencies": {
+    "netlify-lambda": "^2.0.16",
     "nodemon": "^3.1.4",
     "prisma": "^5.20.0"
   },
-  "type": "module"
+  "type": "commonjs"
 }
