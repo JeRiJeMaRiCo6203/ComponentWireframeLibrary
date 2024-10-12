@@ -1,13 +1,13 @@
 {
   "name": "api-db",
   "version": "1.0.0",
-  "main": "./functions/api.js",
+  "main": "./netlify/functions/api.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npx prisma generate",
     "dev": "netlify dev",
-    "start:dev": "nodemon ./functions/api.js",
-    "start": "node ./functions/api.js"
+    "start:dev": "nodemon ./netlify/functions/api.js",
+    "start": "node ./netlify/functions/api.js"
   },
   "keywords": [],
   "author": "",
@@ -29,5 +29,5 @@
     "nodemon": "^3.1.4",
     "prisma": "^5.20.0"
   },
-  "type": "commonjs"
+  "type": "module"
 }

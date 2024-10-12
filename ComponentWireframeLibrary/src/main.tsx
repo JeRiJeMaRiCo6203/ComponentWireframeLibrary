@@ -6,7 +6,9 @@ import "./index.css";
 import ReactDOM from "react-dom/client";
 import React from "react";
 import Matthew from "./Matthew.tsx";
+import Jerico from "./Jerico.tsx";
 import About from "./About.tsx";
+import Search from "./Search.tsx";  
 
 const router = createBrowserRouter([
   {
@@ -20,6 +22,14 @@ const router = createBrowserRouter([
   {
     path: "/about",
     element: <About />,
+  },
+  {
+    path: "/search",
+    element: <Search />,
+  },
+  {
+    path: "/jerico",
+    element: <Jerico />,
   },
 ]);
 

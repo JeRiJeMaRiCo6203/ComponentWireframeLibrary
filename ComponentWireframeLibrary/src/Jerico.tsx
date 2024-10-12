@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import './App.css';
-import reactLogo from './assets/react.svg';
+import reactLogo from '/vite.svg';
 import viteLogo from '/vite.svg';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { codepenEmbed } from 'react-syntax-highlighter/dist/esm/styles/hljs';
@@ -9,7 +9,7 @@ import { api } from './config/api';
 //import parse from 'html-react-parser';
  
 
-function App() {
+function Jerico() {
   // Set initial state for codeType and codeString
   // getter, setter
   const [copy, setCopy] = useState(false);
@@ -20,14 +20,14 @@ function App() {
   const jsonCodeStringDefault = async () => {
     setCodeType('react');
     const response = await api.get('/wireframes/');
-    setCodeString(response.data[0].codestringReact);
+    setCodeString(response.data[0].codestringreact);
   };
 
   // Function to fetch HTML code
   const jsonCodeString = async () => {
     setCodeType('html');
     const response = await api.get('/wireframes/');
-    setCodeString(response.data[0].codestringHtml);
+    setCodeString(response.data[0].codestringhtml);
   };
 
   // Effect that runs only when codeType changes
@@ -81,4 +81,4 @@ function App() {
   );
 }
 
-export default App;
+export default Jerico;

@@ -1,24 +1,24 @@
-// import express, {Router} from "express";
-// import dotenv from "dotenv";
-// import { Prisma, PrismaClient } from "@prisma/client";
-// import cors from "cors";
-// import serverless from "serverless-http";
+import express, {Router} from "express";
+import dotenv from "dotenv";
+import { Prisma, PrismaClient } from "@prisma/client";
+import cors from "cors";
+import serverless from "serverless-http";
 
-// const prisma = new PrismaClient();
-// const envconfig = dotenv;
-// const app = express();
-// const router = Router();
-
-const express = require("express");
-const dotenv = require("dotenv");
-const { PrismaClient } = require("@prisma/client");
-const cors = require("cors");
-const serverless = require("serverless-http");
-const  Context = require("@netlify/functions");
 const prisma = new PrismaClient();
 const envconfig = dotenv;
 const app = express();
-const router = express.Router(); // Use express.Router() directly
+const router = Router();
+
+// const express = require("express");
+// const dotenv = require("dotenv");
+// const { PrismaClient } = require("@prisma/client");
+// const cors = require("cors");
+// const serverless = require("serverless-http");
+// const Context = require("@netlify/functions");
+// const prisma = new PrismaClient();
+// const envconfig = dotenv;
+// const app = express();
+// const router = express.Router(); // Use express.Router() directly
 
 envconfig.config();
 
@@ -389,6 +389,13 @@ app.get("/search/", async (request, response) => {
     const { keyword } = request.query;
     console.log(keyword);
 
+    if (!keyword || keyword == null || keyword.trim() === "") {
+      response.status(200).send({
+        msg: "Bad request. Missing required keyword parameter.",
+      });
+      return;
+    }
+
     const suggestedKeywords = await prisma.$queryRaw(
       Prisma.sql`
     SELECT DISTINCT title AS keyword
@@ -405,7 +412,7 @@ app.get("/search/", async (request, response) => {
     console.log(keywordsArray);
 
     if (keywordsArray.length === 0) {
-      response.status(404).send({
+      response.status(200).send({
         msg: "Not found. No wireframes or categories found for the specified keyword.",
       });
       return;
@@ -513,11 +520,11 @@ app.post("/insert/", async (request, response) => {
 
 app.use('/api', router);
 
-const handler = serverless(app);
+// const handler = serverless(app);
 
-exports.handler = async (event, context) => {
-  const result = await handler(event, context);
-  return result;
-}
+// exports.=handler = async (event, context) => {
+//   const result = await handler(event, context);
+//   return result;
+// }
 
-// export const handler = serverless(app);
+export const handler = serverless(app);
