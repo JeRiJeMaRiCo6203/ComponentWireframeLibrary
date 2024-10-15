@@ -17,34 +17,36 @@ const Matthew = () => {
 
   return (
     <div className="h-screen w-screen flex items-center justify-center flex-col">
-      <h1 className="text-8xl p-10 font-bold">CODE</h1>
-      <div className="flex p-10">
-        <button
-          className="bg-slate-900 text-slate-50 font-bold px-9 py-3 rounded-3xl"
-          onClick={() => setAspVideo("desktop")}
-        >
-          16:9
-        </button>
-        <button
-          className="bg-slate-900 text-slate-50 font-bold px-9 py-3 rounded-3xl"
-          onClick={() => setAspVideo("mobile")}
-        >
-          9:16
-        </button>
-      </div>
+      <h1 className="text-8xl p-10 font-bold">Code</h1>
+      <div className="bg-gray-100 p-10 rounded-md">
+        <div className="flex justify-center p-10">
+          <button
+            className="bg-slate-900 text-slate-50 font-bold px-9 py-3 rounded-3xl"
+            onClick={() => setAspVideo("desktop")}
+          >
+            16:9
+          </button>
+          <button
+            className="bg-slate-900 text-slate-50 font-bold px-9 py-3 rounded-3xl"
+            onClick={() => setAspVideo("mobile")}
+          >
+            9:16
+          </button>
+        </div>
 
-      <div className="container flex justify-center">
-        <textarea
-          className="border-2 border-slate-900"
-          value={code}
-          onChange={(e) => setCode(e.target.value)}
-          style={{ resize: "none" }}
-        />
+        <div className="container flex">
+          <textarea
+            className="border-2 border-r-0 border-slate-900"
+            value={code}
+            onChange={(e) => setCode(e.target.value)}
+            style={{ resize: "none" }}
+          />
 
-        <div
-          className={`canvas bg-white w-full border-2 border-slate-900 ${aspVideo}`}
-        >
-          {parse(code)}
+          <div
+            className={`canvas bg-white w-full border-2 border-slate-900 ${aspVideo}`}
+          >
+            {parse(code)}
+          </div>
         </div>
       </div>
     </div>
