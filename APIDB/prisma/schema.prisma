@@ -1,6 +1,6 @@
 generator client {
-  provider = "prisma-client-js"
-  binaryTargets = ["native", "rhel-openssl-1.0.x"] // add the correct target for Netlify's environment
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "rhel-openssl-1.0.x"]
 }
 
 datasource db {
@@ -9,27 +9,35 @@ datasource db {
 }
 
 model categories {
-  id                 Int                  @id @default(autoincrement())
-  name               String               @db.VarChar(100)
-  wireframe_category wireframe_category[]
-}
-
-model wireframe_category {
-  wireframe_id Int
-  category_id  Int
-  categories   categories @relation(fields: [category_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  wireframes   wireframes @relation(fields: [wireframe_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-
-  @@id([wireframe_id, category_id])
+  id                                       Int                                        @id @default(autoincrement())
+  name                                     String                                     @db.VarChar(100)
+  wireframe_category_editable_relationship wireframe_category_editable_relationship[]
 }
 
 model wireframes {
-  id                 Int                  @id @default(autoincrement())
-  title              String               @db.VarChar(255)
-  codestringhtml     String?
-  codestringreact    String?
-  codestringlaravel  String?
-  codestringcss      String?
-  cover              String?
-  wireframe_category wireframe_category[]
+  id                                       Int                                        @id @default(autoincrement())
+  title                                    String                                     @db.VarChar(255)
+  codestringhtml                           String?
+  codestringreact                          String?
+  codestringlaravel                        String?
+  codestringcss                            String?
+  cover                                    String?
+  wireframe_category_editable_relationship wireframe_category_editable_relationship[]
+}
+
+model editables {
+  id                                       Int                                        @id @default(autoincrement())
+  name                                     String                                     @db.VarChar(100)
+  wireframe_category_editable_relationship wireframe_category_editable_relationship[]
+}
+
+model wireframe_category_editable_relationship {
+  wireframe_id Int
+  category_id  Int
+  editable_id  Int
+  categories   categories @relation(fields: [category_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "wireframe_category_category_id_fkey")
+  editables    editables  @relation(fields: [editable_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  wireframes   wireframes @relation(fields: [wireframe_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "wireframe_category_wireframe_id_fkey")
+
+  @@id([wireframe_id, category_id, editable_id])
 }
