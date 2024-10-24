@@ -9,6 +9,7 @@ import Matthew from "./Matthew.tsx";
 import Jerico from "./Jerico.tsx";
 import About from "./About.tsx";
 import Search from "./Search.tsx";  
+import Customize from "./Customize.tsx";
 
 const router = createBrowserRouter([
   {
@@ -30,6 +31,10 @@ const router = createBrowserRouter([
   {
     path: "/jerico",
     element: <Jerico />,
+  },
+  {
+    path: "/customize",
+    element: <Customize />,
   },
 ]);
 
