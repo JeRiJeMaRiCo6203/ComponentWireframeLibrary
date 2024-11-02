@@ -77,9 +77,11 @@ const CustomizePage = () => {
   
           element.setAttribute('style', updatedStyle);
         }
-      } else if (key === 'text') {
+      } 
+      else if (key === 'text') {
         element.innerText = newValue;
-      } else {
+      } 
+      else {
         element.setAttribute(key, newValue);
       }
     });

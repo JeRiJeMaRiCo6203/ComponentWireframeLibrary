@@ -10,7 +10,9 @@ import Jerico from "./Jerico.tsx";
 import About from "./About.tsx";
 import Search from "./Search.tsx";  
 import Customize from "./Customize.tsx";
-
+import CustomizeTailwind from "./Customize Tailwind.tsx";
+import FinalPage from "./FinalPage.tsx";
+import { CustomizeProvider } from "./store/CustomizeContext";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -36,10 +38,20 @@ const router = createBrowserRouter([
     path: "/customize",
     element: <Customize />,
   },
+  {
+    path: "/customize-tailwind",
+    element: <CustomizeTailwind />,
+  },
+  {
+    path: "/final-page",
+    element: <FinalPage />,
+  }
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <CustomizeProvider> {/* Wrap router in CustomizeProvider */}
+      <RouterProvider router={router} />
+    </CustomizeProvider>
   </React.StrictMode>
 );
