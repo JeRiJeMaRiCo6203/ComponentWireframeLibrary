@@ -11,8 +11,14 @@
   },
   "dependencies": {
     "html-react-parser": "^5.1.17",
+    "html-to-jsx-transform": "^1.1.0",
+    "monaco-editor": "^0.52.0",
+    "monaco-editor-core": "^0.52.0",
+    "monaco-languageclient": "^8.8.3",
+    "node-html-to-jsx": "^1.2.9",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "react-monaco-editor": "^0.56.2",
     "react-router-dom": "^6.26.2"
   },
   "devDependencies": {

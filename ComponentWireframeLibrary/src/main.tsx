@@ -7,6 +7,7 @@ import ReactDOM from "react-dom/client";
 import React from "react";
 import Matthew from "./Matthew.tsx";
 import About from "./About.tsx";
+import Monaco from "./Monaco.tsx";
 
 const router = createBrowserRouter([
   {
@@ -21,6 +22,10 @@ const router = createBrowserRouter([
     path: "/about",
     element: <About />,
   },
+  {
+    path: "/monaco",
+    element: <Monaco />
+  }
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")!).render(

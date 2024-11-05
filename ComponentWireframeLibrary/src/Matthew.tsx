@@ -3,16 +3,19 @@ import parse from "html-react-parser";
 
 const Matthew = () => {
   const [code, setCode] =
-    useState(`<h1 class="text-slate-900 bg-blue-900">Form Pendaftaran</h1>
+    useState<string>(`<h1 class="text-slate-900 bg-green-900">Form Pendaftaran</h1>
+  <form class="flex flex-col" action="">
+    <label for="fname" class="text-slate-900">First name:</label>
+    <input type="text" id="fname" name="fname" value="John">
+    <label for="lname" class="text-slate-900">Last name:</label>
+    <input type="text" id="lname" name="lname" value="Doe">
+    <input type="submit" class="bg-orange-300" value="Submit">
+  </form>`);
 
-    <form class="flex flex-col" action="">
-        <label for="fname" class="text-slate-900">First name:</label>
-        <input type="text" id="fname" name="fname" value="John">
-        <label for="lname" class="text-slate-900">Last name:</label>
-        <input type="text" id="lname" name="lname" value="Doe">
-        <input type="submit" class="bg-black" value="Submit">
-    </form>
-`);
+  // const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+  //   setCode(event.target.value);
+  // };
+
   const [aspVideo, setAspVideo] = useState("desktop");
 
   return (
@@ -36,14 +39,14 @@ const Matthew = () => {
 
         <div className="container flex">
           <textarea
-            className="border-2 border-r-0 border-slate-900"
+            className="border-2 border-r-0 border-slate-900 rounded-md"
             value={code}
             onChange={(e) => setCode(e.target.value)}
             style={{ resize: "none" }}
           />
 
           <div
-            className={`canvas bg-white w-full border-2 border-slate-900 ${aspVideo}`}
+            className={`canvas bg-white w-full border-2 border-slate-900 ${aspVideo} rounded-l-md`}
           >
             {parse(code)}
           </div>
