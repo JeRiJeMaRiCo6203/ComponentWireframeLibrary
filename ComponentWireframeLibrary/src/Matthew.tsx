@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import parse from "html-react-parser";
+import MonacoEditor from "react-monaco-editor";
 
 const Matthew = () => {
   const [code, setCode] =
@@ -12,9 +13,9 @@ const Matthew = () => {
     <input type="submit" class="bg-orange-300" value="Submit">
   </form>`);
 
-  // const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-  //   setCode(event.target.value);
-  // };
+  const handleEditorChange = (value: string) => {
+    setCode(value);
+  };
 
   const [aspVideo, setAspVideo] = useState("desktop");
 
@@ -37,18 +38,32 @@ const Matthew = () => {
           </button>
         </div>
 
-        <div className="container flex">
-          <textarea
+        <div className="container flex justify-center w-screen">
+          {/* <textarea
             className="border-2 border-r-0 border-slate-900 rounded-md"
             value={code}
             onChange={(e) => setCode(e.target.value)}
             style={{ resize: "none" }}
-          />
+          /> */}
+          <div className="item w-1/2">
+            <MonacoEditor
+              language="html"
+              value={code}
+              options={{
+                fontSize: 14,
+                minimap: { enabled: false },
+                automaticLayout: true,
+              }}
+              onChange={handleEditorChange}
+            />
+          </div>
 
-          <div
-            className={`canvas bg-white w-full border-2 border-slate-900 ${aspVideo} rounded-l-md`}
-          >
-            {parse(code)}
+          <div className="item">
+            <div
+              className={`canvas bg-white w-full border-2 border-slate-900 ${aspVideo} rounded-l-md`}
+            >
+              {parse(code)}
+            </div>
           </div>
         </div>
       </div>

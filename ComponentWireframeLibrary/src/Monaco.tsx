@@ -1,7 +1,4 @@
 import React, { useState } from "react";
-import parse from "html-react-parser";
-import monaco from "monaco-editor";
-// import { htmlToJsx } from "html-to-jsx-transform";
 import convert from "node-html-to-jsx";
 import MonacoEditor from "react-monaco-editor";
 
@@ -49,6 +46,7 @@ const Monaco = () => {
               fontSize: 14,
               minimap: { enabled: false },
               automaticLayout: true,
+              readOnly: true,
             }}
           />
         </div>
