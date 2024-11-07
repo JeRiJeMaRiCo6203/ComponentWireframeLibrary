@@ -1,0 +1,42 @@
+:root{
+  font-family: "Poppins", sans-serif;
+  color: #222222;
+  font-size: 16px;
+}
+
+.secondary {
+  color: #6a6a6a;
+}
+
+.spacemono {
+  font-family: "Space Mono", monospace;
+}
+
+.inputSearch::-webkit-input-placeholder { /* WebKit, Blink, Edge */
+  color: #a6a6a6 !important;
+}
+.inputSearch:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+ color: #a6a6a6 !important;
+ opacity: 1;
+}
+.inputSearch::-moz-placeholder { /* Mozilla Firefox 19+ */
+ color: #a6a6a6 !important;
+ opacity: 1;
+}
+.inputSearch:-ms-input-placeholder { /* Internet Explorer 10-11 */
+ color: #a6a6a6 !important;
+}
+.inputSearch::-ms-input-placeholder { /* Microsoft Edge */
+ color: #a6a6a6 !important;
+}
+.inputSearch::placeholder { /* Most modern browsers support this now. */
+ color: #a6a6a6;
+}
+
+input {
+  outline: none;
+}
+
+::-webkit-scrollbar-track {
+  background: #222222; /* Transparent track */
+}

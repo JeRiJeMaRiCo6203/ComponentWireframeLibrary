@@ -1,0 +1,132 @@
+[
+  {
+    "id": "1",
+    "name": "Button",
+    "isSelected": true
+  },
+  {
+    "id": "2",
+    "name": "Accordion",
+    "isSelected": true
+  },
+  {
+    "id": "3",
+    "name": "Gallery",
+    "isSelected": true
+  },
+  {
+    "id": "4",
+    "name": "Modal",
+    "isSelected": true
+  },
+  {
+    "id": "5",
+    "name": "Header",
+    "isSelected": true
+  },
+  {
+    "id": "6",
+    "name": "Hero",
+    "isSelected": true
+  },
+  {
+    "id": "7",
+    "name": "Testimonial",
+    "isSelected": true
+  },
+  {
+    "id": "8",
+    "name": "Breadcrumb",
+    "isSelected": true
+  },
+  {
+    "id": "9",
+    "name": "Slider",
+    "isSelected": true
+  },
+  {
+    "id": "10",
+    "name": "Overlay",
+    "isSelected": true
+  },
+  {
+    "id": "11",
+    "name": "Tab",
+    "isSelected": true
+  },
+  {
+    "id": "12",
+    "name": "Progress Bar",
+    "isSelected": false
+  },
+  {
+    "id": "13",
+    "name": "Form",
+    "isSelected": false
+  },
+  {
+    "id": "14",
+    "name": "Grid",
+    "isSelected": false
+  },
+  {
+    "id": "15",
+    "name": "Contact",
+    "isSelected": false
+  },
+  {
+    "id": "16",
+    "name": "Footer",
+    "isSelected": false
+  },
+  {
+    "id": "17",
+    "name": "Carousel",
+    "isSelected": false
+  },
+  {
+    "id": "18",
+    "name": "Navigation",
+    "isSelected": false
+  },
+  {
+    "id": "19",
+    "name": "Banner",
+    "isSelected": false
+  },
+  {
+    "id": "20",
+    "name": "List",
+    "isSelected": false
+  },
+  {
+    "id": "21",
+    "name": "Card",
+    "isSelected": false
+  },
+  {
+    "id": "22",
+    "name": "Tooltip",
+    "isSelected": false
+  },
+  {
+    "id": "23",
+    "name": "Sidebar",
+    "isSelected": false
+  },
+  {
+    "id": "24",
+    "name": "Call to Action",
+    "isSelected": false
+  },
+  {
+    "id": "25",
+    "name": "Table",
+    "isSelected": false
+  },
+  {
+    "id": "26",
+    "name": "Input",
+    "isSelected": false
+  }
+]

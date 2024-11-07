@@ -23,5 +23,5 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src"]
+  "include": ["src", "../UI-Test/UI.tsx", "../UI-Test/SmallTag.tsx", "../UI-Test/TagPakeSearch.tsx", "../UI-Test/Navbar copy.tsx"]
 }

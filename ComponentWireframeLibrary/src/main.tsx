@@ -5,8 +5,8 @@ import App from "./App.tsx";
 import "./index.css";
 import ReactDOM from "react-dom/client";
 import React from "react";
-import Matthew from "./Matthew.tsx";
 import About from "./About.tsx";
+import LayoutPage from "./layoutpage/LayoutPage.tsx";
 
 const router = createBrowserRouter([
   {
@@ -14,12 +14,12 @@ const router = createBrowserRouter([
     element: <App />,
   },
   {
-    path: "/matthew",
-    element: <Matthew />,
-  },
-  {
     path: "/about",
     element: <About />,
+  },
+  {
+    path: "/layout",
+    element: <LayoutPage />,
   },
 ]);
 

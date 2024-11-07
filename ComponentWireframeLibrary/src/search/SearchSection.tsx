@@ -1,0 +1,148 @@
+import React, { useState } from 'react'
+import tagJson from '../tempJsons/tagJson.json'
+import TagSelected from '../components/TagSelected'
+import Tag from '../components/TagNotSelected'
+import IconX from '../svg/IconX'
+import FilterPopup from '../components/FilterPopup'
+
+const Search = () => {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [suggestions, setSuggestions] = useState<any[]>([]);
+  const [activeSuggestionIndex, setActiveSuggestionIndex] = useState(-1); // Track active suggestion for keyboard navigation
+  const [showSuggestions, setShowSuggestions] = useState(false); // Track if suggestions are visible
+  const [filterPopup, setFilterPopup] = useState(false);
+
+  const openFilterPopup = () => {
+    setFilterPopup(true)
+  }
+
+  const closeFilterPopup = () => {
+    setFilterPopup(false)
+  }
+
+  const getSuggestions = (value: string) => {
+    // JERICO
+    // note : 
+    // - ini utk suggestion search
+    // - `value`
+    // - Jangan lupa tag yang diambil memiliki isSelected yang false (tag.isSelected == false)
+    // - 3 line dibawah delete aja itu temporary
+    return tagJson.filter(tag => 
+      tag.name.toLowerCase().includes(value.toLowerCase())
+    );
+  }
+
+  // Handle input change
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.value;
+    setSearchTerm(value);
+
+    if (value.length > 0) {
+      const filteredSuggestions = getSuggestions(value);
+      setSuggestions(filteredSuggestions);
+      setShowSuggestions(true);
+    } else {
+      setSuggestions([]); // Clear suggestions when the input is empty
+      setShowSuggestions(false);
+    }
+    setActiveSuggestionIndex(-1); // Reset active suggestion index when input changes
+  };
+
+  // Handle key down event for arrow keys and Enter key
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (showSuggestions) {
+      if (event.key === 'ArrowDown') {
+        console.log("down key pressed")
+        // Move down in the suggestions list
+        setActiveSuggestionIndex(prevIndex =>
+          prevIndex < suggestions.length - 1 ? prevIndex + 1 : 0
+        );
+      } else if (event.key === 'ArrowUp') {
+        // Move up in the suggestions list
+        setActiveSuggestionIndex(prevIndex =>
+          prevIndex > 0 ? prevIndex - 1 : suggestions.length - 1
+        );
+      } else if (event.key === 'Enter') {
+        // Select the current active suggestion
+        if (activeSuggestionIndex >= 0 && activeSuggestionIndex < suggestions.length) {
+          handleSuggestionSelect(suggestions[activeSuggestionIndex].name);
+        }
+      }
+    }
+  };
+
+  // Handle click on suggestion
+  const handleSuggestionSelect = (suggestionId: number) => {
+    setSearchTerm('')
+    setSuggestions([]); // Hide suggestions after selection
+    setShowSuggestions(false); // Hide suggestions
+    // Tag Select TAMBAHAIN
+  };
+
+  return (
+    <div className='mx-48 pt-32'>
+      <div className='w-full rounded-lg flex justify-between gap-2'>
+        {/* {showSuggestions && suggestions.length > 0 && (
+            <div className="absolute top-16 w-full h-fit bg-white border-2 border-[#f4f4f4] rounded-lg py-4 z-20">
+              <p className='px-6 pb-1 font-semibold text-xs'>titles</p>
+              {suggestions.map((item: any, index: number) => (
+                <div
+                key={item.id}
+                className={`px-6 py-1 cursor-pointer text-sm hover:bg-[#f4f4f4] ${
+                  index === activeSuggestionIndex ? 'bg-[#f4f4f4]' : ''
+                }`}
+                onClick={() => handleSuggestionSelect(item.id)}
+                >
+                  {item.name}
+                </div>
+              ))}
+              <hr className='border-t-2 mt-3 mb-4 border-[#f4f4f4]'/>
+              <p className='px-6 pb-2 font-semibold text-xs'>Tags</p>
+              <div className='px-6 flex flex-wrap gap-2'>
+                {suggestions.map((item: any) => (
+                  <Tag key={item.id} title={item.name}/>
+                ))}
+              </div>
+              <hr className='border-t-2 mt-3 mb-4 border-[#f4f4f4]'/>
+              <p className='px-6 pb-2 font-semibold text-xs'>Editables</p>
+              <div className='px-6 flex flex-wrap gap-2'>
+                {suggestions.map((item: any) => (
+                  <Tag key={item.id} title={item.name}/>
+                ))}
+              </div>
+            </div>
+          )} */}
+        <div
+          className='py-2 px-3 flex justify-center items-center gap-1 bg-white hover:bg-[#f4f4f4] border-2 border-[#f4f4f4] cursor-pointer rounded-lg'
+          onClick={() => openFilterPopup()}
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M22 3H2L10 12.46V19L14 21V12.46L22 3Z" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <p className='text-sm'>Filters</p>
+        </div>
+        <FilterPopup isOpen={filterPopup} onClose={() => closeFilterPopup()}/>
+        <input 
+          autoComplete='off'
+          type="text"
+          name="search"
+          id="search"
+          value={searchTerm}
+          onChange={handleInputChange}
+          onKeyDown={handleKeyDown} // Attach keydown event 
+          onFocus={() => setShowSuggestions(true)}
+          onBlur={() => setShowSuggestions(false)}
+          placeholder="Search Title..."
+          className='w-80 py-2 px-3 bg-[#f4f4f4] border-2 border-[#f4f4f4] text-sm rounded-lg'
+        />
+      </div>
+      <div className='flex flex-wrap gap-2 pt-4'>
+        {tagJson.map((item: any) => (
+          item.isSelected && (
+            <TagSelected key={item.id} title={item.name}/>
+          )
+        ))}
+      </div>
+    </div>
+  )
+}
+
+export default Search
