@@ -18,11 +18,11 @@ interface LayoutModel {
 
 const LayoutPage = () => {
   const url = "http://localhost:3000";
-  const id = useParams();
+  const { id } = useParams();
   const [layout, setLayout] = useState<LayoutModel>();
 
   useEffect(() => {
-    fetch(url + `/api/wireframes/${Object.values(id)[0]}`)
+    fetch(url + `/api/wireframes/${id}`)
       .then((response) => response.json())
       .then((data) => setLayout(data));
   }, [id]);
