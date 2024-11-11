@@ -16,7 +16,7 @@
     "react-dom": "^18.3.1",
     "react-ionicons": "^4.2.1",
     "react-router-dom": "^6.26.2",
-    "react-syntax-highlighter": "^15.5.0",
+    "react-syntax-highlighter": "^15.6.1",
     "tailwind": "^4.0.0"
   },
   "devDependencies": {
