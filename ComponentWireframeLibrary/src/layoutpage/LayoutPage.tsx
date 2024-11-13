@@ -5,27 +5,18 @@ import parse from "html-react-parser";
 import SyntaxHighlighter from "react-syntax-highlighter";
 import { a11yLight } from "react-syntax-highlighter/dist/esm/styles/hljs";
 import { useParams } from "react-router-dom";
-
-interface LayoutModel {
-  id: number;
-  title: string;
-  codestringhtml: string;
-  codestringreact: string;
-  codestringlaravel: string;
-  codestringcss: string;
-  cover: string;
-}
+import Layout from "../interfaces/Layout";
 
 const LayoutPage = () => {
   const url = "http://localhost:3000";
   const { id } = useParams();
-  const [layout, setLayout] = useState<LayoutModel>();
+  const [layout, setLayout] = useState<Layout>();
 
   useEffect(() => {
     fetch(url + `/api/wireframes/${id}`)
       .then((response) => response.json())
       .then((data) => setLayout(data));
-  }, [id]);
+  }, [url, id]);
 
   var code = `
     ${layout?.codestringhtml.toString()}
