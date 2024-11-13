@@ -4,18 +4,18 @@ import Navbar from "./navbar/Navbar";
 import SearchSection from "./search/SearchSection";
 import { Link } from "react-router-dom";
 import Layout from "./interfaces/Layout";
+import { api } from "./config/api";
+import LayoutPage from "./layoutpage/LayoutPage";
 
 function App() {
-  // dev url
-  const url = "http://localhost:3000";
   const [layouts, setLayouts] = useState<Layout[]>([]);
 
-  // fetch data from database
+  // Get all layout
   useEffect(() => {
-    fetch(url + "/api/wireframes/")
-      .then((response) => response.json())
-      .then((data) => setLayouts(data));
-  }, [url]);
+    api.get(`/wireframes`).then((response) => {
+      setLayouts(response.data);
+    });
+  }, []);
 
   return (
     <body className="bg-white w-full">

@@ -6,17 +6,18 @@ import SyntaxHighlighter from "react-syntax-highlighter";
 import { a11yLight } from "react-syntax-highlighter/dist/esm/styles/hljs";
 import { useParams } from "react-router-dom";
 import Layout from "../interfaces/Layout";
+import { api } from "../config/api";
 
 const LayoutPage = () => {
-  const url = "http://localhost:3000";
   const { id } = useParams();
   const [layout, setLayout] = useState<Layout>();
 
+  // Get layout by ID
   useEffect(() => {
-    fetch(url + `/api/wireframes/${id}`)
-      .then((response) => response.json())
-      .then((data) => setLayout(data));
-  }, [url, id]);
+    api.get(`/wireframes/${id}`).then((response) => {
+      setLayout(response.data);
+    });
+  }, [id]);
 
   var code = `
     ${layout?.codestringhtml.toString()}
