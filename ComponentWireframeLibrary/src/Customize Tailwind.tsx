@@ -5,6 +5,9 @@ import { api } from './config/api';
 import { TailwindConverter } from 'css-to-tailwindcss';
 import { useCustomize } from './store/CustomizeContext';
 import { useNavigate } from "react-router-dom";
+import SyntaxHighlighter from 'react-syntax-highlighter';
+import { codepenEmbed } from 'react-syntax-highlighter/dist/esm/styles/hljs';
+import { ClipboardOutline, CheckmarkSharp } from 'react-ionicons';
 
 const CustomizePage = () => {
   const navigate = useNavigate();
@@ -16,6 +19,25 @@ const CustomizePage = () => {
   const [showCanvas, setShowCanvas] = useState(true);
   
   const { htmlContent, setHtmlContent, externalCssContent, setExternalCssContent, tailwindCss, setTailwindCss } = useCustomize();
+
+  const [copy, setCopy] = useState(false); // State for copy button
+  const [codeType, setCodeType] = useState("html"); // To track which code type to show
+  const [data, setData] = useState(''); // For displaying the code snippet
+
+  const showHtmlCode = () => {
+    setCodeType("html");
+    setData(htmlContent);
+  };
+  
+  const showTailwindCss = () => {
+    setCodeType("css");
+    setData(tailwindCss);
+  };
+
+  const showExternalCss = () => {
+    setCodeType("css");
+    setData(externalCssContent);
+  };
 
   // Fetch the initial HTML content
   const fetchHtmlAndCssCode = async () => {
@@ -208,9 +230,49 @@ const CustomizePage = () => {
 
        {showCanvas && <Canvas htmlContent={htmlContent} externalCssContent={externalCssContent} />}
        
-      <button onClick={() => navigate("/final-page", { state: { htmlContent, externalCssContent, tailwindCss } })}>
+      {/* <button onClick={() => navigate("/final-page", { state: { htmlContent, externalCssContent, tailwindCss } })}>
   Checkout Design / Generate Code
-</button>
+</button> */}
+
+<div className="grid place-items-center mt-4">
+        {/* Buttons for toggling between HTML, Tailwind CSS, and external CSS */}
+        <div className="flex flex-row items-center gap-4">
+          <button onClick={showHtmlCode} className="bg-blue-500 text-white px-4 py-2 rounded">HTML Code</button>
+          <button onClick={showTailwindCss} className="bg-blue-500 text-white px-4 py-2 rounded">Tailwind CSS</button>
+          <button onClick={showExternalCss} className="bg-blue-500 text-white px-4 py-2 rounded">External CSS</button>
+        </div>
+
+        {/* Code Snippet Display */}
+        <div className="max-w-2xl min-w-[25rem] bg-[#3a404d] rounded-md overflow-hidden mt-4">
+          <div className="flex justify-between px-4 text-white text-xs items-center">
+            <p className='text-sm'>Snippet Code</p>
+            {copy ? (
+              <button className='py-1 inline-flex items-center gap-1'>
+                <span className='text-base mt-1'>
+                  <CheckmarkSharp color={'#000000'} />
+                </span>
+                Copied!
+              </button>
+            ) : (
+              <button className='py-1 inline-flex items-center gap-1' onClick={() => {
+                navigator.clipboard.writeText(data);
+                setCopy(true);
+                setTimeout(() => setCopy(false), 3000);
+              }}>
+                <span className='text-base mt-1'>
+                  <ClipboardOutline color={'#000000'} />
+                </span>
+                Copy Code
+              </button>
+            )}
+          </div>
+          <SyntaxHighlighter language={codeType} style={codepenEmbed} customStyle={{ padding: "25px" }} wrapLongLines={true}>
+            {data}
+          </SyntaxHighlighter>
+        </div>
+      </div>
+
+
     </div>
   );
 };
