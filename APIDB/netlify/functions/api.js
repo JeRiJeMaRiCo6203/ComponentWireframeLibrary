@@ -30,7 +30,7 @@ app.get("/", (request, response) => {
 });
 
 // get all wireframes (layout) and categories
-// contoh endpoint: /wireframesAndCategories
+// contoh endpoint: /wireframesAndCategoriesAndEditables
 app.get("/wireframesAndCategoriesAndEditables/", async (request, response) => {
   try {
     const wireframesQuery = await prisma.$queryRaw`
