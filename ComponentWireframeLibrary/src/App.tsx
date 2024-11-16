@@ -27,7 +27,7 @@ function App() {
             <div className="w-full">
               <img
                 className="rounded-lg"
-                src="layout-1.png"
+                src="https://ik.imagekit.io/3wycpjx1go/Product-Landing-Page-Example.png?updatedAt=1726545222002"
                 width="100%"
                 alt=""
               />
