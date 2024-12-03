@@ -11,6 +11,10 @@ import {
     getAllEditablesOrByParams,
     getEditableById
 } from "../controllers/editablesController.js";
+import {
+    getAllCodeSnippetsOrByParams,
+    getCodeSnippetById
+} from "../controllers/codesnippetsController.js";
 
 const app = express();
 const router = Router();
@@ -25,6 +29,7 @@ router.route("/categories/").get(getAllCategoriesOrByParams);
 router.route("/categories/:id").get(getCategoryById);
 router.route("/editables/").get(getAllEditablesOrByParams);
 router.route("/editables/:id").get(getEditableById);
-
+router.route("/codesnippets/").get(getAllCodeSnippetsOrByParams);
+router.route("/codesnippets/:id").get(getCodeSnippetById);
 
 export default router;   
