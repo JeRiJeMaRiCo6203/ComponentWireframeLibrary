@@ -6,8 +6,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npx prisma generate",
     "dev": "netlify dev",
-    "start:dev": "nodemon ./src/api.js",
-    "start": "node ./src/api.js"
+    "start:dev": "nodemon ./src/server.js",
+    "start": "node ./src/server.js"
   },
   "keywords": [],
   "author": "",
