@@ -12,7 +12,7 @@ function App() {
 
   // Get all layout
   useEffect(() => {
-    api.get(`/wireframes`).then((response) => {
+    api.get(`/wireframes/`).then((response) => {
       setLayouts(response.data);
     });
   }, []);

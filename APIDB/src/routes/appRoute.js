@@ -1,26 +1,31 @@
 import express, { Router } from "express";
 import {
-    getAllWireframesOrByParams,
-    getWireframeById
+  getAllWireframesOrByParams,
+  getWireframeById,
 } from "../controllers/wireframesController.js";
 import {
-    getAllCategoriesOrByParams,
-    getCategoryById
+  getAllCategoriesOrByParams,
+  getCategoryById,
 } from "../controllers/categoriesController.js";
 import {
-    getAllEditablesOrByParams,
-    getEditableById
+  getAllEditablesOrByParams,
+  getEditableById,
 } from "../controllers/editablesController.js";
 import {
-    getAllCodeSnippetsOrByParams,
-    getCodeSnippetById
+  getAllCodeSnippetsOrByParams,
+  getCodeSnippetById,
 } from "../controllers/codesnippetsController.js";
+import {
+  getAllWireframesAndCategories,
+  getWireframesByCategory,
+} from "../controllers/wireframeCategoryContoller.js";
+import { getAllWireframesAndEditables } from "../controllers/wireframeEditableController.js";
 
 const app = express();
 const router = Router();
 
 router.route("/").get((request, response) => {
-    response.status(201).send({ message: "Hello! API is running..." });
+  response.status(201).send({ message: "Hello! API is running..." });
 });
 
 router.route("/wireframes/").get(getAllWireframesOrByParams);
@@ -32,4 +37,8 @@ router.route("/editables/:id").get(getEditableById);
 router.route("/codesnippets/").get(getAllCodeSnippetsOrByParams);
 router.route("/codesnippets/:id").get(getCodeSnippetById);
 
-export default router;   
+router.route("/wireframesByCategory/").get(getWireframesByCategory);
+router.route("/wireframesAndCategories/").get(getAllWireframesAndCategories);
+router.route("/wireframesAndEditables/").get(getAllWireframesAndEditables);
+
+export default router;
