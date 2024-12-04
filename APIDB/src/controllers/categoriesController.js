@@ -41,7 +41,6 @@ export const getAllCategoriesOrByParams = async (request, response) => {
       .send({ error: "An error occurred while fetching categories." });
   }
 };
-
 export const getCategoryById = async (request, response) => {
   const id = parseInt(request.params.id);
 

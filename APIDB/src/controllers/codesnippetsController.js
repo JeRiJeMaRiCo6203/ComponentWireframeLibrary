@@ -43,31 +43,30 @@ export const getAllCodeSnippetsOrByParams = async (request, response) => {
 };
 
 export const getCodeSnippetById = async (request, response) => {
-    const id = parseInt(request.params.id);
-  
-    try {
-      if (isNaN(id)) {
-        response.status(400).send({ msg: "Bad request. Invalid category id." });
-        return;
-      }
-  
-      const codeSnippetsQuery = await prisma.codesnippets.findUnique({
-        where: {
-          id: id,
-        },
-      });
-  
-      if (!codeSnippetsQuery) {
-        response.status(404).send({ msg: "Not found. Code Snippet not found." });
-        return;
-      }
-  
-      response.json(codeSnippetsQuery);
-    } catch (error) {
-      console.error("Error fetching code snippet:", error);
-      response
-        .status(500)
-        .send({ error: "An error occurred while fetching code snippet." });
+  const id = parseInt(request.params.id);
+
+  try {
+    if (isNaN(id)) {
+      response.status(400).send({ msg: "Bad request. Invalid category id." });
+      return;
     }
-  };
-  
+
+    const codeSnippetsQuery = await prisma.codesnippets.findUnique({
+      where: {
+        id: id,
+      },
+    });
+
+    if (!codeSnippetsQuery) {
+      response.status(404).send({ msg: "Not found. Code Snippet not found." });
+      return;
+    }
+
+    response.json(codeSnippetsQuery);
+  } catch (error) {
+    console.error("Error fetching code snippet:", error);
+    response
+      .status(500)
+      .send({ error: "An error occurred while fetching code snippet." });
+  }
+};
