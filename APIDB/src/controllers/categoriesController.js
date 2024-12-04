@@ -1,4 +1,5 @@
 import prisma from "../models/prismaClient.js";
+import { Prisma } from "@prisma/client";
 
 export const getAllCategoriesOrByParams = async (request, response) => {
   try {
@@ -41,6 +42,7 @@ export const getAllCategoriesOrByParams = async (request, response) => {
       .send({ error: "An error occurred while fetching categories." });
   }
 };
+
 export const getCategoryById = async (request, response) => {
   const id = parseInt(request.params.id);
 
@@ -67,5 +69,64 @@ export const getCategoryById = async (request, response) => {
     response
       .status(500)
       .send({ error: "An error occurred while fetching categories." });
+  }
+};
+
+export const searchCategories = async (request, response) => {
+  try {
+    const { keyword } = request.query;
+
+    if (!keyword || keyword == null || keyword.trim() === "") {
+      response.status(200).send({
+        msg: "Bad request. Missing required keyword parameter.",
+      });
+      return;
+    }
+
+    // Step 1: Get Suggested Keywords
+    const suggestedKeywords = await prisma.$queryRaw(
+      Prisma.sql`
+      SELECT DISTINCT name AS keyword
+      FROM categories
+      WHERE name ILIKE ${"%" + keyword + "%"}
+    `
+    );
+
+    const keywordsArray = suggestedKeywords.map((kw) => kw.keyword);
+    console.log(keywordsArray);
+
+    if (keywordsArray.length === 0) {
+      response.status(200).send({
+        msg: "Not found. No matching categories found for the specified keyword.",
+      });
+      return;
+    }
+
+    // Step 2: Get Wireframes matching the keyword in categories
+    const categoriesQuery = await prisma.$queryRaw(
+      Prisma.sql`
+        SELECT * 
+        FROM categories c
+        WHERE c.name IN (${Prisma.join(keywordsArray)});
+      `
+    );
+
+    if (categoriesQuery.length === 0) {
+      response.status(404).send({
+        msg: "Not found. No categories found for the specified keyword.",
+      });
+      return;
+    }
+
+    // Step 5: Return the results
+    response.json({
+      //suggestions: suggestedKeywords,
+      results: categoriesQuery
+    });
+  } catch (error) {
+    console.error("Error fetching categories:", error);
+    response.status(500).send({
+      error: "An error occurred while searching categories.",
+    });
   }
 };

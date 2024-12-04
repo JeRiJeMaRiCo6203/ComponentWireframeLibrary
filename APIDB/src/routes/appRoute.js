@@ -5,7 +5,8 @@ import {
 } from "../controllers/wireframesController.js";
 import {
     getAllCategoriesOrByParams,
-    getCategoryById
+    getCategoryById,
+    searchCategories
 } from "../controllers/categoriesController.js";
 import {
     getAllEditablesOrByParams,
@@ -25,10 +26,14 @@ router.route("/").get((request, response) => {
 
 router.route("/wireframes/").get(getAllWireframesOrByParams);
 router.route("/wireframes/:id").get(getWireframeById);
+
 router.route("/categories/").get(getAllCategoriesOrByParams);
 router.route("/categories/:id").get(getCategoryById);
+router.route("/searchCategories").get(searchCategories);
+
 router.route("/editables/").get(getAllEditablesOrByParams);
 router.route("/editables/:id").get(getEditableById);
+
 router.route("/codesnippets/").get(getAllCodeSnippetsOrByParams);
 router.route("/codesnippets/:id").get(getCodeSnippetById);
 
