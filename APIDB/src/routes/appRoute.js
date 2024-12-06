@@ -20,7 +20,7 @@ import {
 import {
   getAllWireframesAndCategories,
   getWireframesByCategory,
-} from "../controllers/wireframeCategoryContoller.js";
+} from "../controllers/wireframeCategoryController.js";
 import { 
     getAllWireframesAndEditables 
 } from "../controllers/wireframeEditableController.js";

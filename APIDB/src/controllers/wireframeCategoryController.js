@@ -1,5 +1,5 @@
 import prisma from "../models/prismaClient.js";
-const { Prisma } = require("@prisma/client");
+import { Prisma } from "@prisma/client";
 
 export const getCategoryById = async (request, response) => {
   const id = parseInt(request.params.id);
@@ -47,7 +47,7 @@ export const getWireframesByCategory = async (request, response) => {
 
     // Use IN clause to filter wireframes by categories in SQL query
     const wireframesQuery = await prisma.$queryRaw(
-      prisma.sql`
+      Prisma.sql`
           SELECT
           w.id,
           w.title,
@@ -74,7 +74,7 @@ export const getWireframesByCategory = async (request, response) => {
     const filteredwireframesQuery = await Promise.all(
       wireframesQuery.map(async (wireframe) => {
         const remainingCategories = await prisma.$queryRaw(
-          prisma.sql`
+          Prisma.sql`
             SELECT DISTINCT c.name
             FROM wireframes w
             JOIN category_relationship wc ON w.id = wc.wireframe_id
@@ -132,4 +132,6 @@ export const getAllWireframesAndCategories = async (request, response) => {
   }
 };
 
-export const searchWireframesOrCategories = async (request, response) => {};
+export const searchWireframesOrCategories = async (request, response) => {
+  
+};
