@@ -48,7 +48,7 @@ export const getAllWireframesOrByParams = async (request, response) => {
 };
 
 export const getWireframeById = async (request, response) => {
-    const id = parseInt(request.params.id);
+  const id = parseInt(request.params.id);
 
   try {
     if (isNaN(id)) {
@@ -68,6 +68,34 @@ export const getWireframeById = async (request, response) => {
     }
 
     response.json(wireframesQuery);
+  } catch (error) {
+    console.error("Error fetching wireframes:", error);
+    response
+      .status(500)
+      .send({ error: "An error occurred while fetching wireframes." });
+  }
+};
+
+export const getAllWireframesDetails = async (request, response) => {
+  try {
+    const wireframeDetailsQuery = await prisma.$queryRaw
+    `
+      SELECT 
+      w.id,
+      w.title,
+      w.cover,
+      array_agg(DISTINCT c.name) AS categories,
+      array_agg(DISTINCT e.name) AS editables
+      FROM wireframes w
+      LEFT JOIN category_relationship wc ON w.id = wc.wireframe_id
+      LEFT JOIN categories c ON wc.category_id = c.id
+      LEFT JOIN editable_relationship we ON w.id = we.wireframe_id
+      LEFT JOIN editables e ON we.editable_id = e.id
+      GROUP BY w.id
+      ORDER BY w.id ASC;
+    `
+
+    response.json(wireframeDetailsQuery);
   } catch (error) {
     console.error("Error fetching wireframes:", error);
     response

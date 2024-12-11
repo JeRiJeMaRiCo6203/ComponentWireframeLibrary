@@ -1,37 +1,6 @@
 import prisma from "../models/prismaClient.js";
-const { Prisma } = require("@prisma/client");
+import { Prisma } from "@prisma/client";
 
-export const getCategoryById = async (request, response) => {
-  const id = parseInt(request.params.id);
-
-  try {
-    if (isNaN(id)) {
-      response.status(400).send({ msg: "Bad request. Invalid category id." });
-      return;
-    }
-
-    const categoriesQuery = await prisma.categories.findUnique({
-      where: {
-        id: id,
-      },
-    });
-
-    if (!categoriesQuery) {
-      response.status(404).send({ msg: "Not found. Category not found." });
-      return;
-    }
-
-    response.json(categoriesQuery);
-  } catch (error) {
-    console.error("Error fetching categories:", error);
-    response
-      .status(500)
-      .send({ error: "An error occurred while fetching categories." });
-  }
-};
-
-// get wireframe (layout) by category (in dan includes)
-// contoh endpoint: /wireframesByCategory/?categories=E-Commerce, Blog, Portfolio
 export const getWireframesByCategory = async (request, response) => {
   try {
     // Extract the categories from the query parameters
