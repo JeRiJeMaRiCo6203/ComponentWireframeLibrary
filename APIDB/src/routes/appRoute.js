@@ -24,6 +24,9 @@ import {
 import { 
     getAllWireframesAndEditables 
 } from "../controllers/wireframeEditableController.js";
+import {
+  getEditableCodeBasedOnCodeSnippetAndBasedOnCurrentSelectedWireframe
+} from "../controllers/editablecodesController.js";
 
 const app = express();
 const router = Router();
@@ -50,6 +53,7 @@ router.route("/wireframesByCategory/").get(getWireframesByCategory);
 router.route("/wireframesAndCategories/").get(getAllWireframesAndCategories);
 
 router.route("/wireframesAndEditables/").get(getAllWireframesAndEditables);
+router.route("/editablecodes/:w_id").get(getEditableCodeBasedOnCodeSnippetAndBasedOnCurrentSelectedWireframe);
 
 export default router;
 

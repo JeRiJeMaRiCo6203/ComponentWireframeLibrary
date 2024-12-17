@@ -29,6 +29,7 @@ model editables {
   dropdown_options      String[]
   switch_options        String[]
   number_range          Int[]
+  idx                   Int?
   editable_relationship editable_relationship[]
   editablecodes         editablecodes[]
 }
@@ -59,13 +60,13 @@ model editable_relationship {
 }
 
 model editablecodes {
-  id             Int         @id @default(autoincrement())
-  codesnippet    String?
-  type           String?
-  editable_type  String?
-  editable_value String?
-  editable_id    Int?
-  wireframe_id   Int?
-  editables      editables?  @relation(fields: [editable_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  wireframes     wireframes? @relation(fields: [wireframe_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  id           Int         @id @default(autoincrement())
+  type         String?
+  editable_id  Int?
+  wireframe_id Int?
+  idx          Int?
+  value        String[]
+  editable_idx Int?
+  editables    editables?  @relation(fields: [editable_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  wireframes   wireframes? @relation(fields: [wireframe_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
