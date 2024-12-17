@@ -102,5 +102,31 @@ export const getAllWireframesAndCategories = async (request, response) => {
 };
 
 export const searchWireframesOrCategories = async (request, response) => {
-  
+  try {
+    const input = request.query;
+
+    const wireframesQuery = await prisma.$queryRaw(
+            Prisma.sql`
+            SELECT 
+            w.id, 
+            w.title, 
+            w.cover,
+            array_agg(c.name) AS categories
+            FROM wireframes w
+            JOIN category_relationship wc ON w.id = wc.wireframe_id
+            JOIN categories c ON wc.category_id = c.id
+			      WHERE c."name" ILIKE ${"%" + input + "%"} AND w.title ILIKE ${"%" + input + "%"}
+            GROUP BY w.id
+            ORDER BY w.id ASC;
+          `
+    );
+
+    response.json(wireframesQuery);    
+   
+  } catch (error) {
+    console.error("Error fetching wireframes by category:", error);
+    response.status(500).send({
+      error: "An error occurred while fetching wireframes by name or category.",
+    });
+  }
 };
