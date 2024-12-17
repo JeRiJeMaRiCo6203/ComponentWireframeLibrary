@@ -7,10 +7,19 @@ import { a11yLight } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import DropdownInput from './components/DropdownInput';
 import SwitchInput from './components/SwitchInput';
 import NumberInput from './components/NumberInput';
-// import { api } from '../config/api';
-
+import { api } from '../config/api';
+import { useParams } from 'react-router-dom';
 
 const LayoutPage = () => {
+  const { id } = useParams();
+  console.log(id);
+  
+  useEffect(() => {
+    api.get(`editablecodes/${id}`).then((res) => {
+      console.log(res.data);
+    });
+  }, []);
+
   const dbEditablesTest: {
     idx: number;
     name: string;
