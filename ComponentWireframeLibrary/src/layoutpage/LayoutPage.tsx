@@ -1,63 +1,162 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Navbar from '../navbar/Navbar'
 import Tag from '../components/Tag'
 import parse from "html-react-parser";
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { a11yLight } from 'react-syntax-highlighter/dist/esm/styles/hljs';
+import DropdownInput from './components/DropdownInput';
+import SwitchInput from './components/SwitchInput';
+import NumberInput from './components/NumberInput';
+// import { api } from '../config/api';
+
 
 const LayoutPage = () => {
-  var code = `
-    <div class="w-full h-full bg-blue-300">
-      <h1 class="text-slate-900 bg-blue-900">Form Pendaftaran</h1>
-      <form class="flex flex-col" action="">
-        <label for="fname" class="text-slate-900">First name:</label> <label for="fname" class="text-slate-900">First name:</label><label for="fname" class="text-slate-900">First name:</label><label for="fname" class="text-slate-900">First name:</label><label for="fname" class="text-slate-900">First name:</label><label for="fname" class="text-slate-900">First name:</label><label for="fname" class="text-slate-900">First name:</label>
-        <input type="text" id="fname" name="fname" value="John">
-        <label for="lname" class="text-slate-900">Last name:</label>
-        <input type="text" id="lname" name="lname" value="Doe">
-        <input type="submit" class="bg-black" value="Submit">
-      </form>
-    </div>
-    <div class="w-full h-full bg-blue-300">
-      <h1 class="text-slate-900 bg-blue-900">Form Pendaftaran</h1>
-      <form class="flex flex-col" action="">
-        <label for="fname" class="text-slate-900">First name:</label> <label for="fname" class="text-slate-900">First name:</label><label for="fname" class="text-slate-900">First name:</label><label for="fname" class="text-slate-900">First name:</label><label for="fname" class="text-slate-900">First name:</label><label for="fname" class="text-slate-900">First name:</label><label for="fname" class="text-slate-900">First name:</label>
-        <input type="text" id="fname" name="fname" value="John">
-        <label for="lname" class="text-slate-900">Last name:</label>
-        <input type="text" id="lname" name="lname" value="Doe">
-        <input type="submit" class="bg-black" value="Submit">
-      </form>
-    </div>
-    <div class="w-full h-full bg-blue-300">
-      <h1 class="text-slate-900 bg-blue-900">Form Pendaftaran</h1>
-      <form class="flex flex-col" action="">
-        <label for="fname" class="text-slate-900">First name:</label> <label for="fname" class="text-slate-900">First name:</label><label for="fname" class="text-slate-900">First name:</label><label for="fname" class="text-slate-900">First name:</label><label for="fname" class="text-slate-900">First name:</label><label for="fname" class="text-slate-900">First name:</label><label for="fname" class="text-slate-900">First name:</label>
-        <input type="text" id="fname" name="fname" value="John">
-        <label for="lname" class="text-slate-900">Last name:</label>
-        <input type="text" id="lname" name="lname" value="Doe">
-        <input type="submit" class="bg-black" value="Submit">
-      </form>
-    </div>
-    <div class="w-full h-full bg-blue-300">
-      <h1 class="text-slate-900 bg-blue-900">Form Pendaftaran</h1>
-      <form class="flex flex-col" action="">
-        <label for="fname" class="text-slate-900">First name:</label> <label for="fname" class="text-slate-900">First name:</label><label for="fname" class="text-slate-900">First name:</label><label for="fname" class="text-slate-900">First name:</label><label for="fname" class="text-slate-900">First name:</label><label for="fname" class="text-slate-900">First name:</label><label for="fname" class="text-slate-900">First name:</label>
-        <input type="text" id="fname" name="fname" value="John">
-        <label for="lname" class="text-slate-900">Last name:</label>
-        <input type="text" id="lname" name="lname" value="Doe">
-        <input type="submit" class="bg-black" value="Submit">
-      </form>
-    </div>
-  `;
+  const dbEditablesTest: {
+    idx: number;
+    name: string;
+    dropdownOption?: string[];
+    switchOption?: [string, string];
+    numberRange?: [number, number];
+  }[] = [
+    {
+      idx: 1,
+      name: "Bdaddeh",
+      switchOption: ["lime", "lightblue"],
+    },
+    {
+      idx: 0,
+      name: "Adaddeh",
+      dropdownOption: ["string1", "string2", "string3"],
+    },
+    {
+      idx: 2,
+      name: "Bdaddeh",
+      numberRange: [1, 10],
+    },
+  ];
 
-  const codeType = "html";
+  const dbCodeSnippetTest: {
+    name: string;
+    type: string;
+    codeSnippet: string;
+    editableCodeSnippet?: { idx: number, editableId: number, type: string, value: string[] | string }[];
+  }[] = [
+    {
+      name: 'HTML',
+      type: 'html',
+      codeSnippet: `
+        <div style="width: 100%; margin: 2rem 4rem;">
+          <div style="display: flex; justify-content: space-evenly; align-items: center; gap: 1rem; background-color: #f4f4f4; border-radius: 0.5rem; padding: 1rem;">\${0}
+          </div>
+        </div>
+      `,
+      editableCodeSnippet: [
+        {
+          idx: 1,
+          editableId: 0,
+          type: "replace",
+          value: ["string1", "string2", "string3"],
+        },
+        {
+          idx: 0,
+          editableId: 2,
+          type: "loop",
+          value: `
+            <div style="display: flex; flex-direction: column; align-items: center;">
+              <div style="width: 50px; height: 50px; background-color: \${2}; border-radius: 50%;"></div>
+              <p>\${1}</p>
+            </div>`,
+        },
+        {
+          idx: 2,
+          editableId: 1,
+          type: "replace",
+          value: ["lime", "lightblue"],
+        }
+      ]
+    },
+    {
+      name: 'CSS',
+      type: 'css',
+      codeSnippet: `test test test`,
+      editableCodeSnippet: [
+      ]
+    },
+  ]
 
-  const [isOn, setIsOn] = useState(false);
+  let rawEditables = dbEditablesTest;
 
-  const onToggle = (value: boolean) => {
-    setIsOn(value);
-  };
+  rawEditables.sort((a, b) => a.idx - b.idx);
+
+  let rawCodeSnippet = dbCodeSnippetTest;
+
+  rawCodeSnippet.map((snippet) => {
+    if(snippet.editableCodeSnippet) {
+      snippet.editableCodeSnippet.sort((a, b) => a.idx - b.idx);
+    }
+  });
+
+  console.log(rawCodeSnippet[0].editableCodeSnippet);
+
+
 
   const [aspect, setAspect] = useState("16/9");
+
+  const codeType = "html";
+  
+  const [editables, setEditables] = useState(rawEditables.map((editable: any) => ({
+    ...editable,
+    value: editable.switchOption ? 0 : editable.dropdownOption ? 0 : editable.numberRange ? editable.numberRange[1] : null,
+  })));
+
+
+  const [codeSnippetCanvas, setCodeSnippetCanvas] = useState(updateCodeSnippet());
+
+  function changeData(idx: number, valueTemp: any) {
+    setEditables((prev) => {
+      const newEditables: any = [...prev];
+      let value = valueTemp;
+      if(newEditables[idx].switchOption) {
+        value = newEditables[idx].switchOption?.indexOf(valueTemp) ?? 0;
+      }
+      if(newEditables[idx].dropdownOption) {
+        value = newEditables[idx].dropdownOption?.indexOf(valueTemp) ?? 0;
+      }
+      if(newEditables[idx].numberRange) {
+        value = parseInt(valueTemp);
+      }
+
+      newEditables[idx].value = value;
+      return newEditables;
+    });
+  }
+
+  useEffect(() => {
+    setCodeSnippetCanvas(updateCodeSnippet());
+  }, [editables]);
+
+  function updateCodeSnippet(type: string = 'html') {
+    let rawCodeSnippetSingle = rawCodeSnippet.find(snippet => snippet.type === type);
+    if (!rawCodeSnippetSingle) {
+      return "Error: Code snippet with type "+type+" not found";
+    }
+    if(!rawCodeSnippetSingle.editableCodeSnippet){
+      return rawCodeSnippetSingle.codeSnippet;
+    }
+    rawCodeSnippetSingle.editableCodeSnippet?.map((editableCodeSnippet) => {
+      let placeholdersValue = '';
+      if(editableCodeSnippet.type === 'loop') {
+        for(let i = 0; i < editables[editableCodeSnippet.editableId].value; i++) {
+          placeholdersValue += editableCodeSnippet.value;
+        }
+      } else {
+        placeholdersValue = editableCodeSnippet.value[editables[editableCodeSnippet.editableId].value]
+      };
+      rawCodeSnippetSingle.codeSnippet = rawCodeSnippetSingle.codeSnippet.replace(new RegExp(`\\$\\{${editableCodeSnippet.idx}\\}`, 'g'), placeholdersValue);
+    });
+    // console.log(newCode)
+    return rawCodeSnippetSingle.codeSnippet;
+  }
 
   return (
     <body className='bg-white w-full'>
@@ -81,57 +180,37 @@ const LayoutPage = () => {
           <div className='hover:bg-[#f4f4f4] cursor-pointer py-2 px-6 rounded-lg text-sm' onClick={() => setAspect("9/16")} >Phone</div>
         </div>
         <div className='aspect-video flex justify-center'>
-          <div className={`break-words overflow-y-auto aspect-[${aspect}] transition-all`} style={{ scrollbarWidth: "thin", scrollbarColor: "#d9d9d9 #f4f4f4" }}>
-            {parse(code)}
+          <div
+            className='break-words overflow-y-auto transition-all bg-white flex items-center'
+            style={{ scrollbarWidth: "thin", scrollbarColor: "#d9d9d9 #f4f4f4", aspectRatio: aspect }}>
+            {parse(codeSnippetCanvas)}
           </div>
         </div>
       </div>
-      <div className='mx-48 my-16 flex justify-between gap-6'>
-        <div className='flex justify-between w-96'>
-          <div>Button</div>
-          <div
-            className={`${
-              isOn ? "bg-[#6a6a6a]" : "bg-[#d9d9d9]"
-            } relative inline-flex items-center h-6 w-11 rounded-full cursor-pointer transition-colors duration-300`}
-            onClick={() => onToggle(!isOn)}
-          >
-            <span
-              className={`${
-                isOn ? "translate-x-6" : "translate-x-1"
-              } inline-block w-4 h-4 transform bg-white rounded-full transition-transform duration-300`}
-            />
-          </div>
-        </div>
-        <div className='flex justify-between w-96'>
-          <div>Button</div>
-          <div
-            className={`${
-              isOn ? "bg-[#6a6a6a]" : "bg-[#d9d9d9]"
-            } relative inline-flex items-center h-6 w-11 rounded-full cursor-pointer transition-colors duration-300`}
-            onClick={() => onToggle(!isOn)}
-          >
-            <span
-              className={`${
-                isOn ? "translate-x-6" : "translate-x-1"
-              } inline-block w-4 h-4 transform bg-white rounded-full transition-transform duration-300`}
-            />
-          </div>
-        </div>
-        <div className='flex justify-between w-96'>
-          <div>Button</div>
-          <div
-            className={`${
-              isOn ? "bg-[#6a6a6a]" : "bg-[#d9d9d9]"
-            } relative inline-flex items-center h-6 w-11 rounded-full cursor-pointer transition-colors duration-300`}
-            onClick={() => onToggle(!isOn)}
-          >
-            <span
-              className={`${
-                isOn ? "translate-x-6" : "translate-x-1"
-              } inline-block w-4 h-4 transform bg-white rounded-full transition-transform duration-300`}
-            />
-          </div>
-        </div>
+      <div className='mx-48 my-16 flex flex-wrap justify-center items-center gap-6'>
+        {editables.map((editable, index) => {
+          return (
+            <div key={index} className='w-80'>
+              <div>{editable.name}</div>
+              {editable.switchOption ? (
+                <SwitchInput
+                  options={editable.switchOption as [string, string]}
+                  changeData={(value) => changeData(index, value)}
+                />
+              ) : editable.dropdownOption ? (
+                <DropdownInput
+                  options={editable.dropdownOption as string[]}
+                  changeData={(value) => changeData(index, value)}
+                />
+              ) : (
+                <NumberInput
+                  numberRange={editable.numberRange as [number, number]}
+                  changeData={(value) => changeData(index, value)}
+                />
+              )}
+            </div>
+          )
+        })}
       </div>
       <div className='mx-48 my-16'>
         <div className='flex justify-between'>
@@ -153,7 +232,7 @@ const LayoutPage = () => {
             scrollbarWidth: "thin",
             scrollbarColor: "#d9d9d9 transparent",
           }} wrapLongLines={false}>
-            {code}
+            { codeSnippetCanvas }
           </SyntaxHighlighter>
         </div>
       </div>

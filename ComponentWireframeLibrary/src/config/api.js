@@ -1,8 +1,8 @@
 import axios from 'axios';
 
 export const api = axios.create({
-    baseURL: 'http://localhost:3000/api/',
+    baseURL: 'https://t40xrmsv-4321.asse.devtunnels.ms/',
     headers: {
-        'Content-Type': 'application/json',
-      },
+      'Content-Type': 'application/json',
+    },
 });

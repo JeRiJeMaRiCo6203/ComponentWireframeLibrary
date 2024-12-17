@@ -23,5 +23,5 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src", "../UI-Test/UI.tsx", "../UI-Test/SmallTag.tsx", "../UI-Test/TagPakeSearch.tsx", "../UI-Test/Navbar copy.tsx"]
+  "include": ["src", "../UI-Test/UI.tsx", "../UI-Test/SmallTag.tsx", "../UI-Test/TagPakeSearch.tsx", "../UI-Test/Navbar copy.tsx", "src/layoutpage/components/DropdownInput.tsx", "src/layoutpage/components/NumberInput.tsx", "src/layoutpage/components/SwitchInput.tsx"]
 }
