@@ -13,12 +13,12 @@ import { useParams } from 'react-router-dom';
 const LayoutPage = () => {
   const { id } = useParams();
   console.log(id);
-  
+
   useEffect(() => {
     api.get(`editablecodes/${id}`).then((res) => {
       console.log(res.data);
     });
-  }, []);
+  }, [id]);
 
   const dbEditablesTest: {
     idx: number;
