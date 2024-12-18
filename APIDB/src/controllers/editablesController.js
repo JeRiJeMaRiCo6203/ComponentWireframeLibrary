@@ -90,3 +90,4 @@ export const getEditableById = async (request, response) => {
       .send({ error: "An error occurred while fetching editables." });
   }
 };
+
