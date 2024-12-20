@@ -41,7 +41,8 @@ export const getEditablesByWireframeId = async (request, response) => {
     e.name AS editable_name,
     e.dropdown_options AS dropdown_options,
     e.switch_options AS switch_options,
-    e.number_range AS number_range
+    e.number_range AS number_range,
+    e.remove_property AS remove_property
     FROM editable_relationship we
     JOIN editables e ON we.editable_id = e.id
     WHERE we.wireframe_id = ${id}

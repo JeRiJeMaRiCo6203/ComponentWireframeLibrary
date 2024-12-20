@@ -48,58 +48,84 @@ export const getAllWireframesOrByParams = async (request, response) => {
 };
 
 export const getWireframeById = async (request, response) => {
-  const id = parseInt(request.params.id);
+  const wireframe_id = parseInt(request.params.id);
 
   try {
-    if (isNaN(id)) {
+    if (isNaN(wireframe_id)) {
       response.status(400).send({ msg: "Bad request. Invalid wireframe id." });
       return;
     }
 
     const wireframesQuery = await prisma.wireframes.findUnique({
       where: {
-        id: id,
+        id: wireframe_id,
       },
     });
 
     if (!wireframesQuery) {
-      response.status(404).send({ msg: "Not found. Wireframe not found." });
+      response
+        .status(404)
+        .send({ msg: "Wireframe with provided id not found." });
       return;
     }
 
     response.json(wireframesQuery);
   } catch (error) {
-    console.error("Error fetching wireframes:", error);
+    console.error("Error fetching wireframe:", error);
     response
       .status(500)
-      .send({ error: "An error occurred while fetching wireframes." });
+      .send({ error: "An error occurred while fetching wireframe." });
   }
 };
 
-export const getAllWireframesDetails = async (request, response) => {
+export const getAllWireframesDetailsById = async (request, response) => {
+  const wireframe_id = parseInt(request.params.id);
+
   try {
-    const wireframeDetailsQuery = await prisma.$queryRaw
-    `
+    if (isNaN(wireframe_id)) {
+      response.status(400).send({ msg: "Bad request. Invalid wireframe id." });
+      return;
+    }
+
+    const wireframeDetailsQuery = await prisma.$queryRaw`
       SELECT 
       w.id,
       w.title,
       w.cover,
       array_agg(DISTINCT c.name) AS categories,
-      array_agg(DISTINCT e.name) AS editables
+      array_agg(DISTINCT e.name) AS editables,
+      (
+      SELECT jsonb_agg(jsonb_build_object(
+        'name', cs.name,
+        'type', cs.type,
+        'codesnippet', cs.codesnippet,
+        'idx', cs.idx
+      ) ORDER BY cs.idx ASC)
+      FROM codesnippets cs
+      WHERE cs.wireframe_id = w.id
+      ) AS codeSnippets
       FROM wireframes w
       LEFT JOIN category_relationship wc ON w.id = wc.wireframe_id
       LEFT JOIN categories c ON wc.category_id = c.id
       LEFT JOIN editable_relationship we ON w.id = we.wireframe_id
       LEFT JOIN editables e ON we.editable_id = e.id
+      WHERE w.id = ${wireframe_id}
       GROUP BY w.id
       ORDER BY w.id ASC;
-    `
+    `;
+
+    if (!wireframeDetailsQuery) {
+      response
+        .status(404)
+        .send({ msg: "Wireframe details with provided id not found." });
+      return;
+    }
 
     response.json(wireframeDetailsQuery);
   } catch (error) {
-    console.error("Error fetching wireframes:", error);
+    console.error("Error fetching wireframe details:", error);
     response
       .status(500)
-      .send({ error: "An error occurred while fetching wireframes." });
+      .send({ error: "An error occurred while fetching wireframe details." });
   }
 };

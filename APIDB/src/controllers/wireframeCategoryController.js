@@ -1,6 +1,30 @@
 import prisma from "../models/prismaClient.js";
 import { Prisma } from "@prisma/client";
 
+export const getAllWireframesAndCategories = async (request, response) => {
+  try {
+    const wireframesQuery = await prisma.$queryRaw`
+            SELECT 
+            w.id, 
+            w.title, 
+            w.cover, 
+            array_agg(c.name) AS categories
+            FROM wireframes w
+            JOIN category_relationship wc ON w.id = wc.wireframe_id
+            JOIN categories c ON wc.category_id = c.id
+            GROUP BY w.id
+            ORDER BY w.id ASC;
+          `;
+
+    response.json(wireframesQuery);
+  } catch (error) {
+    console.error("Error fetching wireframes and categories:", error);
+    response
+      .status(500)
+      .send({ error: "An error occurred while fetching wireframes and categories." });
+  }
+};
+
 export const getWireframesByCategory = async (request, response) => {
   try {
     // Extract the categories from the query parameters
@@ -21,13 +45,10 @@ export const getWireframesByCategory = async (request, response) => {
           w.id,
           w.title,
           w.cover,
-          array_agg(c.name) AS categories,
-          array_agg(e.name) AS editables
+          array_agg(c.name) AS categories
           FROM wireframes w
           JOIN category_relationship wc ON w.id = wc.wireframe_id
           JOIN categories c ON wc.category_id = c.id
-          JOIN editable_relationship we ON w.id = we.editable_id
-          JOIN editables e ON we.editable_id = e.id
           WHERE c.name IN (${Prisma.join(categoriesArray)})
           GROUP BY w.id
           ORDER BY w.id ASC;
@@ -77,33 +98,11 @@ export const getWireframesByCategory = async (request, response) => {
   }
 };
 
-export const getAllWireframesAndCategories = async (request, response) => {
-  try {
-    const wireframesQuery = await prisma.$queryRaw`
-            SELECT 
-            w.id, 
-            w.title, 
-            w.cover, 
-            array_agg(c.name) AS categories
-            FROM wireframes w
-            JOIN category_relationship wc ON w.id = wc.wireframe_id
-            JOIN categories c ON wc.category_id = c.id
-            GROUP BY w.id
-            ORDER BY w.id ASC;
-          `;
 
-    response.json(wireframesQuery);
-  } catch (error) {
-    console.error("Error fetching wireframes:", error);
-    response
-      .status(500)
-      .send({ error: "An error occurred while fetching wireframes." });
-  }
-};
 
 export const searchWireframesOrCategories = async (request, response) => {
   try {
-    const input = request.query;
+    const { input } = request.query;
 
     const wireframesQuery = await prisma.$queryRaw(
             Prisma.sql`
@@ -115,7 +114,7 @@ export const searchWireframesOrCategories = async (request, response) => {
             FROM wireframes w
             JOIN category_relationship wc ON w.id = wc.wireframe_id
             JOIN categories c ON wc.category_id = c.id
-			      WHERE c."name" ILIKE ${"%" + input + "%"} AND w.title ILIKE ${"%" + input + "%"}
+			      WHERE c."name" ILIKE ${"%" + input + "%"} OR w.title ILIKE ${"%" + input + "%"}
             GROUP BY w.id
             ORDER BY w.id ASC;
           `
