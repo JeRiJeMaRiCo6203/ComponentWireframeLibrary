@@ -3,7 +3,6 @@ import prisma from "../models/prismaClient.js";
 export const getAllEditablesOrByParams = async (request, response) => {
   try {
     const { filter, value } = request.query; // Extract query parameters
-    console.log(request.query);
 
     // Fetch all editables from the database
     let editablesQuery = await prisma.editables.findMany();
@@ -48,7 +47,7 @@ export const getAllEditablesOrByParams = async (request, response) => {
     // If no results are found, return a 404 response
     if (editablesQuery.length === 0) {
       response.status(404).send({
-        msg: "Not found. Editable with provided parameter not found.",
+        msg: "Editable with provided parameter not found.",
       });
       return;
     }
@@ -67,7 +66,7 @@ export const getEditableById = async (request, response) => {
 
   try {
     if (isNaN(id)) {
-      response.status(400).send({ msg: "Bad request. Invalid category id." });
+      response.status(400).send({ msg: "Bad request. Invalid editable id." });
       return;
     }
 
@@ -78,15 +77,16 @@ export const getEditableById = async (request, response) => {
     });
 
     if (!editablesQuery) {
-      response.status(404).send({ msg: "Not found. Category not found." });
+      response.status(404).send({ msg: "Editable with provided id not found." });
       return;
     }
 
     response.json(editablesQuery);
   } catch (error) {
-    console.error("Error fetching editables:", error);
+    console.error("Error fetching editable:", error);
     response
       .status(500)
-      .send({ error: "An error occurred while fetching editables." });
+      .send({ error: "An error occurred while fetching editable." });
   }
 };
+

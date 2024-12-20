@@ -20,7 +20,6 @@ model wireframes {
   category_relationship category_relationship[]
   codesnippets          codesnippets[]
   editable_relationship editable_relationship[]
-  editablecodes         editablecodes[]
 }
 
 model editables {
@@ -30,6 +29,7 @@ model editables {
   switch_options        String[]
   number_range          Int[]
   idx                   Int?
+  remove_property       Int[]
   editable_relationship editable_relationship[]
   editablecodes         editablecodes[]
 }
@@ -43,12 +43,14 @@ model category_relationship {
 }
 
 model codesnippets {
-  id           Int         @id @default(autoincrement())
-  name         String      @db.VarChar(100)
-  type         String?
-  wireframe_id Int?
-  codesnippet  String?
-  wireframes   wireframes? @relation(fields: [wireframe_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  id            Int             @id @default(autoincrement())
+  name          String          @db.VarChar(100)
+  type          String?
+  wireframe_id  Int?
+  codesnippet   String?
+  idx           Int?
+  wireframes    wireframes?     @relation(fields: [wireframe_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  editablecodes editablecodes[]
 }
 
 model editable_relationship {
@@ -60,13 +62,13 @@ model editable_relationship {
 }
 
 model editablecodes {
-  id           Int         @id @default(autoincrement())
-  type         String?
-  editable_id  Int?
-  wireframe_id Int?
-  idx          Int?
-  value        String[]
-  editable_idx Int?
-  editables    editables?  @relation(fields: [editable_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  wireframes   wireframes? @relation(fields: [wireframe_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  id             Int           @id @default(autoincrement())
+  type           String?
+  editable_id    Int?
+  idx            Int?
+  value          String[]
+  editable_idx   Int?
+  codesnippet_id Int?
+  codesnippets   codesnippets? @relation(fields: [codesnippet_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  editables      editables?    @relation(fields: [editable_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }

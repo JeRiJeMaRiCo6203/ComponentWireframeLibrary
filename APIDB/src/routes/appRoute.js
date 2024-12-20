@@ -1,32 +1,43 @@
 import express, { Router } from "express";
+
 import {
   getAllWireframesOrByParams,
   getWireframeById,
-  getAllWireframesDetails
+  getAllWireframesDetailsById
 } from "../controllers/wireframesController.js";
+
 import {
     getAllCategoriesOrByParams,
-    getCategoryById,
-    searchCategories
+    getCategoryById
 } from "../controllers/categoriesController.js";
+
 import {
   getAllEditablesOrByParams,
   getEditableById,
 } from "../controllers/editablesController.js";
+
 import {
   getAllCodeSnippetsOrByParams,
   getCodeSnippetById,
 } from "../controllers/codesnippetsController.js";
+
+import {
+  getAllEditableCodesOrByParams,
+  getEditableCodeById,
+  getEditableCodeBasedOnCodeSnippetAndBasedOnCurrentSelectedWireframe
+} from "../controllers/editablecodesController.js";
+
 import {
   getAllWireframesAndCategories,
   getWireframesByCategory,
+  searchWireframesOrCategories
 } from "../controllers/wireframeCategoryController.js";
+
 import { 
-    getAllWireframesAndEditables 
+    getAllWireframesAndEditables,
+    getEditablesByWireframeId
 } from "../controllers/wireframeEditableController.js";
-import {
-  getEditableCodeBasedOnCodeSnippetAndBasedOnCurrentSelectedWireframe
-} from "../controllers/editablecodesController.js";
+
 
 const app = express();
 const router = Router();
@@ -35,25 +46,36 @@ router.route("/").get((request, response) => {
   response.status(201).send({ message: "Hello! API is running..." });
 });
 
+// Wireframes
 router.route("/wireframes/").get(getAllWireframesOrByParams);
 router.route("/wireframes/:id").get(getWireframeById);
-router.route("/wireframesDetails/").get(getAllWireframesDetails);
+router.route("/wireframesDetails/:id").get(getAllWireframesDetailsById);
 
+// Categories
 router.route("/categories/").get(getAllCategoriesOrByParams);
 router.route("/categories/:id").get(getCategoryById);
-router.route("/searchCategories").get(searchCategories);
 
+// Editables
 router.route("/editables/").get(getAllEditablesOrByParams);
 router.route("/editables/:id").get(getEditableById);
 
+// Code Snippets
 router.route("/codesnippets/").get(getAllCodeSnippetsOrByParams);
 router.route("/codesnippets/:id").get(getCodeSnippetById);
 
-router.route("/wireframesByCategory/").get(getWireframesByCategory);
-router.route("/wireframesAndCategories/").get(getAllWireframesAndCategories);
+// Editable Codes
+router.route("/editablecodes/").get(getAllEditableCodesOrByParams);
+router.route("/editablecodes/:id").get(getEditableCodeById);
+router.route("/editablecodesBasedOnWireframe/:w_id").get(getEditableCodeBasedOnCodeSnippetAndBasedOnCurrentSelectedWireframe);
 
+// Wireframes and Categories
+router.route("/wireframesAndCategories/").get(getAllWireframesAndCategories);
+router.route("/wireframesByCategory/").get(getWireframesByCategory); //belum selesai
+router.route("/searchWireframesOrCategories/").get(searchWireframesOrCategories); //belum selesai
+
+// Wireframes and Editables
 router.route("/wireframesAndEditables/").get(getAllWireframesAndEditables);
-router.route("/editablecodes/:w_id").get(getEditableCodeBasedOnCodeSnippetAndBasedOnCurrentSelectedWireframe);
+router.route("/editablesByWireframeId/:id").get(getEditablesByWireframeId);
 
 export default router;
 
