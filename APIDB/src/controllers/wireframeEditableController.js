@@ -17,10 +17,10 @@ export const getAllWireframesAndEditables = async (request, response) => {
 
     response.json(wireframesQuery);
   } catch (error) {
-    console.error("Error fetching wireframes:", error);
+    console.error("Error fetching wireframes and editables:", error);
     response
       .status(500)
-      .send({ error: "An error occurred while fetching wireframes." });
+      .send({ error: "An error occurred while fetching wireframes and editables." });
   }
 };
 
@@ -64,9 +64,9 @@ export const getEditablesByWireframeId = async (request, response) => {
     response.json(editablesByWireframeIdQuery);
     
   } catch (error) {
-    console.error("Error fetching wireframes:", error);
+    console.error("Error fetching wireframe and editables:", error);
     response
       .status(500)
-      .send({ error: "An error occurred while fetching wireframes." });
+      .send({ error: "An error occurred while fetching wireframe and editables." });
   }
 };
