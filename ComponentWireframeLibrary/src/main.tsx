@@ -7,19 +7,24 @@ import ReactDOM from "react-dom/client";
 import React from "react";
 import About from "./About.tsx";
 import LayoutPage from "./layoutpage/LayoutPage.tsx";
+import LandingPage from "./landingpage/LandingPage.tsx";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <App />,
+    element: <LandingPage />,
   },
   {
-    path: "/about",
-    element: <About />,
+    path: "/layout",
+    element: <App />,
   },
   {
     path: "/layout/:id",
     element: <LayoutPage />,
+  },
+  {
+    path: "/about",
+    element: <About />,
   },
 ]);
 
