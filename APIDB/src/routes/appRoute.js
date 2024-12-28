@@ -3,7 +3,7 @@ import express, { Router } from "express";
 import {
   getAllWireframesOrByParams,
   getWireframeById,
-  getAllWireframesDetailsById
+  getAllWireframeDetailsById
 } from "../controllers/wireframesController.js";
 
 import {
@@ -48,25 +48,25 @@ router.route("/").get((request, response) => {
 
 // Wireframes
 router.route("/wireframes/").get(getAllWireframesOrByParams);
-router.route("/wireframes/:id").get(getWireframeById);
-router.route("/wireframesDetails/:id").get(getAllWireframesDetailsById);
+router.route("/wireframeById/:wireframe_id").get(getWireframeById);
+router.route("/wireframeDetails/:wireframe_id").get(getAllWireframeDetailsById);
 
 // Categories
 router.route("/categories/").get(getAllCategoriesOrByParams);
-router.route("/categories/:id").get(getCategoryById);
+router.route("/categoryById/:category_id").get(getCategoryById);
 
 // Editables
 router.route("/editables/").get(getAllEditablesOrByParams);
-router.route("/editables/:id").get(getEditableById);
+router.route("/editableById/:editable_id").get(getEditableById);
 
 // Code Snippets
 router.route("/codesnippets/").get(getAllCodeSnippetsOrByParams);
-router.route("/codesnippets/:id").get(getCodeSnippetById);
+router.route("/codesnippetById/:codesnippet_id").get(getCodeSnippetById);
 
 // Editable Codes
 router.route("/editablecodes/").get(getAllEditableCodesOrByParams);
-router.route("/editablecodes/:id").get(getEditableCodeById);
-router.route("/editablecodesBasedOnWireframe/:w_id").get(getEditableCodeBasedOnCodeSnippetAndBasedOnCurrentSelectedWireframe);
+router.route("/editablecodeById/:editablecode_id").get(getEditableCodeById);
+router.route("/editablecodesBasedOnWireframe/:wireframe_id").get(getEditableCodeBasedOnCodeSnippetAndBasedOnCurrentSelectedWireframe);
 
 // Wireframes and Categories
 router.route("/wireframesAndCategories/").get(getAllWireframesAndCategories);
@@ -75,7 +75,7 @@ router.route("/searchWireframesOrCategories/").get(searchWireframesOrCategories)
 
 // Wireframes and Editables
 router.route("/wireframesAndEditables/").get(getAllWireframesAndEditables);
-router.route("/editablesByWireframeId/:id").get(getEditablesByWireframeId);
+router.route("/editablesByWireframeId/:wireframe_id").get(getEditablesByWireframeId);
 
 export default router;
 

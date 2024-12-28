@@ -48,7 +48,7 @@ export const getAllWireframesOrByParams = async (request, response) => {
 };
 
 export const getWireframeById = async (request, response) => {
-  const wireframe_id = parseInt(request.params.id);
+  const wireframe_id = parseInt(request.params.wireframe_id);
 
   try {
     if (isNaN(wireframe_id)) {
@@ -78,8 +78,8 @@ export const getWireframeById = async (request, response) => {
   }
 };
 
-export const getAllWireframesDetailsById = async (request, response) => {
-  const wireframe_id = parseInt(request.params.id);
+export const getAllWireframeDetailsById = async (request, response) => {
+  const wireframe_id = parseInt(request.params.wireframe_id);
 
   try {
     if (isNaN(wireframe_id)) {

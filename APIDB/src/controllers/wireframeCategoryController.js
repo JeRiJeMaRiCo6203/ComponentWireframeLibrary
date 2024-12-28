@@ -32,28 +32,51 @@ export const getWireframesByCategory = async (request, response) => {
 
     // If no categories are provided, return all wireframes
     if (!categories) {
-      return await prisma.wireframes.findMany();
+      //return await prisma.wireframes.findMany();
+      response.status(404).send({
+        msg: "Bad request. Missing required categories parameter.",
+      });
+      return;
     }
 
     // Convert the categories query parameter to an array
     const categoriesArray = categories.split(",").map((cat) => cat.trim());
+    // console.log(categoriesArray);
+    const categoryCount = categoriesArray.length;
+    // console.log(categoryCount);
 
     // Use IN clause to filter wireframes by categories in SQL query
     const wireframesQuery = await prisma.$queryRaw(
-      Prisma.sql`
+      Prisma.sql
+      `
+        WITH matched_wireframes AS (
           SELECT
           w.id,
-          w.title,
-          w.cover,
-          array_agg(c.name) AS categories
+          COUNT(DISTINCT c.name) AS matched_categories
           FROM wireframes w
           JOIN category_relationship wc ON w.id = wc.wireframe_id
           JOIN categories c ON wc.category_id = c.id
-          WHERE c.name IN (${Prisma.join(categoriesArray)})
+          WHERE c.name IN (${Prisma.join(categoriesArray)}) -- Daftar kategori di sini
           GROUP BY w.id
-          ORDER BY w.id ASC;
-        `
+        )
+        SELECT
+            w.id,
+            w.title,
+            w.cover,
+            array_agg(DISTINCT c.name) AS categories
+        FROM wireframes w
+        JOIN category_relationship wc ON w.id = wc.wireframe_id
+        JOIN categories c ON wc.category_id = c.id
+        WHERE w.id IN (
+            SELECT mw.id
+            FROM matched_wireframes mw
+            WHERE mw.matched_categories = ${categoryCount} -- Jumlah kategori dinamis
+        )
+        GROUP BY w.id
+        ORDER BY w.id ASC;
+      `
     );
+    // console.log(wireframesQuery)
 
     // get all categories related to the wireframes but delete the categories that are being searched by user
     //filter hasil wireframesQuery dengan categoriesArray
@@ -61,6 +84,7 @@ export const getWireframesByCategory = async (request, response) => {
     //sebaliknya tampikan pesan wireframe tidak ditemukan
     //memasukan hasil category dari categoriesQuery ke dalam wireframesQuery
     // Iterasi wireframesQuery untuk mengatur kategori yang tersisa per wireframe
+    /*
     const filteredwireframesQuery = await Promise.all(
       wireframesQuery.map(async (wireframe) => {
         const remainingCategories = await prisma.$queryRaw(
@@ -80,16 +104,18 @@ export const getWireframesByCategory = async (request, response) => {
         return wireframe;
       })
     );
+    */
 
     // Check if no wireframes match the criteria
-    if (wireframesQuery.length === 0 || filteredwireframesQuery.length === 0) {
+    if (wireframesQuery.length === 0) {
       return response
         .status(404)
         .send({ message: "No wireframes found for the specified categories." });
     }
 
     // Return the filtered wireframes
-    response.send(filteredwireframesQuery);
+    // response.send(filteredwireframesQuery);
+    response.send(wireframesQuery);
   } catch (error) {
     console.error("Error fetching wireframes by category:", error);
     response.status(500).send({
@@ -97,8 +123,6 @@ export const getWireframesByCategory = async (request, response) => {
     });
   }
 };
-
-
 
 export const searchWireframesOrCategories = async (request, response) => {
   try {

@@ -37,8 +37,7 @@ export const getAllEditableCodesOrByParams = async (request, response) => {
       return;
     }
 
-    // Return the filtered or all wireframes
-    response.send(wireframesQuery);
+    response.send(editableCodesQuery);
   } catch (error) {
     console.error("Error fetching editable codes:", error);
     response
@@ -48,7 +47,7 @@ export const getAllEditableCodesOrByParams = async (request, response) => {
 };
 
 export const getEditableCodeById = async (request, response) => {
-  const editableCode_id = parseInt(request.params.id);
+  const editableCode_id = parseInt(request.params.editablecode_id);
 
   try {
     if (isNaN(editableCode_id)) {
@@ -71,7 +70,7 @@ export const getEditableCodeById = async (request, response) => {
       return;
     }
 
-    response.json(wireframesQuery);
+    response.json(editableCodeQuery);
   } catch (error) {
     console.error("Error fetching editable code:", error);
     response
@@ -82,7 +81,7 @@ export const getEditableCodeById = async (request, response) => {
 
 export const getEditableCodeBasedOnCodeSnippetAndBasedOnCurrentSelectedWireframe =
   async (request, response) => {
-    const wireframe_id = parseInt(request.params.w_id); // Perbaikan variabel yang benar
+    const wireframe_id = parseInt(request.params.wireframe_id); // Perbaikan variabel yang benar
 
     try {
       if (isNaN(wireframe_id)) {

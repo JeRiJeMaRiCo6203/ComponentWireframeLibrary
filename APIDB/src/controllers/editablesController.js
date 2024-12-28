@@ -62,17 +62,17 @@ export const getAllEditablesOrByParams = async (request, response) => {
 };
 
 export const getEditableById = async (request, response) => {
-  const id = parseInt(request.params.id);
+  const editable_id = parseInt(request.params.editable_id);
 
   try {
-    if (isNaN(id)) {
+    if (isNaN(editable_id)) {
       response.status(400).send({ msg: "Bad request. Invalid editable id." });
       return;
     }
 
     const editablesQuery = await prisma.editables.findUnique({
       where: {
-        id: id,
+        id: editable_id,
       },
     });
 

@@ -41,19 +41,18 @@ export const getAllCategoriesOrByParams = async (request, response) => {
       .send({ error: "An error occurred while fetching categories." });
   }
 };
-
 export const getCategoryById = async (request, response) => {
-  const id = parseInt(request.params.id);
+  const category_id = parseInt(request.params.category_id);
 
   try {
-    if (isNaN(id)) {
+    if (isNaN(category_id)) {
       response.status(400).send({ msg: "Bad request. Invalid category id." });
       return;
     }
 
     const categoriesQuery = await prisma.categories.findUnique({
       where: {
-        id: id,
+        id: category_id,
       },
     });
 

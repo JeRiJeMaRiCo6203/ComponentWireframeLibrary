@@ -42,17 +42,17 @@ export const getAllCodeSnippetsOrByParams = async (request, response) => {
 };
 
 export const getCodeSnippetById = async (request, response) => {
-  const id = parseInt(request.params.id);
+  const codesnippet_id = parseInt(request.params.codesnippet_id);
 
   try {
-    if (isNaN(id)) {
+    if (isNaN(codesnippet_id)) {
       response.status(400).send({ msg: "Bad request. Invalid code snippet id." });
       return;
     }
 
     const codeSnippetsQuery = await prisma.codesnippets.findUnique({
       where: {
-        id: id,
+        id: codesnippet_id,
       },
     });
 

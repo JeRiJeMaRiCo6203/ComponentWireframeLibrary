@@ -26,9 +26,9 @@ export const getAllWireframesAndEditables = async (request, response) => {
 
 export const getEditablesByWireframeId = async (request, response) => {
   try {
-    const id = parseInt(request.params.id);
+    const wireframe_id = parseInt(request.params.wireframe_id);
 
-    if (isNaN(id)) {
+    if (isNaN(wireframe_id)) {
       response.status(400).send({ msg: "Bad request. Invalid wireframe id." });
       return;
     }
@@ -45,7 +45,7 @@ export const getEditablesByWireframeId = async (request, response) => {
     e.remove_property AS remove_property
     FROM editable_relationship we
     JOIN editables e ON we.editable_id = e.id
-    WHERE we.wireframe_id = ${id}
+    WHERE we.wireframe_id = ${wireframe_id}
     ORDER BY e.idx ASC;
     `
 
