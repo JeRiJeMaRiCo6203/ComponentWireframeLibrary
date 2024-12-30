@@ -1,175 +1,181 @@
 import React, { useState, useEffect } from 'react'
-import Navbar from '../navbar/Navbar'
+import NavbarLayout from '../navbar/NavbarLayout'
 import Tag from '../components/Tag'
 import parse from "html-react-parser";
-import SyntaxHighlighter from 'react-syntax-highlighter';
-import { a11yLight } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import DropdownInput from './components/DropdownInput';
 import SwitchInput from './components/SwitchInput';
 import NumberInput from './components/NumberInput';
 import { api } from '../config/api';
 import { useParams } from 'react-router-dom';
+import CodeSnippetTabs from './components/CodeSnippetTabs';
+import FilterPopup from '../components/FilterPopup'
+
+import tagJson from '../tempJsons/tagJson.json'
+
+type CodeSnippet = {
+  id: number;
+  name: string;
+  type: string;
+  codeSnippet: string;
+  editableCodeSnippet?: { idx: number, editableIdx: number, type: string, code: string[] | string}[];
+};
+
+type Editable = {
+  idx: number;
+  name: string;
+  dropdownOptions?: string[];
+  switchOptions?: [string, string];
+  numberRange?: [number, number];
+  value: number;
+  removeProperty?: number[];
+};
 
 const LayoutPage = () => {
   const { id } = useParams();
-  console.log(id);
 
-  useEffect(() => {
-    api.get(`editablecodes/${id}`).then((res) => {
-      console.log(res.data);
-    });
-  }, [id]);
-
-  const dbEditablesTest: {
-    idx: number;
-    name: string;
-    dropdownOption?: string[];
-    switchOption?: [string, string];
-    numberRange?: [number, number];
-  }[] = [
-    {
-      idx: 1,
-      name: "Bdaddeh",
-      switchOption: ["lime", "lightblue"],
-    },
-    {
-      idx: 0,
-      name: "Adaddeh",
-      dropdownOption: ["string1", "string2", "string3"],
-    },
-    {
-      idx: 2,
-      name: "Bdaddeh",
-      numberRange: [1, 10],
-    },
-  ];
-
-  const dbCodeSnippetTest: {
-    name: string;
-    type: string;
-    codeSnippet: string;
-    editableCodeSnippet?: { idx: number, editableId: number, type: string, value: string[] | string }[];
-  }[] = [
-    {
-      name: 'HTML',
-      type: 'html',
-      codeSnippet: `
-        <div style="width: 100%; margin: 2rem 4rem;">
-          <div style="display: flex; justify-content: space-evenly; align-items: center; gap: 1rem; background-color: #f4f4f4; border-radius: 0.5rem; padding: 1rem;">\${0}
-          </div>
-        </div>
-      `,
-      editableCodeSnippet: [
-        {
-          idx: 1,
-          editableId: 0,
-          type: "replace",
-          value: ["string1", "string2", "string3"],
-        },
-        {
-          idx: 0,
-          editableId: 2,
-          type: "loop",
-          value: `
-            <div style="display: flex; flex-direction: column; align-items: center;">
-              <div style="width: 50px; height: 50px; background-color: \${2}; border-radius: 50%;"></div>
-              <p>\${1}</p>
-            </div>`,
-        },
-        {
-          idx: 2,
-          editableId: 1,
-          type: "replace",
-          value: ["lime", "lightblue"],
-        }
-      ]
-    },
-    {
-      name: 'CSS',
-      type: 'css',
-      codeSnippet: `test test test`,
-      editableCodeSnippet: [
-      ]
-    },
-  ]
-
-  let rawEditables = dbEditablesTest;
-
-  rawEditables.sort((a, b) => a.idx - b.idx);
-
-  let rawCodeSnippet = dbCodeSnippetTest;
-
-  rawCodeSnippet.map((snippet) => {
-    if(snippet.editableCodeSnippet) {
-      snippet.editableCodeSnippet.sort((a, b) => a.idx - b.idx);
-    }
-  });
-
-  console.log(rawCodeSnippet[0].editableCodeSnippet);
-
-
+  const [rawCodeSnippet, setRawCodeSnippet] = useState<CodeSnippet[]>([]);
 
   const [aspect, setAspect] = useState("16/9");
 
-  const codeType = "html";
+  const [removeProperty, setRemoveProperty] = useState<number[]>([]);
   
-  const [editables, setEditables] = useState(rawEditables.map((editable: any) => ({
-    ...editable,
-    value: editable.switchOption ? 0 : editable.dropdownOption ? 0 : editable.numberRange ? editable.numberRange[1] : null,
-  })));
+  const [editables, setEditables] = useState<Editable[]>([]);
 
+  const [codeSnippetDisplay, setCodeSnippetDisplay] = useState<{ id: number, code: string, type: string, name: string }[]>([]);
 
-  const [codeSnippetCanvas, setCodeSnippetCanvas] = useState(updateCodeSnippet());
+  useEffect(() => {
+    api.get<{ data: CodeSnippet[] }>(`editablecodesBasedOnWireframe/${id}`).then((res: any) => {
+      let codeSnippet = res.data.map((data: any) => {
+        return {
+          id: data.codesnippet_id,
+          name: data.codesnippet_name,
+          type: data.codesnippet_type,
+          codeSnippet: data.codesnippet,
+          editableCodeSnippet: data.editable_codesnippet.map((data2: any) => {
+            return {
+              idx: data2.idx,
+              editableIdx: data2.editable_idx,
+              type: data2.type,
+              code: data2.value,
+            }
+          })
+        }
+      })
+      
+      codeSnippet?.map((snippet: CodeSnippet) => {
+        if(snippet.editableCodeSnippet) {
+          snippet.editableCodeSnippet.sort((a: { idx: number }, b: { idx: number }) => a.idx - b.idx);
+        }
+      });
+
+      setRawCodeSnippet(codeSnippet);
+    });
+    
+    api.get<{ data: any }>(`editablesByWireframeId/${id}`).then((res: any) => {
+      let editables = res.data.map((data: any) => {
+        return {
+          idx: data.idx,
+          name: data.editable_name,
+          dropdownOptions: data.dropdown_options,
+          switchOptions: data.switch_options,
+          numberRange: data.number_range,
+          removeProperty: data?.remove_property,
+        }
+      });
+      
+      editables.sort((a: any, b: any) => a.idx - b.idx);
+
+      setEditables(editables.map((editable: any) => ({
+        ...editable,
+        value: editable.switchOptions ? 0 : editable.dropdownOptions ? 0 : editable.numberRange ? editable.numberRange[0] : null,
+      })));
+
+      setRemoveProperty(Array(editables.length).fill(-1));
+    });
+  }, [id]);
 
   function changeData(idx: number, valueTemp: any) {
     setEditables((prev) => {
       const newEditables: any = [...prev];
       let value = valueTemp;
-      if(newEditables[idx].switchOption) {
-        value = newEditables[idx].switchOption?.indexOf(valueTemp) ?? 0;
+      if(newEditables[idx].switchOptions) {
+        value = newEditables[idx].switchOptions?.indexOf(valueTemp) ?? 0;
       }
-      if(newEditables[idx].dropdownOption) {
-        value = newEditables[idx].dropdownOption?.indexOf(valueTemp) ?? 0;
+      if(newEditables[idx].dropdownOptions) {
+        value = newEditables[idx].dropdownOptions?.indexOf(valueTemp) ?? 0;
       }
       if(newEditables[idx].numberRange) {
         value = parseInt(valueTemp);
       }
 
       newEditables[idx].value = value;
+
+      if(newEditables[idx].removeProperty) {
+        let removeProperty = newEditables[idx].removeProperty[value];
+        setRemoveProperty((prev) => {
+          const newConstraints = [...prev];
+          newConstraints[idx] = removeProperty;
+          return newConstraints;
+        });
+      }
+
       return newEditables;
     });
   }
 
   useEffect(() => {
-    setCodeSnippetCanvas(updateCodeSnippet());
+    setCodeSnippetDisplay(updateCodeSnippet());
+  }, [rawCodeSnippet && editables]);
+
+  useEffect(() => {
+    setCodeSnippetDisplay(updateCodeSnippet());
   }, [editables]);
 
-  function updateCodeSnippet(type: string = 'html') {
-    let rawCodeSnippetSingle = rawCodeSnippet.find(snippet => snippet.type === type);
-    if (!rawCodeSnippetSingle) {
-      return "Error: Code snippet with type "+type+" not found";
-    }
-    if(!rawCodeSnippetSingle.editableCodeSnippet){
-      return rawCodeSnippetSingle.codeSnippet;
-    }
-    rawCodeSnippetSingle.editableCodeSnippet?.map((editableCodeSnippet) => {
-      let placeholdersValue = '';
-      if(editableCodeSnippet.type === 'loop') {
-        for(let i = 0; i < editables[editableCodeSnippet.editableId].value; i++) {
-          placeholdersValue += editableCodeSnippet.value;
-        }
-      } else {
-        placeholdersValue = editableCodeSnippet.value[editables[editableCodeSnippet.editableId].value]
-      };
-      rawCodeSnippetSingle.codeSnippet = rawCodeSnippetSingle.codeSnippet.replace(new RegExp(`\\$\\{${editableCodeSnippet.idx}\\}`, 'g'), placeholdersValue);
-    });
-    // console.log(newCode)
-    return rawCodeSnippetSingle.codeSnippet;
+  
+  function updateCodeSnippet(): { id: number, code: string; type: string; name: string }[] {
+    const tempRawCodeSnippet = JSON.parse(JSON.stringify(rawCodeSnippet));
+
+    return tempRawCodeSnippet?.map((rawCodeSnippetSingle: CodeSnippet) => {
+      if (!rawCodeSnippetSingle) {
+        return { id: -1, code: "Error: Code snippet not found", type: "", name: "Error" };
+      }
+      if(!rawCodeSnippetSingle.editableCodeSnippet){
+        return { id: -1, code: "Error: Editable code snippet not found", type: "", name: "Error" };
+      }
+      rawCodeSnippetSingle.editableCodeSnippet?.map((editableCodeSnippet) => {
+        let placeholdersValue = '';
+        if(editableCodeSnippet.type === 'loop') {
+          for(let i = 0; i < editables[editableCodeSnippet.editableIdx].value; i++) {
+            placeholdersValue += editableCodeSnippet.code;
+          }
+        } else {
+          placeholdersValue = editableCodeSnippet.code[editables[editableCodeSnippet.editableIdx].value]
+          // console.log('placeholdersValue', placeholdersValue);
+        };
+        rawCodeSnippetSingle.codeSnippet = rawCodeSnippetSingle.codeSnippet.replace(new RegExp(`\\$\\{${editableCodeSnippet.idx}\\}`, 'g'), placeholdersValue);
+      });
+      
+      return { id: rawCodeSnippetSingle.id, code: rawCodeSnippetSingle.codeSnippet, type: rawCodeSnippetSingle.type, name: rawCodeSnippetSingle.name };
+    }) ?? [];
   }
+
+  const handleScroll = (divId: string) => {
+    const element = document.getElementById(divId);
+    if (element) {
+      const yOffset = -100; // Adjust this value to leave a gap
+      const yPosition =
+        element.getBoundingClientRect().top + window.scrollY + yOffset;
+      window.scrollTo({ top: yPosition, behavior: "smooth" });
+    }
+  };
 
   return (
     <body className='bg-white w-full'>
-      <Navbar/>
+      <NavbarLayout 
+        tags={tagJson}
+        gotoEditables={() => handleScroll('editables')}
+        gotoSnippet={() => handleScroll('snippet')}
+      />
       <div className='gap-16 mx-48 mt-32 mb-16'>
         <p className='text-4xl pt-16 font-medium'>
           Orion
@@ -182,33 +188,22 @@ const LayoutPage = () => {
           <Tag title='Header' editable={true}/>
         </div>
       </div>
-      <div className='bg-[#e7e7e7] w-full px-48 py-12'>
-        <div className='flex justify-center gap-2 mb-12'>
-          <div className='hover:bg-[#f4f4f4] cursor-pointer py-2 px-6 rounded-lg text-sm' onClick={() => setAspect("16/9")} >Desktop</div>
-          <div className='hover:bg-[#f4f4f4] cursor-pointer py-2 px-6 rounded-lg text-sm' onClick={() => setAspect("4/3")} >Tablet</div>
-          <div className='hover:bg-[#f4f4f4] cursor-pointer py-2 px-6 rounded-lg text-sm' onClick={() => setAspect("9/16")} >Phone</div>
-        </div>
-        <div className='aspect-video flex justify-center'>
-          <div
-            className='break-words overflow-y-auto transition-all bg-white flex items-center'
-            style={{ scrollbarWidth: "thin", scrollbarColor: "#d9d9d9 #f4f4f4", aspectRatio: aspect }}>
-            {parse(codeSnippetCanvas)}
-          </div>
-        </div>
-      </div>
-      <div className='mx-48 my-16 flex flex-wrap justify-center items-center gap-6'>
+      <div
+        id='editables'
+        className='mx-48 my-16 flex flex-wrap justify-center items-center gap-6'
+      >
         {editables.map((editable, index) => {
           return (
             <div key={index} className='w-80'>
               <div>{editable.name}</div>
-              {editable.switchOption ? (
+              {editable.switchOptions ? (
                 <SwitchInput
-                  options={editable.switchOption as [string, string]}
+                  options={editable.switchOptions as [string, string]}
                   changeData={(value) => changeData(index, value)}
                 />
-              ) : editable.dropdownOption ? (
+              ) : editable.dropdownOptions ? (
                 <DropdownInput
-                  options={editable.dropdownOption as string[]}
+                  options={editable.dropdownOptions as string[]}
                   changeData={(value) => changeData(index, value)}
                 />
               ) : (
@@ -221,30 +216,25 @@ const LayoutPage = () => {
           )
         })}
       </div>
-      <div className='mx-48 my-16'>
-        <div className='flex justify-between'>
-          <div className='flex gap-2'>
-            <div className='bg-[#f4f4f4] py-2 px-6 rounded-lg text-sm'>HTML</div>
-            <div className='bg-white hover:bg-[#f4f4f4] cursor-pointer py-2 px-6 rounded-lg text-sm'>CSS</div>
-          </div>
-          <div className='flex gap-2'>
-            <div className='bg-white py-2 px-2 rounded-lg text-sm'>HTML + CSS</div>
-            <div className='bg-white hover:bg-[#f4f4f4] cursor-pointer pt-[6px] pb-[2px] px-6 rounded-lg text-sm border-2 border-[#f4f4f4]'>Change Code Type</div>
-          </div>
+      <div className='bg-[#f4f4f4] w-full px-48 py-12'>
+        <div className='flex justify-center gap-2 mb-12'>
+          <div className='hover:bg-[#e7e7e7] cursor-pointer py-2 px-6 rounded-lg text-sm' onClick={() => setAspect("16/9")} >Desktop</div>
+          <div className='hover:bg-[#e7e7e7] cursor-pointer py-2 px-6 rounded-lg text-sm' onClick={() => setAspect("4/3")} >Tablet</div>
+          <div className='hover:bg-[#e7e7e7] cursor-pointer py-2 px-6 rounded-lg text-sm' onClick={() => setAspect("9/16")} >Phone</div>
         </div>
-        <div className='bg-[#f4f4f4] rounded-lg p-4 mt-2'>
-          <SyntaxHighlighter language={`${codeType}`} style={a11yLight} customStyle={{ 
-            backgroundColor: "#f4f4f4", 
-            width: "100%", 
-            maxHeight: "40rem", 
-            overflow: "auto",
-            scrollbarWidth: "thin",
-            scrollbarColor: "#d9d9d9 transparent",
-          }} wrapLongLines={false}>
-            { codeSnippetCanvas }
-          </SyntaxHighlighter>
+        <div className='aspect-video flex justify-center'>
+          <div
+            className='break-words overflow-y-auto transition-all bg-white flex items-center'
+            style={{ aspectRatio: aspect }}>
+            { parse(`
+                <style>${codeSnippetDisplay.find((snippet) => snippet.type === 'css')?.code ?? ''}</style>
+                ${codeSnippetDisplay.find((snippet) => snippet.type === 'html')?.code ?? ''}
+              `)
+            }
+          </div>
         </div>
       </div>
+      <CodeSnippetTabs codeSnippetDisplay={codeSnippetDisplay} removeProperty={removeProperty} />
       <div className='h-[100rem]'></div>
     </body>
   )

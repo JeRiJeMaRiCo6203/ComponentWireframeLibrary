@@ -6,7 +6,7 @@ interface NumberInputProps {
 }
 
 const NumberInput: React.FC<NumberInputProps> = ({ numberRange, changeData }) => {
-  const [amount, setAmount] = useState(numberRange[1]);
+  const [amount, setAmount] = useState(numberRange[0]);
 
   const handleAmount = (value: number) => {
     if (value <= numberRange[0]) setValue(numberRange[0]);

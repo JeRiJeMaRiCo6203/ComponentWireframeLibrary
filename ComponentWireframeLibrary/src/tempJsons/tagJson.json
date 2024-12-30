@@ -15,39 +15,24 @@
     "isSelected": true
   },
   {
+    "id": "22",
+    "name": "Tooltip",
+    "isSelected": false
+  },
+  {
+    "id": "23",
+    "name": "Sidebar",
+    "isSelected": false
+  },
+  {
     "id": "4",
     "name": "Modal",
     "isSelected": true
   },
   {
-    "id": "5",
-    "name": "Header",
-    "isSelected": true
-  },
-  {
-    "id": "6",
-    "name": "Hero",
-    "isSelected": true
-  },
-  {
-    "id": "7",
-    "name": "Testimonial",
-    "isSelected": true
-  },
-  {
-    "id": "8",
-    "name": "Breadcrumb",
-    "isSelected": true
-  },
-  {
-    "id": "9",
-    "name": "Slider",
-    "isSelected": true
-  },
-  {
     "id": "10",
     "name": "Overlay",
-    "isSelected": true
+    "isSelected": false
   },
   {
     "id": "11",
@@ -95,6 +80,31 @@
     "isSelected": false
   },
   {
+    "id": "5",
+    "name": "Header",
+    "isSelected": true
+  },
+  {
+    "id": "6",
+    "name": "Hero",
+    "isSelected": true
+  },
+  {
+    "id": "7",
+    "name": "Testimonial",
+    "isSelected": true
+  },
+  {
+    "id": "8",
+    "name": "Breadcrumb",
+    "isSelected": true
+  },
+  {
+    "id": "9",
+    "name": "Slider",
+    "isSelected": true
+  },
+  {
     "id": "20",
     "name": "List",
     "isSelected": false
@@ -105,16 +115,6 @@
     "isSelected": false
   },
   {
-    "id": "22",
-    "name": "Tooltip",
-    "isSelected": false
-  },
-  {
-    "id": "23",
-    "name": "Sidebar",
-    "isSelected": false
-  },
-  {
     "id": "24",
     "name": "Call to Action",
     "isSelected": false
@@ -122,7 +122,7 @@
   {
     "id": "25",
     "name": "Table",
-    "isSelected": false
+    "isSelected": true
   },
   {
     "id": "26",
