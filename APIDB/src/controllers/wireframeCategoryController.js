@@ -152,6 +152,10 @@ export const searchWireframesOrCategories = async (request, response) => {
       `
     );
 
+    if(wireframesQuery.length === 0) {
+      return response.status(404).send({ message: "No wireframes found for the specified keyword." });
+    }
+
     response.json(wireframesQuery);    
    
   } catch (error) {
