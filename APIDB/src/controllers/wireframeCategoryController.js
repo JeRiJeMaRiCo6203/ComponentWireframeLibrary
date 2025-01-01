@@ -143,7 +143,7 @@ export const getWireframesByCategory = async (request, response) => {
     if (wireframesQuery.length === 0) {
       return response
         .status(404)
-        .send({ message: "No wireframes found for the specified categories." });
+        .send({ message: "No wireframes found for the specified categories filter." });
     }
 
     // Return the filtered wireframes
@@ -221,7 +221,7 @@ export const searchWireframesOrCategories = async (request, response) => {
     );
 
     if(wireframesQuery.length === 0) {
-      return response.status(404).send({ message: "No wireframes found for the specified keyword." });
+      return response.status(404).send({ message: "No wireframes or categories found with the specified keyword." });
     }
 
     response.json(wireframesQuery);    
