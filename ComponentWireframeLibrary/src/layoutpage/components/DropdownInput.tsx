@@ -38,17 +38,20 @@ const DropdownInput: React.FC<DropdownProps> = ({ options, changeData }) => {
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7 10L12 15L17 10" stroke="#a6a6a6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </div>
       {isOpen && (
-        <div className='absolute w-full rounded-b-lg bg-[#f4f4f4] overflow-hidden z-30'>
-          {options.map((option, idx) => (
-            <div
-              key={option}
-              className={`cursor-pointer py-2 px-4 hover:bg-[#e7e7e7] border-2 border-[#f4f4f4] hover:border-[#e7e7e7] select-none`}
-              onClick={() => handleOptionClick(option)}
-            >
-              {option}
-            </div>
-          ))}
-        </div>
+        <>
+          <div className='absolute w-full rounded-b-lg bg-[#f4f4f4] z-30'>
+            {options.map((option, idx) => (
+              <div
+                key={option}
+                className={`cursor-pointer py-2 px-4 hover:bg-[#e7e7e7] border-2 border-[#f4f4f4] hover:border-[#e7e7e7] select-none`+ (idx === options.length - 1 ? ' rounded-b-lg' : '')}
+                onClick={() => handleOptionClick(option)}
+              >
+                {option}
+              </div>
+            ))}
+            <div className='absolute w-[calc(100%+4px)] h-[calc(100%+4px)] border-2 border-t-0 border-white -top-[2px] -left-[2px] pointer-events-none rounded-b-[10px] z-50'></div>
+          </div>
+        </>
       )}
     </div>
   );

@@ -10,12 +10,14 @@ type Tag = {
   isSelected: boolean;
 };
 
-const FilterPopup = ({isOpen, onClose, setSelectedTags, selectedTags }: {isOpen: boolean, onClose: (scrollToTop: boolean) => void, setSelectedTags: (tags: {id: number; name: string}[]) => void, selectedTags: {id: number, name: string}[]}) => {
+const FilterPopup = ({isOpen, onClose, onSaveChanges, selectedTags }: {isOpen: boolean, onClose: (scrollToTop: boolean) => void, onSaveChanges: (tags: {id: number; name: string}[]) => void, selectedTags: {id: number, name: string}[]}) => {
 
   const [rawTags, setRawTags] = useState<Tag[]>([]);
   const [tags, setTags] = useState<Tag[]>([]);
   const [searchedTags, setSearchedTags] = useState<Tag[]>([]);
-
+  const [previouslySelectedTags, setPreviouslySelectedTags] = useState<Tag[]>([]);
+  const [closePopupIsOpen, setClosePopupIsOpen] = useState(false);
+  
   useEffect(() => {
     api.get<{ data: Tag[] }>(`categories`).then((res: any) => {
       let dataTags = res.data.map((data: any) => {
@@ -36,6 +38,7 @@ const FilterPopup = ({isOpen, onClose, setSelectedTags, selectedTags }: {isOpen:
 
       setTags(dataTags);
       setSearchedTags(dataTags);
+      setPreviouslySelectedTags(dataTags);
     });
   }, []);
 
@@ -81,7 +84,7 @@ const FilterPopup = ({isOpen, onClose, setSelectedTags, selectedTags }: {isOpen:
   }
 
   const handleSaveChanges = () => {
-    setSelectedTags(
+    onSaveChanges(
       tags.filter((item: any) => item.isSelected).map((item: any) => ({
         id: item.id,
         name: item.name
@@ -90,11 +93,23 @@ const FilterPopup = ({isOpen, onClose, setSelectedTags, selectedTags }: {isOpen:
     onClose(true);
   }
 
+  const handleBackgroundClick = (scrollToTop: boolean) => {
+    if (JSON.stringify(previouslySelectedTags) !== JSON.stringify(tags)) {
+      setClosePopupIsOpen(true);
+    } else {
+      onClose(scrollToTop);
+    }
+  }
+
+  const onCloseClosePopup = () => {
+    setClosePopupIsOpen(false);
+  }
+
   return (
     <>
       {isOpen && (
         <div className='fixed w-full h-full top-0 left-0 z-30 flex justify-center items-center'>
-          <div className='absolute top-0 left-0 w-full h-full bg-[#00000036] backdrop-blur-sm z-30' onClick={() => onClose(false)}></div>
+          <div className='absolute top-0 left-0 w-full h-full bg-[#00000036] backdrop-blur-sm z-30' onClick={() => handleBackgroundClick(false)}></div>
           <div className='w-fit bg-white border-2 border-[#f4f4f4] rounded-lg relative z-40 flex'>
             <div className='w-96 m-8'>
               <input 
@@ -102,7 +117,7 @@ const FilterPopup = ({isOpen, onClose, setSelectedTags, selectedTags }: {isOpen:
                 type="text"
                 name="search"
                 id="search"
-                placeholder="Search Tags..."
+                placeholder="Search Categories..."
                 onChange={handleSearch}
                 className='w-96 py-2 px-3 bg-[#f4f4f4] border-2 border-[#f4f4f4] hover:bg-[#e7e7e7] hover:border-[#e7e7e7] focus:bg-[#e7e7e7] focus:border-[#e7e7e7] text-sm rounded-lg'
               />
@@ -152,6 +167,30 @@ const FilterPopup = ({isOpen, onClose, setSelectedTags, selectedTags }: {isOpen:
               </div>
             </div>
           </div>
+          {isOpen && closePopupIsOpen && (
+            <>
+              <div className='absolute top-0 left-0 w-full h-full bg-[#00000036] backdrop-blur-sm z-[45]' onClick={() => onCloseClosePopup()}></div>
+              <div className='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white border-2 border-[#f4f4f4] p-4 rounded-lg text-center z-50'>
+                <div className='p-12'>
+                  Changes were made<br />Are you sure you want to close without saving?
+                </div>
+                <div className='flex mt-4 gap-2 justify-end'>
+                  <div
+                    onClick={() => onCloseClosePopup()}
+                    className='flex-1 py-4 bg-white border-2 border-[#f4f4f4] hover:bg-[#e7e7e7] hover:border-[#e7e7e7] text-sm rounded-lg cursor-pointer transition-all'
+                  >
+                    Go Back
+                  </div>
+                  <div
+                    onClick={() => {onCloseClosePopup(); onClose(false)}}
+                    className='flex-1 py-4 bg-white border-2 border-[#f4f4f4] hover:bg-[#e7e7e7] hover:border-[#e7e7e7] text-sm rounded-lg cursor-pointer transition-all'
+                  >
+                    Close Without Saving
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
         </div>
       )}
     </>

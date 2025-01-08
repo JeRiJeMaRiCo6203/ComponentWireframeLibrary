@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import NavbarLayout from '../navbar/NavbarLayout'
 import Tag from '../components/Tag'
 import parse from "html-react-parser";
 import DropdownInput from './components/DropdownInput';
@@ -8,9 +7,8 @@ import NumberInput from './components/NumberInput';
 import { api } from '../config/api';
 import { useParams } from 'react-router-dom';
 import CodeSnippetTabs from './components/CodeSnippetTabs';
-import FilterPopup from '../components/FilterPopup'
-
-import tagJson from '../tempJsons/tagJson.json'
+import Footer from '../navbar/Footer';
+import Navbar from '../navbar/Navbar';
 
 type CodeSnippet = {
   id: number;
@@ -87,7 +85,7 @@ const LayoutPage = () => {
 
       setEditables(editables.map((editable: any) => ({
         ...editable,
-        value: editable.switchOptions ? 0 : editable.dropdownOptions ? 0 : editable.numberRange ? editable.numberRange[0] : null,
+        value: editable.switchOptions ? 0 : editable.dropdownOptions ? 0 : editable.numberRange ? editable.numberRange[1] : null,
       })));
 
       setRemoveProperty(Array(editables.length).fill(-1));
@@ -126,12 +124,16 @@ const LayoutPage = () => {
   useEffect(() => {
     setCodeSnippetDisplay(updateCodeSnippet());
   }, [rawCodeSnippet && editables]);
-
+  
   useEffect(() => {
     setCodeSnippetDisplay(updateCodeSnippet());
+    // changeAspect(aspect);
   }, [editables]);
 
-  
+  // useEffect(() => {
+  //   changeAspect(aspect);
+  // }, [codeSnippetDisplay]);
+
   function updateCodeSnippet(): { id: number, code: string; type: string; name: string }[] {
     const tempRawCodeSnippet = JSON.parse(JSON.stringify(rawCodeSnippet));
 
@@ -146,17 +148,40 @@ const LayoutPage = () => {
         let placeholdersValue = '';
         if(editableCodeSnippet.type === 'loop') {
           for(let i = 0; i < editables[editableCodeSnippet.editableIdx].value; i++) {
-            placeholdersValue += editableCodeSnippet.code;
+            // placeholdersValue += editableCodeSnippet.code;
+            // ini mungkin yg ini
+            placeholdersValue += editableCodeSnippet.code[0];
           }
         } else {
           placeholdersValue = editableCodeSnippet.code[editables[editableCodeSnippet.editableIdx].value]
-          // console.log('placeholdersValue', placeholdersValue);
         };
         rawCodeSnippetSingle.codeSnippet = rawCodeSnippetSingle.codeSnippet.replace(new RegExp(`\\$\\{${editableCodeSnippet.idx}\\}`, 'g'), placeholdersValue);
       });
-      
+
+      changeAspect('16/9');
       return { id: rawCodeSnippetSingle.id, code: rawCodeSnippetSingle.codeSnippet, type: rawCodeSnippetSingle.type, name: rawCodeSnippetSingle.name };
     }) ?? [];
+  }
+
+  function changeAspect(aspect: string) {
+    let tempCodeSnippet = JSON.parse(JSON.stringify(codeSnippetDisplay));
+    console.log(tempCodeSnippet);
+    if(tempCodeSnippet.find((snippet: any) => snippet.type === 'preview-css')?.code === undefined) return;
+    if(aspect === '4/3') {
+      tempCodeSnippet = tempCodeSnippet.find((snippet: any) => snippet.type === 'preview-css')!.code.replace('@4/3', '.43{}\n').replace('.916{}\n', '@9/16')
+    } else if(aspect === '9/16') {
+      tempCodeSnippet = tempCodeSnippet.find((snippet: any) => snippet.type === 'preview-css')!.code.replace('@4/3', '.43{}\n').replace('@9/16', '.916{}\n')
+    } else {
+      tempCodeSnippet = tempCodeSnippet.find((snippet: any) => snippet.type === 'preview-css')!.code.replace('.43{}\n', '@4/3').replace('.916{}\n', '@9/16')
+    }
+    setCodeSnippetDisplay((prev) =>
+      prev.map((snippet) =>
+      snippet.type === 'preview-css'
+        ? { ...snippet, code: tempCodeSnippet }
+        : snippet
+      )
+    );
+    setAspect(aspect);
   }
 
   const handleScroll = (divId: string) => {
@@ -171,8 +196,14 @@ const LayoutPage = () => {
 
   return (
     <body className='bg-white w-full'>
-      <NavbarLayout 
-        tags={tagJson}
+      <Navbar
+        openFilterPopup={undefined}
+        tags={undefined}
+        onTagDelete={undefined}
+        handleFocus={undefined}
+        onSearchDelete={undefined}
+        searchTerm={undefined}
+        page={'home'}
         gotoEditables={() => handleScroll('editables')}
         gotoSnippet={() => handleScroll('snippet')}
       />
@@ -181,11 +212,11 @@ const LayoutPage = () => {
           Orion
         </p>
         <div className='flex flex-wrap gap-2 pt-4'>
-          <Tag title='Button' editable={false}/>
-          <Tag title='Accordion' editable={false}/>
-          <Tag title='Gallery' editable={false}/>
-          <Tag title='Modal' editable={false}/>
-          <Tag title='Header' editable={true}/>
+          <Tag title='Button'/>
+          <Tag title='Accordion'/>
+          <Tag title='Gallery'/>
+          <Tag title='Modal'/>
+          <Tag title='Header'/>
         </div>
       </div>
       <div
@@ -216,26 +247,48 @@ const LayoutPage = () => {
           )
         })}
       </div>
-      <div className='bg-[#f4f4f4] w-full px-48 py-12'>
-        <div className='flex justify-center gap-2 mb-12'>
-          <div className='hover:bg-[#e7e7e7] cursor-pointer py-2 px-6 rounded-lg text-sm' onClick={() => setAspect("16/9")} >Desktop</div>
-          <div className='hover:bg-[#e7e7e7] cursor-pointer py-2 px-6 rounded-lg text-sm' onClick={() => setAspect("4/3")} >Tablet</div>
-          <div className='hover:bg-[#e7e7e7] cursor-pointer py-2 px-6 rounded-lg text-sm' onClick={() => setAspect("9/16")} >Phone</div>
+      <div className={`bg-[#f4f4f4] w-full py-12 `+ (aspect !== 'your window' ? 'px-48' : 'border-x-4 border-[#f4f4f4]')}>
+        <div className='flex flex-col items-center gap-4 mb-12'>
+          <div className='flex justify-center gap-2'>
+            <div className='hover:bg-[#e7e7e7] cursor-pointer py-2 w-28 rounded-lg text-sm text-center' onClick={() => changeAspect("16/9")}>Desktop</div>
+            <div className='hover:bg-[#e7e7e7] cursor-pointer py-2 w-28 rounded-lg text-sm text-center' onClick={() => changeAspect("4/3")}>Tablet</div>
+            <div className='hover:bg-[#e7e7e7] cursor-pointer py-2 w-28 rounded-lg text-sm text-center' onClick={() => changeAspect("9/16")}>Phone</div>
+            <div className='hover:bg-[#e7e7e7] cursor-pointer py-2 w-28 rounded-lg text-sm text-center' onClick={() => changeAspect("your window")}>Fullwidth</div>
+          </div>
         </div>
         <div className='aspect-video flex justify-center'>
           <div
-            className='break-words overflow-y-auto transition-all bg-white flex items-center'
-            style={{ aspectRatio: aspect }}>
+            className='break-words overflow-y-auto bg-white transition-all duration-500'
+            style={{
+              aspectRatio: aspect !== 'your window' ? aspect : 'unset',
+              width: aspect !== 'your window' ? 'auto' : '100%',
+              fontSize: aspect === '16/9' ? `${
+                (window.innerWidth-384) / 1440
+              }em` : aspect === '4/3' ? `
+                ${(window.innerWidth-384)*1.05 / 1440
+              }em` : aspect === '9/16' ? `
+                ${(window.innerWidth-384)*1.1 / 1440
+              }em` : '1em',
+              scrollbarWidth: 'thin',
+              scrollbarColor: '#e7e7e7 transparent'
+            }}>
             { parse(`
-                <style>${codeSnippetDisplay.find((snippet) => snippet.type === 'css')?.code ?? ''}</style>
-                ${codeSnippetDisplay.find((snippet) => snippet.type === 'html')?.code ?? ''}
+                <style>
+                  .section > * {
+                    transition: all 150ms ease 150ms;
+                  }
+                  ${codeSnippetDisplay.find((snippet) => snippet.type === 'preview-css')?.code ?? ''}
+                </style>
+                <div style="width: 100%; height: 100%; min-height: max-content; display: flex; justify-content: center; align-items: center;">
+                  ${codeSnippetDisplay.find((snippet) => snippet.type === 'html')?.code ?? ''}
+                </div>
               `)
             }
           </div>
         </div>
       </div>
       <CodeSnippetTabs codeSnippetDisplay={codeSnippetDisplay} removeProperty={removeProperty} />
-      <div className='h-[100rem]'></div>
+      <Footer/>
     </body>
   )
 }
