@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import SyntaxHighlighter from "react-syntax-highlighter";
 import { a11yLight } from "react-syntax-highlighter/dist/esm/styles/hljs";
 import { useState } from "react";
+import CopyPopup from "../../components/CopyPopup";
 
 type CodeSnippet = {
   name: string;
@@ -80,6 +81,22 @@ const CodeSnippetTabs = ({
     }
   }, [code]);
 
+  const [isCopied, setIsCopied] = useState(false);
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(
+        codeSnippetDisplay.find((snippet) => snippet.name === selectedCode.name)
+          ?.code ?? ""
+      );
+      setIsCopied(true);
+
+      setTimeout(() => setIsCopied(false), 2000);
+    } catch (error) {
+      console.error("Failed to copy text: ", error);
+    }
+  };
+
   return (
     <div id="snippet" className="mx-48 my-16">
       <div className="flex justify-between">
@@ -146,7 +163,10 @@ const CodeSnippetTabs = ({
               </div>
             </div>
           )}
-          <div className="h-9 w-9 flex justify-center items-center rounded-lg border-2 border-[#f4f4f4] hover:bg-[#e7e7e7] hover:border-[#e7e7e7] hover:cursor-pointer transition-all z-20">
+          <div
+            className="h-9 w-9 flex justify-center items-center rounded-lg border-2 border-[#f4f4f4] hover:bg-[#e7e7e7] hover:border-[#e7e7e7] hover:cursor-pointer transition-all z-20"
+            onClick={handleCopy}
+          >
             <svg
               width="18"
               height="18"
@@ -163,6 +183,7 @@ const CodeSnippetTabs = ({
               />
             </svg>
           </div>
+          <CopyPopup isVisible={isCopied} />
         </div>
       </div>
       <div className="bg-[#f4f4f4] rounded-lg p-4 mt-2">

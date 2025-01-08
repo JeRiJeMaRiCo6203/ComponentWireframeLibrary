@@ -47,6 +47,7 @@ const LayoutPage = () => {
   const [codeSnippetDisplay, setCodeSnippetDisplay] = useState<
     { id: number; code: string; type: string; name: string }[]
   >([]);
+  
 
   useEffect(() => {
     api
