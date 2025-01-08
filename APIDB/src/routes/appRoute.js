@@ -30,7 +30,8 @@ import {
 import {
   getAllWireframesAndCategories,
   getWireframesByCategory,
-  searchWireframesOrCategories
+  searchWireframesOrCategories,
+  getWireframesCategories
 } from "../controllers/wireframeCategoryController.js";
 
 import { 
@@ -72,6 +73,7 @@ router.route("/editablecodesBasedOnWireframe/:wireframe_id").get(getEditableCode
 router.route("/wireframesAndCategories/").get(getAllWireframesAndCategories);
 router.route("/wireframesByCategory/").get(getWireframesByCategory); //belum selesai
 router.route("/searchWireframesOrCategories/").get(searchWireframesOrCategories); //belum selesai
+router.route("/wireframesCategories/").get(getWireframesCategories);
 
 // Wireframes and Editables
 router.route("/wireframesAndEditables/").get(getAllWireframesAndEditables);

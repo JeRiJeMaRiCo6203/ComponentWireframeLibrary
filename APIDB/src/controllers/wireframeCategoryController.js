@@ -19,9 +19,142 @@ export const getAllWireframesAndCategories = async (request, response) => {
     response.json(wireframesQuery);
   } catch (error) {
     console.error("Error fetching wireframes and categories:", error);
-    response
-      .status(500)
-      .send({ error: "An error occurred while fetching wireframes and categories." });
+    response.status(500).send({
+      error: "An error occurred while fetching wireframes and categories.",
+    });
+  }
+};
+export const getWireframesCategories = async (request, response) => {
+  try {
+    const { searchKeyword, categoryIds } = request.query;
+
+    // console.log("categoryIds: " + categoryIds);
+    // console.log("searchKeyword: " + searchKeyword);
+
+    let wireframesQuery;
+
+    if (!categoryIds && !searchKeyword) {
+      // Case 1: No filters applied
+      wireframesQuery = await prisma.$queryRaw`
+        SELECT 
+          w.id, 
+          w.title, 
+          w.cover, 
+          array_agg(c.name) AS categories
+        FROM wireframes w
+        JOIN category_relationship wc ON w.id = wc.wireframe_id
+        JOIN categories c ON wc.category_id = c.id
+        GROUP BY w.id
+        ORDER BY w.id ASC;
+      `;
+    } else if (categoryIds && !searchKeyword) {
+      // Case 2: Filter by categoryIds
+      const categoryIdsArray = categoryIds
+        .split(",")
+        .map((id) => parseInt(id.trim()));
+      const categoryCount = categoryIdsArray.length;
+
+      wireframesQuery = await prisma.$queryRaw(
+        Prisma.sql`
+          WITH matched_wireframes AS (
+            SELECT
+              w.id,
+              COUNT(DISTINCT wc.category_id) AS matched_categories
+            FROM wireframes w
+            JOIN category_relationship wc ON w.id = wc.wireframe_id
+            WHERE wc.category_id IN (${Prisma.join(categoryIdsArray)})
+            GROUP BY w.id
+          )
+          SELECT
+            w.id,
+            w.title,
+            w.cover,
+            array_agg(DISTINCT c.name) AS categories
+          FROM wireframes w
+          JOIN category_relationship wc ON w.id = wc.wireframe_id
+          JOIN categories c ON wc.category_id = c.id
+          WHERE w.id IN (
+            SELECT mw.id
+            FROM matched_wireframes mw
+            WHERE mw.matched_categories = ${categoryCount}
+          )
+          GROUP BY w.id
+          ORDER BY w.id ASC;
+        `
+      );
+    } else if (!categoryIds && searchKeyword) {
+      // Case 3: Filter by searchKeyword
+      wireframesQuery = await prisma.$queryRaw(
+        Prisma.sql`
+          WITH filtered_wireframes AS (
+            SELECT 
+              w.id
+            FROM wireframes w
+            JOIN category_relationship wc ON w.id = wc.wireframe_id
+            JOIN categories c ON wc.category_id = c.id
+            WHERE 
+              w.title ILIKE ${"%" + searchKeyword + "%"} 
+              OR c.name ILIKE ${"%" + searchKeyword + "%"}
+          )
+          SELECT 
+            w.id, 
+            w.title, 
+            w.cover, 
+            array_agg(DISTINCT c.name) AS categories
+          FROM wireframes w
+          JOIN category_relationship wc ON w.id = wc.wireframe_id
+          JOIN categories c ON wc.category_id = c.id
+          WHERE w.id IN (SELECT id FROM filtered_wireframes) -- Filter to matching wireframes
+          GROUP BY w.id
+          ORDER BY 
+            CASE 
+              WHEN w.title ILIKE ${"%" + searchKeyword + "%"} THEN 1 
+              ELSE 2 
+            END,
+            w.id ASC;
+        `
+      );
+    } else if (categoryIds && searchKeyword) {
+      // Case 4: Filter by both categoryIds and searchKeyword
+      const categoryIdsArray = categoryIds
+        .split(",")
+        .map((id) => parseInt(id.trim()));
+      wireframesQuery = await prisma.$queryRaw(
+        Prisma.sql`
+          WITH filtered_wireframes AS (
+            SELECT
+              w.id
+            FROM wireframes w
+            JOIN category_relationship wc ON w.id = wc.wireframe_id
+            JOIN categories c ON wc.category_id = c.id
+            WHERE 
+              wc.category_id IN (${Prisma.join(categoryIdsArray)}) 
+              AND (w.title ILIKE ${"%" + searchKeyword + "%"} OR c.name ILIKE ${
+          "%" + searchKeyword + "%"
+        })
+          )
+          SELECT 
+            w.id, 
+            w.title, 
+            w.cover, 
+            array_agg(DISTINCT c.name) AS categories
+          FROM wireframes w
+          JOIN category_relationship wc ON w.id = wc.wireframe_id
+          JOIN categories c ON wc.category_id = c.id
+          WHERE w.id IN (SELECT id FROM filtered_wireframes)
+          GROUP BY w.id
+          ORDER BY w.id ASC;
+        `
+      );
+    }
+
+    // Send the query result
+    response.status(200).json(wireframesQuery);
+  } catch (error) {
+    console.error("Error fetching wireframes and categories:", error);
+    response.status(500).send({
+      error: "An error occurred while fetching wireframes and categories.",
+    });
   }
 };
 
@@ -29,6 +162,10 @@ export const getWireframesByCategory = async (request, response) => {
   try {
     // Extract the categories from the query parameters
     const { categoryIds } = request.query;
+    const { searchKeyword } = request.query;
+
+    console.log("categoryIds: " + categoryIds);
+    console.log("searchKeyword: " + searchKeyword);
 
     // If no categories are provided, return all wireframes
     if (!categoryIds) {
@@ -43,21 +180,24 @@ export const getWireframesByCategory = async (request, response) => {
     //const categoriesArray = categories.split(",").map((cat) => cat.trim());
     //console.log(categoriesArray);
 
-    const categoryIdsArray = categoryIds.split(",").map((id) => parseInt(id.trim()));
+    const categoryIdsArray = categoryIds
+      .split(",")
+      .map((id) => parseInt(id.trim()));
 
     const categoryCount = categoryIdsArray.length;
     // console.log(categoryCount);
 
     const wireframesQuery = await prisma.$queryRaw(
-      Prisma.sql
-      `
+      Prisma.sql`
       WITH matched_wireframes AS (
           SELECT
             w.id,
             COUNT(DISTINCT wc.category_id) AS matched_categories
           FROM wireframes w
           JOIN category_relationship wc ON w.id = wc.wireframe_id
-          WHERE wc.category_id IN (${Prisma.join(categoryIdsArray)}) -- Filter berdasarkan category_id
+          WHERE wc.category_id IN (${Prisma.join(
+            categoryIdsArray
+          )}) -- Filter berdasarkan category_id
           GROUP BY w.id
         )
         SELECT
@@ -141,9 +281,10 @@ export const getWireframesByCategory = async (request, response) => {
 
     // Check if no wireframes match the criteria
     if (wireframesQuery.length === 0) {
-      return response
-        .status(404)
-        .send({ message: "No wireframes found for the specified categories filter." });
+      // return response
+      //   .status(200)
+      //   .send({ message: "No wireframes found for the specified categories filter." });
+      return response.status(200).send([]);
     }
 
     // Return the filtered wireframes
@@ -168,7 +309,9 @@ export const searchWireframesOrCategories = async (request, response) => {
       return;
     }
 
-    const categoriesArray = filter ? filter.split(",").map((cat) => cat.trim()) : null;
+    const categoriesArray = filter
+      ? filter.split(",").map((cat) => cat.trim())
+      : null;
 
     // const wireframesQuery = await prisma.$queryRaw(
     //     Prisma.sql`
@@ -180,9 +323,9 @@ export const searchWireframesOrCategories = async (request, response) => {
     //         JOIN categories c ON wc.category_id = c.id
     //         WHERE c.name ILIKE ${"%" + input + "%"} OR w.title ILIKE ${"%" + input + "%"}
     //     )
-    //     SELECT 
-    //         w.id, 
-    //         w.title, 
+    //     SELECT
+    //         w.id,
+    //         w.title,
     //         w.cover,
     //         array_agg(DISTINCT c.name) AS categories
     //     FROM wireframes w
@@ -203,8 +346,14 @@ export const searchWireframesOrCategories = async (request, response) => {
           JOIN category_relationship wc ON w.id = wc.wireframe_id
           JOIN categories c ON wc.category_id = c.id
           WHERE 
-              (${categoriesArray ? Prisma.sql`c.name IN (${Prisma.join(categoriesArray)})` : Prisma.sql`TRUE`})
-              AND (c.name ILIKE ${"%" + input + "%"} OR w.title ILIKE ${"%" + input + "%"})
+              (${
+                categoriesArray
+                  ? Prisma.sql`c.name IN (${Prisma.join(categoriesArray)})`
+                  : Prisma.sql`TRUE`
+              })
+              AND (c.name ILIKE ${"%" + input + "%"} OR w.title ILIKE ${
+        "%" + input + "%"
+      })
       )
       SELECT 
           w.id, 
@@ -220,12 +369,12 @@ export const searchWireframesOrCategories = async (request, response) => {
       `
     );
 
-    if(wireframesQuery.length === 0) {
-      return response.status(404).send({ message: "No wireframes or categories found with the specified keyword." });
+    if (wireframesQuery.length === 0) {
+      // return response.status(200).send({ message: "No wireframes or categories found with the specified keyword." });
+      return response.status(200).send([]);
     }
 
-    response.json(wireframesQuery);    
-   
+    response.json(wireframesQuery);
   } catch (error) {
     console.error("Error fetching wireframes by category:", error);
     response.status(500).send({
