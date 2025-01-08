@@ -1,25 +1,29 @@
-import './App.css'
-import Navbar from './navbar/Navbar'
-import SearchSection from './search/SearchSection'
-import FilterPopup from './components/FilterPopup'
-import { useEffect, useRef, useState } from 'react'
-import { api } from './config/api';
-import Tag from './components/Tag'
-import Footer from './navbar/Footer'
-import LayoutCard from './components/LayoutCard'
+import "./App.css";
+import Navbar from "./navbar/Navbar";
+import SearchSection from "./search/SearchSection";
+import FilterPopup from "./components/FilterPopup";
+import { useEffect, useRef, useState } from "react";
+import { api } from "./config/api";
+import Tag from "./components/Tag";
+import Footer from "./navbar/Footer";
+import LayoutCard from "./components/LayoutCard";
+import { NavLink } from "react-router-dom";
 
 function App() {
-  const [filterPopup, setFilterPopup] = useState(false)
-  const [selectedTags, setSelectedTags] = useState<{id: number; name: string}[]>([])
-  const [layouts, setLayouts] = useState<[any[], any[]]>([[],[]])
+  const [filterPopup, setFilterPopup] = useState(false);
+  const [selectedTags, setSelectedTags] = useState<
+    { id: number; name: string }[]
+  >([]);
+  const [layouts, setLayouts] = useState<[any[], any[]]>([[], []]);
   const searchInputRef = useRef<HTMLInputElement>(null);
-  
-  const getLayouts = (tagIds: number[] = [], searchInput: string = '') => {
-    const tagIdsFilter = tagIds.length > 0 ? `&categoryIds=${tagIds.join(',')}` : '';
-    const searchFilter = searchInput ? `&searchKeyword=${searchInput}` : '';
+
+  const getLayouts = (tagIds: number[] = [], searchInput: string = "") => {
+    const tagIdsFilter =
+      tagIds.length > 0 ? `&categoryIds=${tagIds.join(",")}` : "";
+    const searchFilter = searchInput ? `&searchKeyword=${searchInput}` : "";
     const url = `/wireframesCategories?${tagIdsFilter}${searchFilter}`;
 
-    console.log("url", url)
+    console.log("url", url);
 
     api.get<{ data: any[] }>(url).then((res: any) => {
       let tempLayouts = res.data.layouts.map((data: any) => {
@@ -28,19 +32,19 @@ function App() {
           name: data.title,
           image: data.cover,
           tags: data.categories.sort((a: any, b: any) => a.localeCompare(b)),
-        }
-      })
+        };
+      });
       let tempRelatedLayouts = res.data.related.map((data: any) => {
         return {
           id: data.id,
           name: data.title,
           image: data.cover,
           tags: data.categories.sort((a: any, b: any) => a.localeCompare(b)),
-        }
-      })
+        };
+      });
 
-      console.log("tempLayouts", tempLayouts)
-      console.log("tempRelatedLayouts", tempRelatedLayouts)
+      console.log("tempLayouts", tempLayouts);
+      console.log("tempRelatedLayouts", tempRelatedLayouts);
 
       setLayouts([tempLayouts, tempRelatedLayouts]);
     });
@@ -48,31 +52,34 @@ function App() {
 
   useEffect(() => {
     getLayouts();
-  }, [])
+  }, []);
 
   useEffect(() => {
     // console.log("selectedTags", selectedTags)
-    getLayouts(selectedTags.length > 0 ? selectedTags.map(tag => tag.id) : [], searchInputRef.current?.value)
+    getLayouts(
+      selectedTags.length > 0 ? selectedTags.map((tag) => tag.id) : [],
+      searchInputRef.current?.value
+    );
   }, [selectedTags]);
 
   const openFilterPopup = () => {
-    setFilterPopup(true)
-  }
+    setFilterPopup(true);
+  };
 
   const closeFilterPopup = (scrollToTop: boolean) => {
-    setFilterPopup(false)
+    setFilterPopup(false);
     if (scrollToTop) {
-      handleScroll('search-section')
+      handleScroll("search-section");
     }
-  }
+  };
 
-  const handleTagSelect = (tags: {id: number, name: string}[]) => {
+  const handleTagSelect = (tags: { id: number; name: string }[]) => {
     setSelectedTags(tags);
-  }
+  };
 
   const handleTagDelete = (tagId: number) => {
-    setSelectedTags(selectedTags.filter(tag => tag.id !== tagId))
-  }
+    setSelectedTags(selectedTags.filter((tag) => tag.id !== tagId));
+  };
 
   const handleScroll = (divId: string) => {
     const element = document.getElementById(divId);
@@ -92,35 +99,46 @@ function App() {
 
   const handleSearchDelete = () => {
     if (searchInputRef.current) {
-      searchInputRef.current.value = '';
-      getLayouts(selectedTags.length > 0 ? selectedTags.map(tag => tag.id) : [], searchInputRef.current?.value)
+      searchInputRef.current.value = "";
+      getLayouts(
+        selectedTags.length > 0 ? selectedTags.map((tag) => tag.id) : [],
+        searchInputRef.current?.value
+      );
     }
   };
 
   useEffect(() => {
     const handleInputChange = (event: KeyboardEvent) => {
-      if (event.key === 'Enter') {
+      if (event.key === "Enter") {
         // console.log("selectedTags 1", selectedTags)
-        getLayouts(selectedTags.length > 0 ? selectedTags.map(tag => tag.id) : [], searchInputRef.current?.value)
+        getLayouts(
+          selectedTags.length > 0 ? selectedTags.map((tag) => tag.id) : [],
+          searchInputRef.current?.value
+        );
         // console.log("selectedTags 2", selectedTags)
       }
     };
 
     const inputElement = searchInputRef.current;
     if (inputElement) {
-      inputElement.addEventListener('keydown', handleInputChange);
+      inputElement.addEventListener("keydown", handleInputChange);
     }
 
     return () => {
       if (inputElement) {
-        inputElement.removeEventListener('keydown', handleInputChange);
+        inputElement.removeEventListener("keydown", handleInputChange);
       }
     };
   }, [searchInputRef, selectedTags]);
 
   return (
-    <body className='bg-white w-full'>
-      <FilterPopup isOpen={filterPopup} onClose={closeFilterPopup} onSaveChanges={handleTagSelect} selectedTags={selectedTags}/>
+    <body className="bg-white w-full">
+      <FilterPopup
+        isOpen={filterPopup}
+        onClose={closeFilterPopup}
+        onSaveChanges={handleTagSelect}
+        selectedTags={selectedTags}
+      />
       <Navbar
         openFilterPopup={openFilterPopup}
         tags={selectedTags}
@@ -128,52 +146,61 @@ function App() {
         handleFocus={handleFocus}
         onSearchDelete={handleSearchDelete}
         searchTerm={searchInputRef.current?.value}
-        page={'home'}
-        gotoEditables={undefined}
-        gotoSnippet={undefined}
+        page={"home"}
+        gotoEditables={() => {}}
+        gotoSnippet={() => {}}
       />
-      <SearchSection openFilterPopup={openFilterPopup} tags={selectedTags} onTagDelete={handleTagDelete} searchInput={searchInputRef}/>
-      <div className='min-h-screen'>
-        {
-          layouts[0].length > 0 && (
-            <div className='grid grid-cols-3 gap-16 mx-48 pt-16'>
-              {
-                layouts[0].map((layout, index) => (
-                  <div key={index}>
-                    <LayoutCard id={layout.id} name={layout.name} image={layout.image} tags={layout.tags}/>
-                  </div>
-                ))
-              }
+      <SearchSection
+        openFilterPopup={openFilterPopup}
+        tags={selectedTags}
+        onTagDelete={handleTagDelete}
+        searchInput={searchInputRef}
+      />
+      <div className="min-h-screen">
+        {layouts[0].length > 0 && (
+          <div className="grid grid-cols-3 gap-16 mx-48 pt-16">
+            {layouts[0].map((layout, index) => (
+              <NavLink to={`/wireframe/${layout.id}`}>
+                <div key={index}>
+                  <LayoutCard
+                    id={layout.id}
+                    name={layout.name}
+                    image={layout.image}
+                    tags={layout.tags}
+                  />
+                </div>
+              </NavLink>
+            ))}
+          </div>
+        )}
+        {layouts[1].length > 0 && (
+          <>
+            <div className="mx-48 pt-16 text-xs text-[#a6a6a6]">
+              Related by Category
             </div>
-          )
-        }
-        {
-          layouts[1].length > 0 && (
-            <>
-              <div className='mx-48 pt-16 text-xs text-[#a6a6a6]'>Related by Category</div>
-              <div className='grid grid-cols-3 gap-16 mx-48 pt-4'>
-                {
-                  layouts[1].map((layout, index) => (
-                    <div key={index}>
-                      <LayoutCard id={layout.id} name={layout.name} image={layout.image} tags={layout.tags}/>
-                    </div>
-                  ))
-                }
-              </div>
-            </>
-          )
-        }
-        {
-          (layouts[0].length === 0 && layouts[1].length === 0) && (
-            <div className='mx-48 pt-16 text-center text-sm'>
-              <p>No Wireframes Found</p>
+            <div className="grid grid-cols-3 gap-16 mx-48 pt-4">
+              {layouts[1].map((layout, index) => (
+                <div key={index}>
+                  <LayoutCard
+                    id={layout.id}
+                    name={layout.name}
+                    image={layout.image}
+                    tags={layout.tags}
+                  />
+                </div>
+              ))}
             </div>
-          )
-        }
+          </>
+        )}
+        {layouts[0].length === 0 && layouts[1].length === 0 && (
+          <div className="mx-48 pt-16 text-center text-sm">
+            <p>No Wireframes Found</p>
+          </div>
+        )}
       </div>
-      <Footer/>
+      <Footer />
     </body>
-  )
+  );
 }
 
-export default App
+export default App;

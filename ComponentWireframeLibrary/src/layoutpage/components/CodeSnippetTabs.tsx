@@ -1,17 +1,35 @@
-import React, { useEffect } from 'react'
-import SyntaxHighlighter from 'react-syntax-highlighter';
-import { a11yLight } from 'react-syntax-highlighter/dist/esm/styles/hljs';
-import { useState } from 'react';
+import React, { useEffect } from "react";
+import SyntaxHighlighter from "react-syntax-highlighter";
+import { a11yLight } from "react-syntax-highlighter/dist/esm/styles/hljs";
+import { useState } from "react";
 
 type CodeSnippet = {
   name: string;
   type: string;
   codeSnippet: string;
-  editableCodeSnippet?: { idx: number, editableIdx: number, type: string, value: string[] | string }[];
+  editableCodeSnippet?: {
+    idx: number;
+    editableIdx: number;
+    type: string;
+    value: string[] | string;
+  }[];
 };
 
-const CodeSnippetTabs = ({ codeSnippetDisplay, removeProperty }: { codeSnippetDisplay: { id: number, code: string, type: string, name: string }[], removeProperty: number[] }) => {
-  const [code, setCode] = useState<{ id: number, code: string, type: string, name: string }[]>([]);
+const CodeSnippetTabs = ({
+  codeSnippetDisplay,
+  removeProperty,
+}: {
+  codeSnippetDisplay: {
+    id: number;
+    code: string;
+    type: string;
+    name: string;
+  }[];
+  removeProperty: number[];
+}) => {
+  const [code, setCode] = useState<
+    { id: number; code: string; type: string; name: string }[]
+  >([]);
 
   const [isOpen, setIsOpen] = useState(false);
 
@@ -37,28 +55,33 @@ const CodeSnippetTabs = ({ codeSnippetDisplay, removeProperty }: { codeSnippetDi
     } else if (codeLang === "React + Tailwind") {
       neededCodeTypes = ["react_tailwind"];
     }
-    
+
     const newCode = neededCodeTypes.flatMap((type) =>
-      codeSnippetDisplay.filter((snippet) => snippet.type === type && !removeProperty.includes(snippet.id))
+      codeSnippetDisplay.filter(
+        (snippet) =>
+          snippet.type === type && !removeProperty.includes(snippet.id)
+      )
     );
 
     // console.log('removeProperty', removeProperty);
     // console.log('newCode', newCode);
 
     setCode(newCode);
-
   }, [codeSnippetDisplay, codeLang]);
 
-  const [selectedCode, setSelectedCode] = useState({ type: "html", name: "HTML" });
+  const [selectedCode, setSelectedCode] = useState({
+    type: "html",
+    name: "HTML",
+  });
 
   useEffect(() => {
-    if (code.length > 0 ) {
+    if (code.length > 0) {
       setSelectedCode({ type: code[0].type, name: code[0].name });
     }
   }, [code]);
 
   return (
-    <div id='snippet' className="mx-48 my-16">
+    <div id="snippet" className="mx-48 my-16">
       <div className="flex justify-between">
         <div className="flex gap-2">
           {code.map((snippet) => (
@@ -67,9 +90,11 @@ const CodeSnippetTabs = ({ codeSnippetDisplay, removeProperty }: { codeSnippetDi
               className={`hover:bg-[#e7e7e7] cursor-pointer py-2 px-6 rounded-lg text-sm ${
                 selectedCode.name === snippet.name ? "bg-[#f4f4f4]" : "bg-white"
               }`}
-              onClick={() => setSelectedCode({ type: snippet.type, name: snippet.name })}
+              onClick={() =>
+                setSelectedCode({ type: snippet.type, name: snippet.name })
+              }
             >
-              { snippet.name }
+              {snippet.name}
             </div>
           ))}
         </div>
@@ -123,8 +148,29 @@ const CodeSnippetTabs = ({ codeSnippetDisplay, removeProperty }: { codeSnippetDi
         </div>
       </div>
       <div className="bg-[#f4f4f4] rounded-lg p-4 mt-2">
+        <div className="absolute">
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M4 16C2.9 16 2 15.1 2 14V4C2 2.9 2.9 2 4 2H14C15.1 2 16 2.9 16 4M10 8H20C21.1046 8 22 8.89543 22 10V20C22 21.1046 21.1046 22 20 22H10C8.89543 22 8 21.1046 8 20V10C8 8.89543 8.89543 8 10 8Z"
+              stroke="black"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </div>
         <SyntaxHighlighter
-          language={selectedCode.type.includes("_tailwind") ? selectedCode.type.replace("_tailwind", "") : selectedCode.type}
+          language={
+            selectedCode.type.includes("_tailwind")
+              ? selectedCode.type.replace("_tailwind", "")
+              : selectedCode.type
+          }
           style={a11yLight}
           customStyle={{
             backgroundColor: "#f4f4f4",
@@ -136,11 +182,13 @@ const CodeSnippetTabs = ({ codeSnippetDisplay, removeProperty }: { codeSnippetDi
           }}
           wrapLongLines={false}
         >
-          {codeSnippetDisplay.find((snippet) => snippet.name === selectedCode.name)?.code ?? ""}
+          {codeSnippetDisplay.find(
+            (snippet) => snippet.name === selectedCode.name
+          )?.code ?? ""}
         </SyntaxHighlighter>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default CodeSnippetTabs
+export default CodeSnippetTabs;

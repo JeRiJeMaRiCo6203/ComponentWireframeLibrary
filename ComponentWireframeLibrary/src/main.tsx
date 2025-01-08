@@ -5,7 +5,7 @@ import App from "./App.tsx";
 import "./index.css";
 import ReactDOM from "react-dom/client";
 import React from "react";
-import About from "./About.tsx";
+import About from "./aboutpage/AboutPage.tsx";
 import LayoutPage from "./layoutpage/LayoutPage.tsx";
 
 const router = createBrowserRouter([
@@ -18,7 +18,7 @@ const router = createBrowserRouter([
     element: <About />,
   },
   {
-    path: "/layout/:id",
+    path: "/wireframe/:id",
     element: <LayoutPage />,
   },
 ]);
