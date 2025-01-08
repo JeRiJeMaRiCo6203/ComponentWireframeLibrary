@@ -28,13 +28,9 @@ export const getWireframesCategories = async (request, response) => {
   try {
     const { searchKeyword, categoryIds } = request.query;
 
-    // console.log("categoryIds: " + categoryIds);
-    // console.log("searchKeyword: " + searchKeyword);
-
     let wireframesQuery;
 
     if (!categoryIds && !searchKeyword) {
-      // Case 1: No filters applied
       wireframesQuery = await prisma.$queryRaw`
         SELECT 
           w.id, 
@@ -47,6 +43,9 @@ export const getWireframesCategories = async (request, response) => {
         GROUP BY w.id
         ORDER BY w.id ASC;
       `;
+
+      response.status(200).json({ layouts: wireframesQuery, related: [] });
+      return;
     } else if (categoryIds && !searchKeyword) {
       // Case 2: Filter by categoryIds
       const categoryIdsArray = categoryIds
@@ -82,74 +81,145 @@ export const getWireframesCategories = async (request, response) => {
           ORDER BY w.id ASC;
         `
       );
+      response.status(200).json({ layouts: wireframesQuery, related: [] });
+      return;
     } else if (!categoryIds && searchKeyword) {
       // Case 3: Filter by searchKeyword
-      wireframesQuery = await prisma.$queryRaw(
+      const wireframesQuery = await prisma.$queryRaw(
         Prisma.sql`
-          WITH filtered_wireframes AS (
+          WITH filtered_layouts AS (
             SELECT 
               w.id
             FROM wireframes w
             JOIN category_relationship wc ON w.id = wc.wireframe_id
             JOIN categories c ON wc.category_id = c.id
             WHERE 
-              w.title ILIKE ${"%" + searchKeyword + "%"} 
-              OR c.name ILIKE ${"%" + searchKeyword + "%"}
-          )
-          SELECT 
-            w.id, 
-            w.title, 
-            w.cover, 
-            array_agg(DISTINCT c.name) AS categories
-          FROM wireframes w
-          JOIN category_relationship wc ON w.id = wc.wireframe_id
-          JOIN categories c ON wc.category_id = c.id
-          WHERE w.id IN (SELECT id FROM filtered_wireframes) -- Filter to matching wireframes
-          GROUP BY w.id
-          ORDER BY 
-            CASE 
-              WHEN w.title ILIKE ${"%" + searchKeyword + "%"} THEN 1 
-              ELSE 2 
-            END,
-            w.id ASC;
-        `
-      );
-    } else if (categoryIds && searchKeyword) {
-      // Case 4: Filter by both categoryIds and searchKeyword
-      const categoryIdsArray = categoryIds
-        .split(",")
-        .map((id) => parseInt(id.trim()));
-      wireframesQuery = await prisma.$queryRaw(
-        Prisma.sql`
-          WITH filtered_wireframes AS (
-            SELECT
+              w.title ILIKE ${"%" + searchKeyword + "%"} -- Search by title
+          ),
+          filtered_related AS (
+            SELECT 
               w.id
             FROM wireframes w
             JOIN category_relationship wc ON w.id = wc.wireframe_id
             JOIN categories c ON wc.category_id = c.id
             WHERE 
-              wc.category_id IN (${Prisma.join(categoryIdsArray)}) 
-              AND (w.title ILIKE ${"%" + searchKeyword + "%"} OR c.name ILIKE ${
-          "%" + searchKeyword + "%"
-        })
+              c.name ILIKE ${
+                "%" + searchKeyword + "%"
+              } -- Search by category name
+              AND w.id NOT IN (SELECT id FROM filtered_layouts) -- Exclude matches in layouts
           )
           SELECT 
             w.id, 
             w.title, 
             w.cover, 
-            array_agg(DISTINCT c.name) AS categories
+            array_agg(DISTINCT c.name) AS categories,
+            CASE
+              WHEN w.id IN (SELECT id FROM filtered_layouts) THEN 'layouts'
+              WHEN w.id IN (SELECT id FROM filtered_related) THEN 'related'
+              ELSE NULL
+            END AS category_group
           FROM wireframes w
           JOIN category_relationship wc ON w.id = wc.wireframe_id
           JOIN categories c ON wc.category_id = c.id
-          WHERE w.id IN (SELECT id FROM filtered_wireframes)
+          WHERE w.id IN (
+            SELECT id FROM filtered_layouts
+            UNION
+            SELECT id FROM filtered_related
+          )
           GROUP BY w.id
-          ORDER BY w.id ASC;
+          ORDER BY 
+            CASE 
+              WHEN w.id IN (SELECT id FROM filtered_layouts) THEN 1 -- Prioritize layouts
+              ELSE 2 -- Related
+            END,
+            w.id ASC;
         `
       );
+
+      const layouts = wireframesQuery
+        .filter((item) => item.category_group === "layouts")
+        .map(({ category_group, ...rest }) => rest); // Hilangkan category_group
+
+      const related = wireframesQuery
+        .filter((item) => item.category_group === "related")
+        .map(({ category_group, ...rest }) => rest); // Hilangkan category_group
+
+      response.status(200).json({ layouts, related });
+      return;
+    } else if (categoryIds && searchKeyword) {
+      // Case 4: Filter by both categoryIds and searchKeyword
+      const categoryIdsArray = categoryIds
+        .split(",")
+        .map((id) => parseInt(id.trim()));
+
+      wireframesQuery = await prisma.$queryRaw(
+        Prisma.sql`
+            WITH filtered_layouts AS (
+              SELECT 
+                w.id
+              FROM wireframes w
+              JOIN category_relationship wc ON w.id = wc.wireframe_id
+              JOIN categories c ON wc.category_id = c.id
+              WHERE 
+                w.title ILIKE ${"%" + searchKeyword + "%"} -- Search by title
+                ${
+                  categoryIdsArray
+                    ? Prisma.sql`AND c.id IN (${Prisma.join(categoryIdsArray)})`
+                    : Prisma.sql``
+                } -- Filter by categoryIdsArray if provided
+            ),
+            filtered_related AS (
+              SELECT 
+                w.id
+              FROM wireframes w
+              JOIN category_relationship wc ON w.id = wc.wireframe_id
+              JOIN categories c ON wc.category_id = c.id
+              WHERE 
+                c.id IN (${Prisma.join(categoryIdsArray)}) -- Match category IDs
+                AND w.id NOT IN (SELECT id FROM filtered_layouts) -- Exclude matches in layouts
+            )
+            SELECT 
+              w.id, 
+              w.title, 
+              w.cover, 
+              array_agg(DISTINCT c.name) AS categories,
+              CASE
+                WHEN w.id IN (SELECT id FROM filtered_layouts) THEN 'layouts'
+                WHEN w.id IN (SELECT id FROM filtered_related) THEN 'related'
+                ELSE NULL
+              END AS category_group
+            FROM wireframes w
+            JOIN category_relationship wc ON w.id = wc.wireframe_id
+            JOIN categories c ON wc.category_id = c.id
+            WHERE w.id IN (
+              SELECT id FROM filtered_layouts
+              UNION
+              SELECT id FROM filtered_related
+            )
+            GROUP BY w.id
+            ORDER BY 
+              CASE 
+                WHEN w.id IN (SELECT id FROM filtered_layouts) THEN 1 -- Prioritize layouts
+                ELSE 2 -- Related
+              END,
+              w.id ASC;
+          `
+      );
+
+      const layouts = wireframesQuery
+        .filter((item) => item.category_group === "layouts")
+        .map(({ category_group, ...rest }) => rest); // Hilangkan category_group
+
+      const related = wireframesQuery
+        .filter((item) => item.category_group === "related")
+        .map(({ category_group, ...rest }) => rest); // Hilangkan category_group
+
+      response.status(200).json({ layouts, related });
+      return;
     }
 
-    // Send the query result
-    response.status(200).json(wireframesQuery);
+    // // Send the query result
+    // response.status(200).json(wireframesQuery);
   } catch (error) {
     console.error("Error fetching wireframes and categories:", error);
     response.status(500).send({
