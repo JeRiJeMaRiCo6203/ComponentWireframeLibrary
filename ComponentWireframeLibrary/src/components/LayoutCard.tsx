@@ -5,7 +5,7 @@ const LayoutCard = ({id, name, image, tags}: {id: number, name: string, image: s
   return (
     <div
       onClick={() => console.log('clicked')}
-      className='w-full cursor-pointer'
+      className='w-full cursor-pointer hover:scale-105 transition-all'
     >
       <img className='rounded-lg' src={image} width="100%" alt="" />
       <p className='pt-2 text-base'>{name}</p>

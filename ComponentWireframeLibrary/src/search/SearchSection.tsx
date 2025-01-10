@@ -4,7 +4,7 @@ import Tag from '../components/TagNotSelected'
 import IconX from '../svg/IconX'
 import FilterPopup from '../components/FilterPopup'
 
-const SearchSection = ({ openFilterPopup, tags, onTagDelete, searchInput }: { openFilterPopup: () => void, tags: any, onTagDelete: (tagId: number) => void, searchInput: any }) => {
+const SearchSection = ({ openFilterPopup, tags, onTagDelete, searchInput, handleEnterSearch }: { openFilterPopup: () => void, tags: any, onTagDelete: (tagId: number) => void, searchInput: any, handleEnterSearch: () => void }) => {
   // const [searchTerm, setSearchTerm] = useState('');
   // const [suggestions, setSuggestions] = useState<any[]>([]);
   // const [activeSuggestionIndex, setActiveSuggestionIndex] = useState(-1); // Track active suggestion for keyboard navigation
@@ -103,7 +103,7 @@ const SearchSection = ({ openFilterPopup, tags, onTagDelete, searchInput }: { op
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M22 3H2L10 12.46V19L14 21V12.46L22 3Z" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
           <p className='text-sm'>Filters</p>
         </div>
-        <div className='flex'>
+        <div className='flex gap-2'>
           <input
             ref={searchInput}
             autoComplete='off'
@@ -118,11 +118,33 @@ const SearchSection = ({ openFilterPopup, tags, onTagDelete, searchInput }: { op
             placeholder="Search..."
             className='w-80 py-2 px-3 bg-[#f4f4f4] border-2 border-[#f4f4f4] hover:bg-[#e7e7e7] hover:border-[#e7e7e7] focus:bg-[#e7e7e7] focus:border-[#e7e7e7] text-sm rounded-lg'
           />
-          {/* <div
-            className='h-9 w-9 flex justify-center items-center rounded-lg border-2 border-[#f4f4f4] hover:bg-[#e7e7e7] hover:border-[#e7e7e7] hover:cursor-pointer transition-all z-20'
+          <div
+            onClick={handleEnterSearch}
+            className="h-full aspect-square flex justify-center items-center rounded-lg border-2 border-[#f4f4f4] hover:bg-[#e7e7e7] hover:border-[#e7e7e7] hover:cursor-pointer transition-all"
           >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11 19C15.4183 19 19 15.4183 19 11C19 6.58172 15.4183 3 11 3C6.58172 3 3 6.58172 3 11C3 15.4183 6.58172 19 11 19Z" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 20.9992L16.7 16.6992" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </div> */}
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M11 19C15.4183 19 19 15.4183 19 11C19 6.58172 15.4183 3 11 3C6.58172 3 3 6.58172 3 11C3 15.4183 6.58172 19 11 19Z"
+                stroke="black"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M21 20.9992L16.7 16.6992"
+                stroke="black"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </div>
         </div>
       </div>
       <div className='flex flex-wrap gap-2 py-4 border-b-2 border-[#f4f4f4]'>

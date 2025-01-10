@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 interface DropdownProps {
   options: string[];
   changeData?: (value: string) => void;
+  reset?: boolean;
 }
 
-const DropdownInput: React.FC<DropdownProps> = ({ options, changeData }) => {
+const DropdownInput: React.FC<DropdownProps> = ({ options, changeData, reset }) => {
   const [selectedOption, setSelectedOption] = useState(options[0]);
   const [isOpen, setIsOpen] = useState(false);
 
@@ -24,6 +25,14 @@ const DropdownInput: React.FC<DropdownProps> = ({ options, changeData }) => {
   const handleBlur = () => {
     setIsOpen(false);
   };
+
+  useEffect(() => {
+    if (changeData) {
+      changeData(options[0]);
+    }
+    setSelectedOption(options[0]);
+    setIsOpen(false);
+  }, [reset]);
 
   return (
     <div className='relative' tabIndex={0} onBlur={handleBlur}>

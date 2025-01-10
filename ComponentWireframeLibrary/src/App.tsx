@@ -107,15 +107,18 @@ function App() {
     }
   };
 
+  const handleEnterSearch = () => {
+    getLayouts(
+      selectedTags.length > 0 ? selectedTags.map((tag) => tag.id) : [],
+      searchInputRef.current?.value
+    );
+  };
+
   useEffect(() => {
+
     const handleInputChange = (event: KeyboardEvent) => {
       if (event.key === "Enter") {
-        // console.log("selectedTags 1", selectedTags)
-        getLayouts(
-          selectedTags.length > 0 ? selectedTags.map((tag) => tag.id) : [],
-          searchInputRef.current?.value
-        );
-        // console.log("selectedTags 2", selectedTags)
+        handleEnterSearch();
       }
     };
 
@@ -126,7 +129,7 @@ function App() {
 
     return () => {
       if (inputElement) {
-        inputElement.removeEventListener("keydown", handleInputChange);
+      inputElement.removeEventListener("keydown", handleInputChange);
       }
     };
   }, [searchInputRef, selectedTags]);
@@ -155,6 +158,7 @@ function App() {
         tags={selectedTags}
         onTagDelete={handleTagDelete}
         searchInput={searchInputRef}
+        handleEnterSearch={handleEnterSearch}
       />
       <div className="min-h-screen">
         {layouts[0].length > 0 && (

@@ -141,6 +141,12 @@ const LayoutPage = () => {
     });
   }
 
+  const [reset, setReset] = useState(false);
+
+  const resetEditables = () => {
+    setReset((prev) => !prev);
+  };
+
   useEffect(() => {
     setCodeSnippetDisplay(updateCodeSnippet());
   }, [rawCodeSnippet && editables]);
@@ -218,7 +224,6 @@ const LayoutPage = () => {
 
   function changeAspect(aspect: string) {
     let tempCodeSnippet = JSON.parse(JSON.stringify(codeSnippetDisplay));
-    console.log(tempCodeSnippet);
     if (
       tempCodeSnippet.find((snippet: any) => snippet.type === "preview-css")
         ?.code === undefined
@@ -285,31 +290,44 @@ const LayoutPage = () => {
       </div>
       <div
         id="editables"
-        className="mx-48 my-16 flex flex-wrap justify-center items-center gap-6"
+        className="mx-48 my-16"
       >
-        {editables.map((editable, index) => {
-          return (
-            <div key={index} className="w-80">
-              <div>{editable.name}</div>
-              {editable.switchOptions ? (
-                <SwitchInput
-                  options={editable.switchOptions as [string, string]}
-                  changeData={(value) => changeData(index, value)}
-                />
-              ) : editable.dropdownOptions ? (
-                <DropdownInput
-                  options={editable.dropdownOptions as string[]}
-                  changeData={(value) => changeData(index, value)}
-                />
-              ) : (
-                <NumberInput
-                  numberRange={editable.numberRange as [number, number]}
-                  changeData={(value) => changeData(index, value)}
-                />
-              )}
-            </div>
-          );
-        })}
+        <div className="flex justify-end">
+          <div
+            className="px-4 py-2 border-2 border-[#f4f4f4] rounded-lg hover:bg-[#e7e7e7] hover:border-[#e7e7e7] text-sm transition-all cursor-pointer"
+            onClick={resetEditables}
+          >
+            Reset to Default
+          </div>
+        </div>
+        <div className="pt-4 flex flex-wrap justify-center items-center gap-6">
+          {editables.map((editable, index) => {
+            return (
+              <div key={index} className="w-80">
+                <div>{editable.name}</div>
+                {editable.switchOptions ? (
+                  <SwitchInput
+                    options={editable.switchOptions as [string, string]}
+                    changeData={(value) => changeData(index, value)}
+                    reset={reset}
+                  />
+                ) : editable.dropdownOptions ? (
+                  <DropdownInput
+                    options={editable.dropdownOptions as string[]}
+                    changeData={(value) => changeData(index, value)}
+                    reset={reset}
+                  />
+                ) : (
+                  <NumberInput
+                    numberRange={editable.numberRange as [number, number]}
+                    changeData={(value) => changeData(index, value)}
+                    reset={reset}
+                  />
+                )}
+              </div>
+            );
+          })}
+        </div>
       </div>
       <div
         className={
@@ -368,7 +386,8 @@ const LayoutPage = () => {
             {parse(`
                 <style>
                   .section > * {
-                    transition: all 150ms ease 150ms;
+                    transition: all 150ms ease;
+                    transition-delay: 50ms;
                   }
                   ${
                     codeSnippetDisplay.find(

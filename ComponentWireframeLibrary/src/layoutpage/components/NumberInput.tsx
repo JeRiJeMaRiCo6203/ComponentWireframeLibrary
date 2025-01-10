@@ -1,11 +1,12 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 interface NumberInputProps {
   numberRange: [number, number];
   changeData?: (value: number) => void;
+  reset?: boolean;
 }
 
-const NumberInput: React.FC<NumberInputProps> = ({ numberRange, changeData }) => {
+const NumberInput: React.FC<NumberInputProps> = ({ numberRange, changeData, reset }) => {
   const [amount, setAmount] = useState(numberRange[1]);
 
   const handleAmount = (value: number) => {
@@ -18,6 +19,13 @@ const NumberInput: React.FC<NumberInputProps> = ({ numberRange, changeData }) =>
     setAmount(value);
     if (changeData) changeData(value);
   };
+
+  useEffect(() => {
+    if (changeData) {
+      changeData(numberRange[1]);
+    }
+    setAmount(numberRange[1]);
+  }, [reset]);
 
   return (
     <div className='w-full mt-2 flex items-center gap-2'>

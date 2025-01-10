@@ -76,7 +76,7 @@ const Navbar = ({
             >
               <path
                 d="M50 97C75.9574 97 97 75.9574 97 50C97 24.0426 75.9574 3 50 3M50 97C24.0426 97 3 75.9574 3 50C3 24.0426 24.0426 3 50 3M50 97C64.9906 97 77.1429 75.9574 77.1429 50C77.1429 24.0426 64.9906 3 50 3M50 97C35.0094 97 22.8571 75.9574 22.8571 50C22.8571 24.0426 35.0094 3 50 3M53 50C53 51.6569 51.6569 53 50 53C48.3431 53 47 51.6569 47 50C47 48.3431 48.3431 47 50 47C51.6569 47 53 48.3431 53 50Z"
-                stroke="black"
+                stroke="#222222"
                 stroke-width="6"
               />
             </svg>
@@ -224,7 +224,12 @@ const Navbar = ({
               </>
             ) : page === "about" ? (
               <>
-                <div>About</div>
+                <div
+                  className="h-9 w-9 flex justify-center items-center rounded-lg border-2 border-[#f4f4f4] hover:bg-[#e7e7e7] hover:border-[#e7e7e7] hover:cursor-pointer transition-all z-20 relative group/emoji"
+                >
+                  <div className="text-lg">😀</div>
+                  <div className="absolute mt-[calc(3rem+2px)] -top-[2px] left-1/2 -translate-x-1/2 py-1 px-3 bg-white border-2 border-[#f4f4f4] rounded-lg text-xs opacity-0 scale-95 transition-all group-hover/emoji:opacity-100 group-hover/emoji:scale-100 pointer-events-none">Hello!</div>
+                </div>
               </>
             ) : page === "layout" ? (
               <>

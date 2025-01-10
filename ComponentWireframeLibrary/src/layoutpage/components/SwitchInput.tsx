@@ -1,11 +1,12 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface SwitchInputProps {
   options: [string, string];
   changeData?: (value: string) => void;
+  reset?: boolean;
 }
 
-const SwitchInput: React.FC<SwitchInputProps> = ({ options, changeData }) => {
+const SwitchInput: React.FC<SwitchInputProps> = ({ options, changeData, reset }) => {
   const [isOn, setIsOn] = useState(false);
 
   const handleSwitch = (value: boolean) => {
@@ -14,6 +15,13 @@ const SwitchInput: React.FC<SwitchInputProps> = ({ options, changeData }) => {
       changeData(value ? options[1] : options[0]);
     }
   };
+
+  useEffect(() => {
+    if (changeData) {
+      changeData(options[0]);
+    }
+    setIsOn(false);
+  }, [reset]);
 
   return (
     <div 
