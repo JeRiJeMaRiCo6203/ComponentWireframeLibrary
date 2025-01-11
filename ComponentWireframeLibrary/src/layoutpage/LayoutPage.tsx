@@ -36,11 +36,17 @@ type Editable = {
 type Wireframe = {
   id: number;
   title: string;
-  categories: string[];
+  tags: string[];
 };
 
 const LayoutPage = () => {
   const { id } = useParams();
+
+  const [wireframe, setWireframe] = useState<Wireframe>({
+    id: -1,
+    title: "",
+    tags: [],
+  });
 
   const [rawCodeSnippet, setRawCodeSnippet] = useState<CodeSnippet[]>([]);
 
@@ -50,14 +56,29 @@ const LayoutPage = () => {
 
   const [editables, setEditables] = useState<Editable[]>([]);
 
-  const [wireframe, setWireframe] = useState<Wireframe[]>([]);
-
   const [codeSnippetDisplay, setCodeSnippetDisplay] = useState<
     { id: number; code: string; type: string; name: string }[]
   >([]);
-
+  
+  useEffect(() => {
+    console.log(wireframe);
+  }, [wireframe]);
 
   useEffect(() => {
+    api
+      .get<{ data: any }>(`wireframeDetails/${id}`)
+      .then((res: any) => {
+        let tempWireframe = res.data.map((data: any) => {
+          return {
+            id: data.id,
+            title: data.title,
+            tags: data.categories,
+          };
+        });
+
+        setWireframe(tempWireframe[0]);
+      });
+
     api
       .get<{ data: CodeSnippet[] }>(`editablecodesBasedOnWireframe/${id}`)
       .then((res: any) => {
@@ -117,19 +138,6 @@ const LayoutPage = () => {
       );
 
       setRemoveProperty(Array(editables.length).fill(-1));
-
-      api.get<{ data: any }>(`wireframeDetails/${id}`).then((res: any) => {
-        let wireframe = res.data.map((data: any) => {
-          return {
-            id: data.id,
-            title: data.title,
-            categories: data.categories,
-          };
-        });
-
-        setWireframe(wireframe);
-      });
-
     });
   }, [id]);
 
@@ -300,17 +308,18 @@ const LayoutPage = () => {
         gotoSnippet={() => handleScroll("snippet")}
       />
       <div className="gap-16 mx-48 mt-32 mb-16">
-        <p className="text-4xl pt-16 font-medium">{wireframe[0].title}</p>
+        <p className="text-4xl pt-16 font-medium">{wireframe.title}</p>
         <div className="flex flex-wrap gap-2 pt-4">
-          {/* <Tag title="Button" />
-          <Tag title="Accordion" />
-          <Tag title="Gallery" />
-          <Tag title="Modal" />
-          <Tag title="Header" /> */}
-          {wireframe.length > 0 &&
-            wireframe[0].categories.map((category, index) => (
-              <Tag key={index} title={category} />
-            ))}
+          {
+            wireframe.tags?.map((tag: any, index: number) => {
+              return (
+                <Tag
+                  key={index}
+                  title={tag}
+                />
+              );
+            })
+          }
         </div>
       </div>
       <div
