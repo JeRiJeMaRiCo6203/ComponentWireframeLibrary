@@ -66,24 +66,26 @@ const Navbar = ({
         }`}
       >
         <div className="w-full px-48 py-2 grid grid-cols-[1fr_min-content_1fr] gap-16">
-          <div className="flex items-center gap-2">
-            <svg
-              width="32"
-              height="32"
-              viewBox="0 0 100 100"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M50 97C75.9574 97 97 75.9574 97 50C97 24.0426 75.9574 3 50 3M50 97C24.0426 97 3 75.9574 3 50C3 24.0426 24.0426 3 50 3M50 97C64.9906 97 77.1429 75.9574 77.1429 50C77.1429 24.0426 64.9906 3 50 3M50 97C35.0094 97 22.8571 75.9574 22.8571 50C22.8571 24.0426 35.0094 3 50 3M53 50C53 51.6569 51.6569 53 50 53C48.3431 53 47 51.6569 47 50C47 48.3431 48.3431 47 50 47C51.6569 47 53 48.3431 53 50Z"
-                stroke="#222222"
-                stroke-width="6"
-              />
-            </svg>
-            <p className="spacemono text-lg font-bold leading-9 tracking-tighter">
-              layzy
-            </p>
-          </div>
+          <NavLink to="/">
+            <div className="flex items-center gap-2 cursor-pointer">
+              <svg
+                width="32"
+                height="32"
+                viewBox="0 0 100 100"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M50 97C75.9574 97 97 75.9574 97 50C97 24.0426 75.9574 3 50 3M50 97C24.0426 97 3 75.9574 3 50C3 24.0426 24.0426 3 50 3M50 97C64.9906 97 77.1429 75.9574 77.1429 50C77.1429 24.0426 64.9906 3 50 3M50 97C35.0094 97 22.8571 75.9574 22.8571 50C22.8571 24.0426 35.0094 3 50 3M53 50C53 51.6569 51.6569 53 50 53C48.3431 53 47 51.6569 47 50C47 48.3431 48.3431 47 50 47C51.6569 47 53 48.3431 53 50Z"
+                  stroke="#222222"
+                  stroke-width="6"
+                />
+              </svg>
+              <p className="spacemono text-lg font-bold leading-9 tracking-tighter">
+                layzy
+              </p>
+            </div>
+          </NavLink>
           <div className="flex gap-2 h-full items-center">
             <NavLink to="/">
               <div className="py-2 px-6 rounded-lg text-sm hover:bg-[#e7e7e7] hover:cursor-pointer transition-all">
