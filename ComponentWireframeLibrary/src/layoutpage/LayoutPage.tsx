@@ -33,6 +33,12 @@ type Editable = {
   removeProperty?: number[];
 };
 
+type Wireframe = {
+  id: number;
+  title: string;
+  categories: string[];
+};
+
 const LayoutPage = () => {
   const { id } = useParams();
 
@@ -44,10 +50,12 @@ const LayoutPage = () => {
 
   const [editables, setEditables] = useState<Editable[]>([]);
 
+  const [wireframe, setWireframe] = useState<Wireframe[]>([]);
+
   const [codeSnippetDisplay, setCodeSnippetDisplay] = useState<
     { id: number; code: string; type: string; name: string }[]
   >([]);
-  
+
 
   useEffect(() => {
     api
@@ -101,14 +109,27 @@ const LayoutPage = () => {
           value: editable.switchOptions
             ? 0
             : editable.dropdownOptions
-            ? 0
-            : editable.numberRange
-            ? editable.numberRange[1]
-            : null,
+              ? 0
+              : editable.numberRange
+                ? editable.numberRange[1]
+                : null,
         }))
       );
 
       setRemoveProperty(Array(editables.length).fill(-1));
+
+      api.get<{ data: any }>(`wireframeDetails/${id}`).then((res: any) => {
+        let wireframe = res.data.map((data: any) => {
+          return {
+            id: data.id,
+            title: data.title,
+            categories: data.categories,
+          };
+        });
+
+        setWireframe(wireframe);
+      });
+
     });
   }, [id]);
 
@@ -201,7 +222,7 @@ const LayoutPage = () => {
           } else {
             placeholdersValue =
               editableCodeSnippet.code[
-                editables[editableCodeSnippet.editableIdx].value
+              editables[editableCodeSnippet.editableIdx].value
               ];
           }
           rawCodeSnippetSingle.codeSnippet =
@@ -268,24 +289,28 @@ const LayoutPage = () => {
   return (
     <body className="bg-white w-full">
       <Navbar
-        openFilterPopup={() => {}}
+        openFilterPopup={() => { }}
         tags={undefined}
-        onTagDelete={() => {}}
-        handleFocus={() => {}}
-        onSearchDelete={() => {}}
+        onTagDelete={() => { }}
+        handleFocus={() => { }}
+        onSearchDelete={() => { }}
         searchTerm={undefined}
         page={"layout"}
         gotoEditables={() => handleScroll("editables")}
         gotoSnippet={() => handleScroll("snippet")}
       />
       <div className="gap-16 mx-48 mt-32 mb-16">
-        <p className="text-4xl pt-16 font-medium">Orion</p>
+        <p className="text-4xl pt-16 font-medium">{wireframe[0].title}</p>
         <div className="flex flex-wrap gap-2 pt-4">
-          <Tag title="Button" />
+          {/* <Tag title="Button" />
           <Tag title="Accordion" />
           <Tag title="Gallery" />
           <Tag title="Modal" />
-          <Tag title="Header" />
+          <Tag title="Header" /> */}
+          {wireframe.length > 0 &&
+            wireframe[0].categories.map((category, index) => (
+              <Tag key={index} title={category} />
+            ))}
         </div>
       </div>
       <div
@@ -373,12 +398,12 @@ const LayoutPage = () => {
                 aspect === "16/9"
                   ? `${(window.innerWidth - 384) / 1440}em`
                   : aspect === "4/3"
-                  ? `
+                    ? `
                 ${((window.innerWidth - 384) * 1.05) / 1440}em`
-                  : aspect === "9/16"
-                  ? `
+                    : aspect === "9/16"
+                      ? `
                 ${((window.innerWidth - 384) * 1.1) / 1440}em`
-                  : "1em",
+                      : "1em",
               scrollbarWidth: "thin",
               scrollbarColor: "#e7e7e7 transparent",
             }}
@@ -389,18 +414,16 @@ const LayoutPage = () => {
                     transition: all 150ms ease;
                     transition-delay: 50ms;
                   }
-                  ${
-                    codeSnippetDisplay.find(
-                      (snippet) => snippet.type === "preview-css"
-                    )?.code ?? ""
-                  }
+                  ${codeSnippetDisplay.find(
+              (snippet) => snippet.type === "preview-css"
+            )?.code ?? ""
+              }
                 </style>
                 <div style="width: 100%; height: 100%; min-height: max-content; display: flex; justify-content: center; align-items: center;">
-                  ${
-                    codeSnippetDisplay.find(
-                      (snippet) => snippet.type === "html"
-                    )?.code ?? ""
-                  }
+                  ${codeSnippetDisplay.find(
+                (snippet) => snippet.type === "html"
+              )?.code ?? ""
+              }
                 </div>
               `)}
           </div>
