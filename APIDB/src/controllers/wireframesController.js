@@ -122,6 +122,7 @@ export const getAllWireframeDetailsById = async (request, response) => {
     }
 
     response.json(wireframeDetailsQuery);
+    return;
   } catch (error) {
     console.error("Error fetching wireframe details:", error);
     response

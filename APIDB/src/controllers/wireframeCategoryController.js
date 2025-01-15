@@ -152,21 +152,32 @@ export const getWireframesCategories = async (request, response) => {
         .split(",")
         .map((id) => parseInt(id.trim()));
 
+      const categoryCount = categoryIdsArray.length;
+
       wireframesQuery = await prisma.$queryRaw(
         Prisma.sql`
-            WITH filtered_layouts AS (
+          WITH matched_wireframes AS (
+              SELECT
+                w.id,
+                COUNT(DISTINCT wc.category_id) AS matched_categories
+              FROM wireframes w
+              JOIN category_relationship wc ON w.id = wc.wireframe_id
+              WHERE wc.category_id IN (${Prisma.join(categoryIdsArray)})
+              GROUP BY w.id
+            ),
+            filtered_layouts AS (
               SELECT 
                 w.id
               FROM wireframes w
               JOIN category_relationship wc ON w.id = wc.wireframe_id
               JOIN categories c ON wc.category_id = c.id
+              JOIN matched_wireframes mw ON w.id = mw.id
               WHERE 
                 w.title ILIKE ${"%" + searchKeyword + "%"} -- Search by title
-                ${
+                AND mw.matched_categories = ${categoryCount} -- Ensure all categories are matched
+                AND c.id IN (${Prisma.join(
                   categoryIdsArray
-                    ? Prisma.sql`AND c.id IN (${Prisma.join(categoryIdsArray)})`
-                    : Prisma.sql``
-                } -- Filter by categoryIdsArray if provided
+                )}) -- Ensure the category matches
             ),
             filtered_related AS (
               SELECT 
@@ -174,8 +185,12 @@ export const getWireframesCategories = async (request, response) => {
               FROM wireframes w
               JOIN category_relationship wc ON w.id = wc.wireframe_id
               JOIN categories c ON wc.category_id = c.id
+              JOIN matched_wireframes mw ON w.id = mw.id
               WHERE 
-                c.id IN (${Prisma.join(categoryIdsArray)}) -- Match category IDs
+                c.id IN (${Prisma.join(
+                  categoryIdsArray
+                )}) -- Ensure the category matches
+                AND mw.matched_categories = ${categoryCount} -- Ensure all categories are matched
                 AND w.id NOT IN (SELECT id FROM filtered_layouts) -- Exclude matches in layouts
             )
             SELECT 
@@ -206,11 +221,31 @@ export const getWireframesCategories = async (request, response) => {
           `
       );
 
-      const layouts = wireframesQuery
+      const filterWireframes = (wireframes, searchKeyword) => {
+        const normalizedKeyword = searchKeyword.toLowerCase();
+
+        return wireframes.filter((wf) => {
+          const titleMatches = wf.title
+            .toLowerCase()
+            .includes(normalizedKeyword);
+          const categoryMatches = wf.categories.some((cat) =>
+            cat.toLowerCase().includes(normalizedKeyword)
+          );
+
+          return titleMatches || categoryMatches;
+        });
+      };
+
+      const filteredWireframes = filterWireframes(
+        wireframesQuery,
+        searchKeyword
+      );
+
+      const layouts = filteredWireframes
         .filter((item) => item.category_group === "layouts")
         .map(({ category_group, ...rest }) => rest); // Hilangkan category_group
 
-      const related = wireframesQuery
+      const related = filteredWireframes
         .filter((item) => item.category_group === "related")
         .map(({ category_group, ...rest }) => rest); // Hilangkan category_group
 
