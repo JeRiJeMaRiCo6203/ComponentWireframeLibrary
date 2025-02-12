@@ -46,8 +46,8 @@ const CodeSnippetTabs = ({
   };
 
   useEffect(() => {
-    console.log("codeLang:", codeLang);
-    console.log("codeSnippetDisplay:", codeSnippetDisplay);
+    // console.log("codeLang:", codeLang);
+    // console.log("codeSnippetDisplay:", codeSnippetDisplay);
 
     let neededCodeTypes: string[] = [];
     if (codeLang === "HTML + CSS") {
@@ -68,7 +68,7 @@ const CodeSnippetTabs = ({
     );
 
     // console.log('removeProperty', removeProperty);
-    console.log('newCode', newCode);
+    // console.log('newCode', newCode);
 
     setCode(newCode);
   }, [codeSnippetDisplay, codeLang]);
