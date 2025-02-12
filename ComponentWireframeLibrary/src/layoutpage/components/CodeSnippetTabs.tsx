@@ -194,8 +194,8 @@ const CodeSnippetTabs = ({
           language={
             selectedCode.type === "html" || selectedCode.type === "html-tailwind"
               ? "htmlbars"
-              : selectedCode.type.includes("-tailwind")
-              ? selectedCode.type.replace("-tailwind", "")
+              : selectedCode.type === "react" || selectedCode.type === "react-tailwind"
+              ? "react"
               : selectedCode.type
           }
           // language="htmlbars"
