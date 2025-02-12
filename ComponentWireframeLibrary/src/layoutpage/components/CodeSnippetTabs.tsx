@@ -46,15 +46,18 @@ const CodeSnippetTabs = ({
   };
 
   useEffect(() => {
+    console.log("codeLang:", codeLang);
+    console.log("codeSnippetDisplay:", codeSnippetDisplay);
+
     let neededCodeTypes: string[] = [];
     if (codeLang === "HTML + CSS") {
       neededCodeTypes = ["html", "css"];
     } else if (codeLang === "HTML + Tailwind") {
-      neededCodeTypes = ["html_tailwind"];
+      neededCodeTypes = ["html-tailwind"];
     } else if (codeLang === "React + CSS") {
       neededCodeTypes = ["react", "css"];
     } else if (codeLang === "React + Tailwind") {
-      neededCodeTypes = ["react_tailwind"];
+      neededCodeTypes = ["react-tailwind"];
     }
 
     const newCode = neededCodeTypes.flatMap((type) =>
@@ -65,7 +68,7 @@ const CodeSnippetTabs = ({
     );
 
     // console.log('removeProperty', removeProperty);
-    // console.log('newCode', newCode);
+    console.log('newCode', newCode);
 
     setCode(newCode);
   }, [codeSnippetDisplay, codeLang]);
@@ -189,8 +192,8 @@ const CodeSnippetTabs = ({
       <div className="bg-[#f4f4f4] rounded-lg p-4 mt-2">
         <SyntaxHighlighter
           language={
-            selectedCode.type.includes("_tailwind")
-              ? selectedCode.type.replace("_tailwind", "")
+            selectedCode.type.includes("-tailwind")
+              ? selectedCode.type.replace("-tailwind", "")
               : selectedCode.type
           }
           style={a11yLight}
