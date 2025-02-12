@@ -74,7 +74,7 @@ const CodeSnippetTabs = ({
   }, [codeSnippetDisplay, codeLang]);
 
   const [selectedCode, setSelectedCode] = useState({
-    type: "html",
+    type: "htmlbars",
     name: "HTML",
   });
 
@@ -192,10 +192,13 @@ const CodeSnippetTabs = ({
       <div className="bg-[#f4f4f4] rounded-lg p-4 mt-2">
         <SyntaxHighlighter
           language={
-            selectedCode.type.includes("-tailwind")
+            selectedCode.type === "html" || selectedCode.type === "html-tailwind"
+              ? "htmlbars"
+              : selectedCode.type.includes("-tailwind")
               ? selectedCode.type.replace("-tailwind", "")
               : selectedCode.type
           }
+          // language="htmlbars"
           style={a11yLight}
           customStyle={{
             backgroundColor: "#f4f4f4",
