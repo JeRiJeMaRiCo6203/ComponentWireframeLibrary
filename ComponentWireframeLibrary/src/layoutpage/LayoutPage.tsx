@@ -9,6 +9,7 @@ import { useParams } from "react-router-dom";
 import CodeSnippetTabs from "./components/CodeSnippetTabs";
 import Footer from "../navbar/Footer";
 import Navbar from "../navbar/Navbar";
+import Loading from "../components/Loading";
 
 type CodeSnippet = {
   id: number;
@@ -59,25 +60,25 @@ const LayoutPage = () => {
   const [codeSnippetDisplay, setCodeSnippetDisplay] = useState<
     { id: number; code: string; type: string; name: string }[]
   >([]);
-  
+
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     console.log(wireframe);
   }, [wireframe]);
 
   useEffect(() => {
-    api
-      .get<{ data: any }>(`wireframeDetails/${id}`)
-      .then((res: any) => {
-        let tempWireframe = res.data.map((data: any) => {
-          return {
-            id: data.id,
-            title: data.title,
-            tags: data.categories,
-          };
-        });
-
-        setWireframe(tempWireframe[0]);
+    api.get<{ data: any }>(`wireframeDetails/${id}`).then((res: any) => {
+      let tempWireframe = res.data.map((data: any) => {
+        return {
+          id: data.id,
+          title: data.title,
+          tags: data.categories,
+        };
       });
+
+      setWireframe(tempWireframe[0]);
+    });
 
     api
       .get<{ data: CodeSnippet[] }>(`editablecodesBasedOnWireframe/${id}`)
@@ -130,14 +131,16 @@ const LayoutPage = () => {
           value: editable.switchOptions
             ? 0
             : editable.dropdownOptions
-              ? 0
-              : editable.numberRange
-                ? editable.numberRange[1]
-                : null,
+            ? 0
+            : editable.numberRange
+            ? editable.numberRange[1]
+            : null,
         }))
       );
 
       setRemoveProperty(Array(editables.length).fill(-1));
+
+      setLoading(false);
     });
   }, [id]);
 
@@ -230,7 +233,7 @@ const LayoutPage = () => {
           } else {
             placeholdersValue =
               editableCodeSnippet.code[
-              editables[editableCodeSnippet.editableIdx].value
+                editables[editableCodeSnippet.editableIdx].value
               ];
           }
           rawCodeSnippetSingle.codeSnippet =
@@ -294,14 +297,17 @@ const LayoutPage = () => {
     }
   };
 
+  if (loading) {
+    return <Loading />;
+  }
   return (
     <body className="bg-white w-full">
       <Navbar
-        openFilterPopup={() => { }}
+        openFilterPopup={() => {}}
         tags={undefined}
-        onTagDelete={() => { }}
-        handleFocus={() => { }}
-        onSearchDelete={() => { }}
+        onTagDelete={() => {}}
+        handleFocus={() => {}}
+        onSearchDelete={() => {}}
         searchTerm={undefined}
         page={"layout"}
         gotoEditables={() => handleScroll("editables")}
@@ -310,22 +316,12 @@ const LayoutPage = () => {
       <div className="gap-16 mx-48 mt-32 mb-16">
         <p className="text-4xl pt-16 font-medium">{wireframe.title}</p>
         <div className="flex flex-wrap gap-2 pt-4">
-          {
-            wireframe.tags?.map((tag: any, index: number) => {
-              return (
-                <Tag
-                  key={index}
-                  title={tag}
-                />
-              );
-            })
-          }
+          {wireframe.tags?.map((tag: any, index: number) => {
+            return <Tag key={index} title={tag} />;
+          })}
         </div>
       </div>
-      <div
-        id="editables"
-        className="mx-48 my-16"
-      >
+      <div id="editables" className="mx-48 my-16">
         <div className="flex justify-end">
           <div
             className="px-4 py-2 border-2 border-[#f4f4f4] rounded-lg hover:bg-[#e7e7e7] hover:border-[#e7e7e7] text-sm transition-all cursor-pointer"
@@ -407,12 +403,12 @@ const LayoutPage = () => {
                 aspect === "16/9"
                   ? `${(window.innerWidth - 384) / 1440}em`
                   : aspect === "4/3"
-                    ? `
+                  ? `
                 ${((window.innerWidth - 384) * 1.05) / 1440}em`
-                    : aspect === "9/16"
-                      ? `
+                  : aspect === "9/16"
+                  ? `
                 ${((window.innerWidth - 384) * 1.1) / 1440}em`
-                      : "1em",
+                  : "1em",
               scrollbarWidth: "thin",
               scrollbarColor: "#e7e7e7 transparent",
             }}
@@ -423,16 +419,18 @@ const LayoutPage = () => {
                     transition: all 150ms ease;
                     transition-delay: 50ms;
                   }
-                  ${codeSnippetDisplay.find(
-              (snippet) => snippet.type === "preview-css"
-            )?.code ?? ""
-              }
+                  ${
+                    codeSnippetDisplay.find(
+                      (snippet) => snippet.type === "preview-css"
+                    )?.code ?? ""
+                  }
                 </style>
                 <div style="width: 100%; height: 100%; min-height: max-content; display: flex; justify-content: center; align-items: center;">
-                  ${codeSnippetDisplay.find(
-                (snippet) => snippet.type === "html"
-              )?.code ?? ""
-              }
+                  ${
+                    codeSnippetDisplay.find(
+                      (snippet) => snippet.type === "html"
+                    )?.code ?? ""
+                  }
                 </div>
               `)}
           </div>

@@ -8,6 +8,7 @@ import Tag from "./components/Tag";
 import Footer from "./navbar/Footer";
 import LayoutCard from "./components/LayoutCard";
 import { NavLink } from "react-router-dom";
+import Loading from "./components/Loading";
 
 function App() {
   const [filterPopup, setFilterPopup] = useState(false);
@@ -16,6 +17,7 @@ function App() {
   >([]);
   const [layouts, setLayouts] = useState<[any[], any[]]>([[], []]);
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const [loading, setLoading] = useState(true);
 
   const getLayouts = (tagIds: number[] = [], searchInput: string = "") => {
     const tagIdsFilter =
@@ -47,6 +49,7 @@ function App() {
       console.log("tempRelatedLayouts", tempRelatedLayouts);
 
       setLayouts([tempLayouts, tempRelatedLayouts]);
+      setLoading(false);
     });
   };
 
@@ -115,7 +118,6 @@ function App() {
   };
 
   useEffect(() => {
-
     const handleInputChange = (event: KeyboardEvent) => {
       if (event.key === "Enter") {
         handleEnterSearch();
@@ -129,11 +131,14 @@ function App() {
 
     return () => {
       if (inputElement) {
-      inputElement.removeEventListener("keydown", handleInputChange);
+        inputElement.removeEventListener("keydown", handleInputChange);
       }
     };
   }, [searchInputRef, selectedTags]);
 
+  if (loading) {
+    return <Loading />;
+  }
   return (
     <body className="bg-white w-full">
       <FilterPopup
