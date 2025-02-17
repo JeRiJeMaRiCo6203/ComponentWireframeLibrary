@@ -10,6 +10,7 @@ import CodeSnippetTabs from "./components/CodeSnippetTabs";
 import Footer from "../navbar/Footer";
 import Navbar from "../navbar/Navbar";
 import Loading from "../components/Loading";
+import ExportGuide from "./components/ExportGuide";
 
 type CodeSnippet = {
   id: number;
@@ -436,6 +437,7 @@ const LayoutPage = () => {
           </div>
         </div>
       </div>
+      <ExportGuide />
       <CodeSnippetTabs
         codeSnippetDisplay={codeSnippetDisplay}
         removeProperty={removeProperty}

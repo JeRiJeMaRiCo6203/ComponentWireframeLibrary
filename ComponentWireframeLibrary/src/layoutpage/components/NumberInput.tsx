@@ -30,21 +30,16 @@ const NumberInput: React.FC<NumberInputProps> = ({ numberRange, changeData, rese
   return (
     <div className='w-full mt-2 flex items-center gap-2'>
       <button 
-        className={`p-2 px-3 hover:bg-[#e7e7e7] border-2 border-[#f4f4f4] hover:border-[#e7e7e7] rounded-lg select-none` + (amount <= numberRange[0] ? `bg-[#f4f4f4]` : `bg-white`)}
+        className={`p-2 px-3 ${amount <= numberRange[0] ? 'bg-[#f4f4f4] hover:bg-[#e7e7e7]' : 'bg-white'} border-2 border-[#f4f4f4] hover:border-[#e7e7e7] rounded-lg select-none transition-all`}
         onClick={() => handleAmount(amount - 1)}
       >
         -
       </button>
-      <input 
-        className='w-full p-2 bg-white hover:bg-[#e7e7e7] focus:bg-[#f4f4f4] hover:focus:bg-[#e7e7e7] border-2 border-[#f4f4f4] hover:border-[#e7e7e7] rounded-lg text-center select-none'
-        type="number"
-        value={amount}
-        onChange={(e) => handleAmount(Number(e.target.value))}
-        name=""
-        id=""
-      />
+      <div className='w-full p-2 bg-[#f4f4f4] border-2 border-[#f4f4f4] rounded-lg text-center select-none'>
+        {amount}
+      </div>
       <button 
-        className={`p-2 px-3 bg-[#f4f4f4] hover:bg-[#e7e7e7] border-2 border-[#f4f4f4] hover:border-[#e7e7e7] rounded-lg select-none` + (amount >= numberRange[1] ? `bg-[#f4f4f4]` : `bg-white`)}
+        className={`p-2 px-3 ${amount >= numberRange[1] ? 'bg-[#f4f4f4] hover:bg-[#e7e7e7]' : 'bg-white'} border-2 border-[#f4f4f4] hover:border-[#e7e7e7] rounded-lg select-none transition-all`}
         onClick={() => handleAmount(amount + 1)}
       >
         +

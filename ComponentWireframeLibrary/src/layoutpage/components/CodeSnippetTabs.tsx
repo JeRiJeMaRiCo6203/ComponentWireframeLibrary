@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import SyntaxHighlighter from "react-syntax-highlighter";
-import { a11yLight } from "react-syntax-highlighter/dist/esm/styles/hljs";
+import { atelierSulphurpoolLight as theme } from "react-syntax-highlighter/dist/esm/styles/hljs";
 import { useState } from "react";
 import CopyPopup from "../../components/CopyPopup";
 
@@ -198,8 +198,7 @@ const CodeSnippetTabs = ({
               ? "react"
               : selectedCode.type
           }
-          // language="htmlbars"
-          style={a11yLight}
+          style={theme}
           customStyle={{
             backgroundColor: "#f4f4f4",
             width: "100%",

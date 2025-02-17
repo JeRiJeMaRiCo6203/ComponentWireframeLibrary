@@ -38,7 +38,7 @@ const DropdownInput: React.FC<DropdownProps> = ({ options, changeData, reset }) 
     <div className='relative' tabIndex={0} onBlur={handleBlur}>
       <div
         className={`
-          w-full mt-2 p-2 px-4 flex justify-between items-center focus:bg-[#f4f4f4] border-2 border-[#f4f4f4] hover:border-[#e7e7e7] cursor-pointer select-none
+          w-full mt-2 p-2 px-4 flex justify-between items-center focus:bg-[#f4f4f4] border-2 border-[#f4f4f4] hover:border-[#e7e7e7] cursor-pointer select-none transition-all
           ${isOpen ? "rounded-t-lg bg-[#f4f4f4] hover:bg-[#e7e7e7]" : "rounded-lg bg-white"}
         `}
         onClick={toggleDropdown}
