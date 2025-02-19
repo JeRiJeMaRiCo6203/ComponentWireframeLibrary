@@ -1,10 +1,26 @@
-import React from 'react'
+import React, { useState } from 'react'
 import SyntaxHighlighter from "react-syntax-highlighter";
 import { atelierSulphurpoolLight as theme } from "react-syntax-highlighter/dist/esm/styles/hljs";
+import CopyPopup from '../../components/CopyPopup';
 
 const ExportGuide = () => {
+
+  const [isCopied, setIsCopied] = useState(false);
+
+  const handleCopy = async (string: string) => {
+    try {
+      await navigator.clipboard.writeText(string);
+      setIsCopied(true);
+
+      setTimeout(() => setIsCopied(false), 2000);
+    } catch (error) {
+      console.error("Failed to copy text: ", error);
+    }
+  };
+
   return (
     <div className="mx-48 my-48">
+      <CopyPopup isVisible={isCopied} />
       <div>
         <div className='text-xl'>Exporting</div>
         <div className='text-sm pt-4 pb-8'>
@@ -24,7 +40,33 @@ const ExportGuide = () => {
           </div>
           <div>
             <div className='border-2 border-[#f4f4f4] rounded-lg h-min'>
-              <div className='text-xs py-2 px-3'>HTML</div>
+              <div className='flex items-center text-xs justify-between rounded-t-md overflow-hidden pl-3 p-1 pr-2'>
+                <div>
+                  HTML
+                </div>
+                <div
+                  className="py-1 px-1 flex gap-2 justify-center group/copy items-center border-white cursor-pointer rounded-md transition-all"
+                  onClick={() => handleCopy(`<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">`)}
+                >
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M4 16C2.9 16 2 15.1 2 14V4C2 2.9 2.9 2 4 2H14C15.1 2 16 2.9 16 4M10 8H20C21.1046 8 22 8.89543 22 10V20C22 21.1046 21.1046 22 20 22H10C8.89543 22 8 21.1046 8 20V10C8 8.89543 8.89543 8 10 8Z"
+                      className="stroke-[#6a6a6a] group-hover/copy:stroke-[#222222] transition-all"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                </div>
+              </div>
               <div className='bg-[#f4f4f4] p-2'>
                 <SyntaxHighlighter
                   language={"htmlbars"}
@@ -60,7 +102,33 @@ const ExportGuide = () => {
           </div>
           <div>
             <div className='border-2 border-[#f4f4f4] rounded-lg h-min'>
-              <div className='text-xs py-2 px-3'>CSS</div>
+              <div className='flex items-center text-xs justify-between rounded-t-md overflow-hidden pl-3 p-1 pr-2'>
+                <div>
+                  CSS
+                </div>
+                <div
+                  className="py-1 px-1 flex gap-2 justify-center group/copy items-center border-white cursor-pointer rounded-md transition-all"
+                  onClick={() => handleCopy(`*{
+  font-family: 'Poppins', sans-serif;
+}`)}
+                >
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M4 16C2.9 16 2 15.1 2 14V4C2 2.9 2.9 2 4 2H14C15.1 2 16 2.9 16 4M10 8H20C21.1046 8 22 8.89543 22 10V20C22 21.1046 21.1046 22 20 22H10C8.89543 22 8 21.1046 8 20V10C8 8.89543 8.89543 8 10 8Z"
+                      className="stroke-[#6a6a6a] group-hover/copy:stroke-[#222222] transition-all"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                </div>
+              </div>
               <div className='bg-[#f4f4f4] p-2'>
                 <SyntaxHighlighter
                   language={"css"}

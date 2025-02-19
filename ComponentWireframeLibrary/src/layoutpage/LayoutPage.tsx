@@ -325,7 +325,7 @@ const LayoutPage = () => {
       <div id="editables" className="mx-48 my-16">
         <div className="flex justify-end">
           <div
-            className="px-4 py-2 border-2 border-[#f4f4f4] rounded-lg hover:bg-[#e7e7e7] hover:border-[#e7e7e7] text-sm transition-all cursor-pointer"
+            className="px-6 py-2 border-2 border-[#f4f4f4] rounded-lg hover:bg-[#e7e7e7] hover:border-[#e7e7e7] text-sm transition-all cursor-pointer"
             onClick={resetEditables}
           >
             Reset to Default
@@ -335,7 +335,7 @@ const LayoutPage = () => {
           {editables.map((editable, index) => {
             return (
               <div key={index} className="w-80">
-                <div>{editable.name}</div>
+                <div className="mb-2">{editable.name}</div>
                 {editable.switchOptions ? (
                   <SwitchInput
                     options={editable.switchOptions as [string, string]}

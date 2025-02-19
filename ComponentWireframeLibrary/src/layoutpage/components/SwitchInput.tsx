@@ -25,7 +25,7 @@ const SwitchInput: React.FC<SwitchInputProps> = ({ options, changeData, reset })
 
   return (
     <div 
-      className='w-full mt-2 flex bg-[#f4f4f4] hover:bg-[#e7e7e7] border-2 border-[#f4f4f4] hover:border-[#e7e7e7] rounded-lg relative cursor-pointer transition-all'
+      className='w-full flex bg-[#f4f4f4] hover:bg-[#e7e7e7] border-2 border-[#f4f4f4] hover:border-[#e7e7e7] rounded-lg relative cursor-pointer transition-all'
       onClick={() => handleSwitch(!isOn)}
     >
       <div

@@ -3,6 +3,7 @@ import SyntaxHighlighter from "react-syntax-highlighter";
 import { atelierSulphurpoolLight as theme } from "react-syntax-highlighter/dist/esm/styles/hljs";
 import { useState } from "react";
 import CopyPopup from "../../components/CopyPopup";
+import DropdownInput from "./DropdownInput";
 
 type CodeSnippet = {
   name: string;
@@ -107,8 +108,8 @@ const CodeSnippetTabs = ({
           {code.map((snippet) => (
             <div
               key={snippet.name}
-              className={`hover:bg-[#e7e7e7] cursor-pointer py-2 px-6 rounded-lg text-sm ${
-                selectedCode.name === snippet.name ? "bg-[#f4f4f4]" : "bg-white"
+              className={`cursor-pointer py-2 px-6 rounded-lg text-sm border-2 border-[#f4f4f4] ${
+                selectedCode.name === snippet.name ? "bg-white" : "bg-[#f4f4f4] hover:bg-[#e7e7e7] hover:border-[#e7e7e7]"
               }`}
               onClick={() =>
                 setSelectedCode({ type: snippet.type, name: snippet.name })
@@ -119,100 +120,72 @@ const CodeSnippetTabs = ({
           ))}
         </div>
         <div className="flex gap-2">
-          <div className="bg-white py-2 px-2 rounded-lg text-sm">
-            {codeLang}
+          <div className="w-full flex justify-end items-center gap-2 text-sm">
+            <span className="text-xs text-[#6a6a6a]">Code Type :</span>
+            <DropdownInput 
+              options={['HTML + CSS', 'HTML + Tailwind', 'React + CSS', 'React + Tailwind']} 
+              changeData={(value: any) => selectMenu(value)}
+              reset={undefined}
+            />
           </div>
-          {!isOpen ? (
-            <div
-              className="bg-white hover:bg-[#f4f4f4] cursor-pointer pt-[6px] pb-[2px] px-6 rounded-lg text-sm border-2 border-[#f4f4f4]"
-              onClick={() => dropdownToggle()}
-            >
-              <div>Change Code Type</div>
-            </div>
-          ) : (
-            <div>
-              <div
-                className="bg-white hover:bg-[#f4f4f4] cursor-pointer pt-[6px] pb-[2px] px-6 rounded-lg text-sm border-2 border-[#f4f4f4]"
-                onClick={() => dropdownToggle()}
-              >
-                Change Code Type
-              </div>
-
-              <div className="absolute">
-                <ul
-                  className="text-sm bg-white hover:bg-[#f4f4f4] cursor-pointer pt-[6px] pb-[2px] px-6 rounded-lg border-2 border-[#f4f4f4]"
-                  onClick={() => selectMenu("HTML + CSS")}
-                >
-                  HTML + CSS
-                </ul>
-                <ul
-                  className="text-sm bg-white hover:bg-[#f4f4f4] cursor-pointer pt-[6px] pb-[2px] px-6 rounded-lg border-2 border-[#f4f4f4]"
-                  onClick={() => selectMenu("HTML + Tailwind")}
-                >
-                  HTML + Tailwind
-                </ul>
-                <ul
-                  className="text-sm bg-white hover:bg-[#f4f4f4] cursor-pointer pt-[6px] pb-[2px] px-6 rounded-lg border-2 border-[#f4f4f4]"
-                  onClick={() => selectMenu("React + CSS")}
-                >
-                  React + CSS
-                </ul>
-                <ul
-                  className="text-sm bg-white hover:bg-[#f4f4f4] cursor-pointer pt-[6px] pb-[2px] px-6 rounded-lg border-2 border-[#f4f4f4]"
-                  onClick={() => selectMenu("React + Tailwind")}
-                >
-                  React + Tailwind
-                </ul>
-              </div>
-            </div>
-          )}
+        </div>
+      </div>
+      <div className='mt-2 border-2 border-[#f4f4f4] rounded-lg relative'>
+        <CopyPopup isVisible={isCopied} />
+        <div className='flex items-center text-xs justify-between rounded-t-md overflow-hidden pl-3 p-1 pr-2'>
+          <div>
+            {
+              selectedCode.type === "html" || selectedCode.type === "html-tailwind" ? "HTML"
+              : selectedCode.type === "react" || selectedCode.type === "react-tailwind" ? "JSX"
+              : "CSS"
+            }
+          </div>
           <div
-            className="h-9 w-9 flex justify-center items-center rounded-lg border-2 border-[#f4f4f4] hover:bg-[#e7e7e7] hover:border-[#e7e7e7] hover:cursor-pointer transition-all z-20"
+            className="py-1 px-1 flex gap-2 justify-center group/copy items-center border-white cursor-pointer rounded-md transition-all"
             onClick={handleCopy}
           >
             <svg
-              width="18"
-              height="18"
+              width="16"
+              height="16"
               viewBox="0 0 24 24"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
             >
               <path
                 d="M4 16C2.9 16 2 15.1 2 14V4C2 2.9 2.9 2 4 2H14C15.1 2 16 2.9 16 4M10 8H20C21.1046 8 22 8.89543 22 10V20C22 21.1046 21.1046 22 20 22H10C8.89543 22 8 21.1046 8 20V10C8 8.89543 8.89543 8 10 8Z"
-                stroke="black"
+                className="stroke-[#6a6a6a] group-hover/copy:stroke-[#222222] transition-all"
                 stroke-width="2"
                 stroke-linecap="round"
                 stroke-linejoin="round"
               />
             </svg>
           </div>
-          <CopyPopup isVisible={isCopied} />
         </div>
-      </div>
-      <div className="bg-[#f4f4f4] rounded-lg p-4 mt-2">
-        <SyntaxHighlighter
-          language={
-            selectedCode.type === "html" || selectedCode.type === "html-tailwind"
-              ? "htmlbars"
-              : selectedCode.type === "react" || selectedCode.type === "react-tailwind"
-              ? "react"
-              : selectedCode.type
-          }
-          style={theme}
-          customStyle={{
-            backgroundColor: "#f4f4f4",
-            width: "100%",
-            maxHeight: "40rem",
-            overflow: "auto",
-            scrollbarWidth: "thin",
-            scrollbarColor: "#d9d9d9 transparent",
-          }}
-          wrapLongLines={false}
-        >
-          {codeSnippetDisplay.find(
-            (snippet) => snippet.name === selectedCode.name
-          )?.code ?? ""}
-        </SyntaxHighlighter>
+        <div className='bg-[#f4f4f4] p-2'>
+          <SyntaxHighlighter
+            language={
+              selectedCode.type === "html" || selectedCode.type === "html-tailwind"
+                ? "htmlbars"
+                : selectedCode.type === "react" || selectedCode.type === "react-tailwind"
+                ? "react"
+                : selectedCode.type
+            }
+            style={theme}
+            customStyle={{
+              backgroundColor: "#f4f4f4",
+              width: "100%",
+              maxHeight: "40rem",
+              overflow: "auto",
+              scrollbarWidth: "thin",
+              scrollbarColor: "#d9d9d9 transparent",
+            }}
+            wrapLongLines={false}
+          >
+            {codeSnippetDisplay.find(
+              (snippet) => snippet.name === selectedCode.name
+            )?.code ?? ""}
+          </SyntaxHighlighter>
+        </div>
       </div>
     </div>
   );
