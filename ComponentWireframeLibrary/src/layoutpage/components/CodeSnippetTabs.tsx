@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import SyntaxHighlighter from "react-syntax-highlighter";
-import { atelierSulphurpoolLight as theme } from "react-syntax-highlighter/dist/esm/styles/hljs";
+import { solarizedLight as theme } from "react-syntax-highlighter/dist/esm/styles/hljs";
 import { useState } from "react";
 import CopyPopup from "../../components/CopyPopup";
 import DropdownInput from "./DropdownInput";
@@ -108,8 +108,8 @@ const CodeSnippetTabs = ({
           {code.map((snippet) => (
             <div
               key={snippet.name}
-              className={`cursor-pointer py-2 px-6 rounded-lg text-sm border-2 border-[#f4f4f4] ${
-                selectedCode.name === snippet.name ? "bg-white" : "bg-[#f4f4f4] hover:bg-[#e7e7e7] hover:border-[#e7e7e7]"
+              className={`cursor-pointer py-2 px-6 rounded-lg text-sm border-2 transition-all ${
+                selectedCode.name === snippet.name ? "bg-white border-[#f4f4f4]" : "border-white hover:bg-[#e7e7e7] hover:border-[#e7e7e7]"
               }`}
               onClick={() =>
                 setSelectedCode({ type: snippet.type, name: snippet.name })
@@ -167,19 +167,19 @@ const CodeSnippetTabs = ({
               selectedCode.type === "html" || selectedCode.type === "html-tailwind"
                 ? "htmlbars"
                 : selectedCode.type === "react" || selectedCode.type === "react-tailwind"
-                ? "react"
+                ? "javascript"
                 : selectedCode.type
             }
             style={theme}
             customStyle={{
               backgroundColor: "#f4f4f4",
               width: "100%",
-              maxHeight: "40rem",
+              height: "40rem",
               overflow: "auto",
               scrollbarWidth: "thin",
               scrollbarColor: "#d9d9d9 transparent",
             }}
-            wrapLongLines={false}
+            showLineNumbers={true}
           >
             {codeSnippetDisplay.find(
               (snippet) => snippet.name === selectedCode.name

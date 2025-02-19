@@ -369,25 +369,25 @@ const LayoutPage = () => {
         <div className="flex flex-col items-center gap-4 mb-12">
           <div className="flex justify-center gap-2">
             <div
-              className="hover:bg-[#e7e7e7] cursor-pointer py-2 w-28 rounded-lg text-sm text-center"
+              className="hover:bg-[#e7e7e7] cursor-pointer py-2 w-28 rounded-lg text-sm text-center transition-all"
               onClick={() => changeAspect("16/9")}
             >
               Desktop
             </div>
             <div
-              className="hover:bg-[#e7e7e7] cursor-pointer py-2 w-28 rounded-lg text-sm text-center"
+              className="hover:bg-[#e7e7e7] cursor-pointer py-2 w-28 rounded-lg text-sm text-center transition-all"
               onClick={() => changeAspect("4/3")}
             >
               Tablet
             </div>
             <div
-              className="hover:bg-[#e7e7e7] cursor-pointer py-2 w-28 rounded-lg text-sm text-center"
+              className="hover:bg-[#e7e7e7] cursor-pointer py-2 w-28 rounded-lg text-sm text-center transition-all"
               onClick={() => changeAspect("9/16")}
             >
               Phone
             </div>
             <div
-              className="hover:bg-[#e7e7e7] cursor-pointer py-2 w-28 rounded-lg text-sm text-center"
+              className="hover:bg-[#e7e7e7] cursor-pointer py-2 w-28 rounded-lg text-sm text-center transition-all"
               onClick={() => changeAspect("your window")}
             >
               Fullwidth
@@ -437,7 +437,7 @@ const LayoutPage = () => {
           </div>
         </div>
       </div>
-      <ExportGuide />
+      <ExportGuide gotoSnippet={() => handleScroll("snippet")} />
       <CodeSnippetTabs
         codeSnippetDisplay={codeSnippetDisplay}
         removeProperty={removeProperty}

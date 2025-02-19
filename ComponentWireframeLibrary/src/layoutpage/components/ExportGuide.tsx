@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
 import SyntaxHighlighter from "react-syntax-highlighter";
-import { atelierSulphurpoolLight as theme } from "react-syntax-highlighter/dist/esm/styles/hljs";
+import { solarizedLight as theme } from "react-syntax-highlighter/dist/esm/styles/hljs";
 import CopyPopup from '../../components/CopyPopup';
 
-const ExportGuide = () => {
+const ExportGuide = ({ gotoSnippet = () => {} }) => {
 
   const [isCopied, setIsCopied] = useState(false);
 
@@ -71,6 +71,7 @@ const ExportGuide = () => {
                 <SyntaxHighlighter
                   language={"htmlbars"}
                   style={theme}
+                  showLineNumbers={true}
                   customStyle={{
                     backgroundColor: "#f4f4f4",
                     width: "100%",
@@ -80,7 +81,6 @@ const ExportGuide = () => {
                     scrollbarWidth: "thin",
                     scrollbarColor: "#d9d9d9 transparent",
                   }}
-                  wrapLongLines={false}
                 >
                   {`<link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -133,6 +133,7 @@ const ExportGuide = () => {
                 <SyntaxHighlighter
                   language={"css"}
                   style={theme}
+                  showLineNumbers={true}
                   customStyle={{
                     backgroundColor: "#f4f4f4",
                     width: "100%",
@@ -141,7 +142,6 @@ const ExportGuide = () => {
                     scrollbarWidth: "thin",
                     scrollbarColor: "#d9d9d9 transparent",
                   }}
-                  wrapLongLines={false}
                 >
                   {`*{
   font-family: 'Poppins', sans-serif;
@@ -165,7 +165,7 @@ const ExportGuide = () => {
             <div className='flex'>
               <div
                 className="bg-white hover:bg-[#e7e7e7] cursor-pointer px-6 py-3 rounded-lg border-2 border-[#f4f4f4] hover:border-[#e7e7e7] flex gap-2 hover:gap-3 items-center transition-all"
-                onClick={() => {}}
+                onClick={() => gotoSnippet()}
               >
                 Export 
                 <svg className='-rotate-90' width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7 10L12 15L17 10" stroke="black" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
