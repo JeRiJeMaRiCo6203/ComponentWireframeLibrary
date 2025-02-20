@@ -1,8 +1,14 @@
-import React from "react";
+import { useState } from "react";
 import Navbar from "../navbar/Navbar";
 import Footer from "../navbar/Footer";
 
 const AboutPage = () => {
+  const [logoRotate, setLogoRotate] = useState(false);
+
+  const handleLogoRotate = () => {
+    setLogoRotate(!logoRotate);
+  }
+
   return (
     <>
       <Navbar
@@ -17,28 +23,106 @@ const AboutPage = () => {
         gotoSnippet={() => {}}
       />
       <div className="bg-gradient-to-tr from-[#DF99F7] to-[#FFDBB0]">
-        <div className="mx-48 pt-48 pb-28 mb-64">
+        <div className="mx-48 pt-48 pb-16">
           <div className="flex flex-col justify-center items-center">
-            <svg
-              width="32"
-              height="32"
-              viewBox="0 0 100 100"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M50 97C75.9574 97 97 75.9574 97 50C97 24.0426 75.9574 3 50 3M50 97C24.0426 97 3 75.9574 3 50C3 24.0426 24.0426 3 50 3M50 97C64.9906 97 77.1429 75.9574 77.1429 50C77.1429 24.0426 64.9906 3 50 3M50 97C35.0094 97 22.8571 75.9574 22.8571 50C22.8571 24.0426 35.0094 3 50 3M53 50C53 51.6569 51.6569 53 50 53C48.3431 53 47 51.6569 47 50C47 48.3431 48.3431 47 50 47C51.6569 47 53 48.3431 53 50Z"
-                stroke="white"
-                stroke-width="6"
-              />
-            </svg>
             <p className="spacemono text-lg font-bold -mt-1 tracking-tighter text-white">
               layzy
             </p>
-            <h1 className="pt-4 spacemono text-[3rem] font-bold leading-[3rem] tracking-tight text-white text-center">
-              A wireframe library, made to help you develop astonishing interfaces.
+            <h1 className="pt-4 text-[4rem] font-bold leading-[4.5rem] tracking-tight text-white text-center">
+              Helps lazy web designers <br/> be even lazier.
             </h1>
           </div>
+        </div>
+      </div>
+      <div className="mx-48 flex justify-center mt-16 mb-64">
+        <div
+          className={`h-[10rem] w-[10rem] relative overflow-hidden transition-all duration-[2s] cursor-pointer ${logoRotate ? "rotate-180" : ""}`} 
+          onClick={() => handleLogoRotate()}
+        >
+          <svg className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" width="300" height="300" viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="3" fill="black" >
+              <animate
+                attributeName="r"
+                values="3;4.5;0;3;3"
+                dur="3s"
+                keyTimes="0;0.15;.3;.5;1"
+                calcMode="spline"
+                keySplines="0.33 1 0.68 1;0.32 0 0.67 0;0.33 1 0.68 1;0 0 0 0"
+                repeatCount="indefinite"
+              />
+              <animate
+                attributeName="visibility"
+                values="hidden;visible;hidden;hidden"
+                dur="6s"
+                keyTimes="0;.15;.65;1"
+                repeatCount="indefinite"
+              />
+            </circle>
+            <path
+              d="M50,25 A25,25 0 0,1 50,75"
+              fill="none"
+              stroke="black"
+              stroke-width="2"
+              strokeLinecap="round"
+            >
+              <animate
+                attributeName="visibility"
+                values="hidden;visible;hidden;hidden"
+                dur="6s"
+                keyTimes="0;.075;.575;1"
+                repeatCount="indefinite"
+              />
+            </path>
+            <path
+              d="M50,25 A25,25 0 0,0 50,75"
+              fill="none"
+              stroke="black"
+              stroke-width="2"
+              strokeLinecap="round"
+            >
+              <animate
+                attributeName="visibility"
+                values="hidden;visible;hidden;hidden"
+                dur="6s"
+                keyTimes="0;.075;.575;1"
+                repeatCount="indefinite"
+              />
+            </path>
+            <path
+              d="M50,25 A12.5,25 0 0,1 50,75"
+              fill="none"
+              stroke="black"
+              stroke-width="2"
+              strokeLinecap="round"
+            >
+              <animate
+                attributeName="d"
+                values="M50,25 A12.5,25 0 0,1 50,75;M50,25 A25,25 0 0,1 50,75;M50,25 A0,25 0 0,1 50,75;M50,25 A12.5,25 0 0,1 50,75;M50,25 A12.5,25 0 0,1 50,75"
+                dur="3s"
+                keyTimes="0;.15;.3;.5;1"
+                calcMode="spline"
+                keySplines="0.33 1 0.68 1;0.32 0 0.67 0;0.33 1 0.68 1;0 0 0 0"
+                repeatCount="indefinite"
+              />
+            </path>
+            <path
+              d="M50,25 A12.5,25 0 0,0 50,75"
+              fill="none"
+              stroke="black"
+              stroke-width="2"
+              strokeLinecap="round"
+            >
+              <animate
+                attributeName="d"
+                values="M50,25 A12.5,25 0 0,0 50,75;M50,25 A25,25 0 0,0 50,75;M50,25 A0,25 0 0,0 50,75;M50,25 A12.5,25 0 0,0 50,75;M50,25 A12.5,25 0 0,0 50,75"
+                dur="3s"
+                keyTimes="0;.15;.3;.5;1"
+                calcMode="spline"
+                keySplines="0.33 1 0.68 1;0.32 0 0.67 0;0.33 1 0.68 1;0 0 0 0"
+                repeatCount="indefinite"
+              />
+            </path>
+          </svg>
         </div>
       </div>
       <div className="mx-48 flex justify-center my-64">

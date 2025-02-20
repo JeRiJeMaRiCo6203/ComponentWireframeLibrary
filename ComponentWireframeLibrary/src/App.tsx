@@ -189,14 +189,16 @@ function App() {
             </div>
             <div className="grid grid-cols-3 gap-16 mx-48 pt-4">
               {layouts[1].map((layout, index) => (
-                <div key={index}>
-                  <LayoutCard
-                    id={layout.id}
-                    name={layout.name}
-                    image={layout.image}
-                    tags={layout.tags}
-                  />
-                </div>
+                <NavLink to={`/wireframe/${layout.id}`}>
+                  <div key={index}>
+                    <LayoutCard
+                      id={layout.id}
+                      name={layout.name}
+                      image={layout.image}
+                      tags={layout.tags}
+                    />
+                  </div>
+                </NavLink>
               ))}
             </div>
           </>
