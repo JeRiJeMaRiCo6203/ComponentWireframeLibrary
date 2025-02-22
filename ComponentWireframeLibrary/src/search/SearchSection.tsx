@@ -97,7 +97,7 @@ const SearchSection = ({ openFilterPopup, tags, onTagDelete, searchInput, handle
             </div>
           )} */}
         <div
-          className='py-2 px-3 flex justify-center items-center gap-1 bg-white hover:bg-[#e7e7e7] border-2 border-[#f4f4f4] hover:border-[#e7e7e7] cursor-pointer rounded-lg'
+          className='py-2 px-3 flex justify-center items-center gap-1 bg-white hover:bg-[#e7e7e7] border-2 border-[#f4f4f4] hover:border-[#e7e7e7] cursor-pointer rounded-lg transition-all'
           onClick={() => openFilterPopup()}
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M22 3H2L10 12.46V19L14 21V12.46L22 3Z" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -116,7 +116,7 @@ const SearchSection = ({ openFilterPopup, tags, onTagDelete, searchInput, handle
             // onFocus={() => setShowSuggestions(true)}
             // onBlur={() => setShowSuggestions(false)}
             placeholder="Search..."
-            className='w-80 py-2 px-3 bg-[#f4f4f4] border-2 border-[#f4f4f4] hover:bg-[#e7e7e7] hover:border-[#e7e7e7] focus:bg-[#e7e7e7] focus:border-[#e7e7e7] text-sm rounded-lg'
+            className='w-80 py-2 px-3 bg-[#f4f4f4] border-2 border-[#f4f4f4] hover:bg-[#e7e7e7] hover:border-[#e7e7e7] focus:bg-[#e7e7e7] focus:border-[#e7e7e7] text-sm rounded-lg transition-all'
           />
           <div
             onClick={handleEnterSearch}

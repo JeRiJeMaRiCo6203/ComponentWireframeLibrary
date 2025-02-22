@@ -36,10 +36,10 @@ const AboutPage = () => {
       </div>
       <div className="mx-48 flex justify-center mt-16 mb-64">
         <div
-          className={`h-[10rem] w-[10rem] relative overflow-hidden transition-all duration-[2s] cursor-pointer hover:scale-105 ${logoRotate ? 'rotate-180' : ''}`}
+          className="h-[10rem] w-[10rem] relative overflow-hidden cursor-pointer"
           onClick={() => handleLogoRotate()}
         >
-          <svg className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" width="300" height="300" viewBox="0 0 100 100">
+          <svg className={`absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 transition-all duration-[1.5s] ${logoRotate ? 'rotate-180' : ''}`} width="300" height="300" viewBox="0 0 100 100">
             <circle cx="50" cy="50" r="3" fill="black" >
               <animate
                 attributeName="r"
