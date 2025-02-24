@@ -4,7 +4,7 @@ import Tag from '../components/TagNotSelected'
 import IconX from '../svg/IconX'
 import FilterPopup from '../components/FilterPopup'
 
-const SearchSection = ({ openFilterPopup, tags, onTagDelete, searchInput, handleEnterSearch }: { openFilterPopup: () => void, tags: any, onTagDelete: (tagId: number) => void, searchInput: any, handleEnterSearch: () => void }) => {
+const SearchSection = ({ openFilterPopup, tags, onTagDelete, searchInput, handleEnterSearch, searchTerm, onSearchDelete }: { openFilterPopup: () => void, tags: any, onTagDelete: (tagId: number) => void, searchInput: any, handleEnterSearch: () => void, searchTerm: string | undefined, onSearchDelete: () => void | undefined; }) => {
   // const [searchTerm, setSearchTerm] = useState('');
   // const [suggestions, setSuggestions] = useState<any[]>([]);
   // const [activeSuggestionIndex, setActiveSuggestionIndex] = useState(-1); // Track active suggestion for keyboard navigation
@@ -148,6 +148,41 @@ const SearchSection = ({ openFilterPopup, tags, onTagDelete, searchInput, handle
         </div>
       </div>
       <div className='flex flex-wrap gap-2 py-4 border-b-2 border-[#f4f4f4]'>
+        {searchTerm && (
+          <div className="relative w-max h-fit py-1 pl-3 pr-2 rounded-lg flex items-center gap-2 bg-white text-sm border-2 border-[#f4f4f4]">
+            <div className="flex items-center gap-2">
+              <svg
+                width="12"
+                height="12"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M11 19C15.4183 19 19 15.4183 19 11C19 6.58172 15.4183 3 11 3C6.58172 3 3 6.58172 3 11C3 15.4183 6.58172 19 11 19Z"
+                  stroke="black"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <path
+                  d="M21 20.9992L16.7 16.6992"
+                  stroke="black"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+              {searchTerm}
+            </div>
+            <div
+              onClick={onSearchDelete}
+              className="cursor-pointer"
+            >
+              <IconX size={16} />
+            </div>
+          </div>
+        )}
         {tags.map((item: any) => (
           <TagSelected key={item.id} title={item.name} onDelete={() => onTagDelete(item.id)}/>
         ))}

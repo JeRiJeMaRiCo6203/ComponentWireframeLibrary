@@ -87,12 +87,12 @@ const Navbar = ({
             </div>
           </NavLink>
           <div className="flex gap-2 h-full items-center">
-            <NavLink to="/">
+            <NavLink to="/" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
               <div className="py-2 px-6 rounded-lg text-sm hover:bg-[#e7e7e7] hover:cursor-pointer transition-all">
                 Home
               </div>
             </NavLink>
-            <NavLink to="/about">
+            <NavLink to="/about" onClick={() => page !== "home" ? window.scrollTo({ top: 0, behavior: 'smooth' }) : window.scrollTo({ top: 0 }) }>
               <div className="py-2 px-6 rounded-lg text-sm hover:bg-[#e7e7e7] hover:cursor-pointer transition-all">
                 About
               </div>
@@ -161,7 +161,7 @@ const Navbar = ({
                               {searchTerm}
                             </div>
                             <div
-                              onClick={onSearchDelete}
+                              onClick={() => {onSearchDelete(); window.scrollTo({ top: 0, behavior: 'smooth'})}}
                               className="cursor-pointer"
                             >
                               <IconX size={16} />
@@ -172,7 +172,7 @@ const Navbar = ({
                           <TagSelected
                             key={item.id}
                             title={item.name}
-                            onDelete={() => onTagDelete(item.id)}
+                            onDelete={() => {onTagDelete(item.id); window.scrollTo({ top: 0, behavior: 'smooth'})}}
                           />
                         ))}
                         <div

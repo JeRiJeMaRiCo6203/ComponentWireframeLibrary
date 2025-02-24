@@ -54,7 +54,7 @@ const LayoutPage = () => {
 
   const [aspect, setAspect] = useState("16/9");
 
-  const [removeProperty, setRemoveProperty] = useState<number[]>([]);
+  const [removeProperty, setRemoveProperty] = useState<number[][]>([[]]);
 
   const [editables, setEditables] = useState<Editable[]>([]);
 
@@ -63,10 +63,6 @@ const LayoutPage = () => {
   >([]);
 
   const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    console.log(wireframe);
-  }, [wireframe]);
 
   useEffect(() => {
     api.get<{ data: any }>(`wireframeDetails/${id}`).then((res: any) => {
@@ -139,7 +135,7 @@ const LayoutPage = () => {
         }))
       );
 
-      setRemoveProperty(Array(editables.length).fill(-1));
+      setRemoveProperty(Array(editables.length).fill([-1]));
 
       setLoading(false);
     });
@@ -162,7 +158,8 @@ const LayoutPage = () => {
       newEditables[idx].value = value;
 
       if (newEditables[idx].removeProperty) {
-        let removeProperty = newEditables[idx].removeProperty[value];
+        let removeProperty = [newEditables[idx].removeProperty[value]];
+        if(value === 1) removeProperty = [newEditables[idx].removeProperty[1],newEditables[idx].removeProperty[2]];
         setRemoveProperty((prev) => {
           const newConstraints = [...prev];
           newConstraints[idx] = removeProperty;

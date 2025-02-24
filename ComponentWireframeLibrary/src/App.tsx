@@ -96,7 +96,8 @@ function App() {
 
   const handleFocus = () => {
     if (searchInputRef.current) {
-      searchInputRef.current.focus();
+      searchInputRef.current.focus({ preventScroll: true });
+      searchInputRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
     }
   };
 
@@ -164,6 +165,8 @@ function App() {
         onTagDelete={handleTagDelete}
         searchInput={searchInputRef}
         handleEnterSearch={handleEnterSearch}
+        searchTerm={searchInputRef.current?.value}
+        onSearchDelete={handleSearchDelete}
       />
       <div className="min-h-screen">
         {layouts[0].length > 0 && (

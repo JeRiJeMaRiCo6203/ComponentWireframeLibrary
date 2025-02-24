@@ -47,9 +47,6 @@ const CodeSnippetTabs = ({
   };
 
   useEffect(() => {
-    // console.log("codeLang:", codeLang);
-    // console.log("codeSnippetDisplay:", codeSnippetDisplay);
-
     let neededCodeTypes: string[] = [];
     if (codeLang === "HTML + CSS") {
       neededCodeTypes = ["html", "css"];
@@ -64,12 +61,9 @@ const CodeSnippetTabs = ({
     const newCode = neededCodeTypes.flatMap((type) =>
       codeSnippetDisplay.filter(
         (snippet) =>
-          snippet.type === type && !removeProperty.includes(snippet.id)
+          snippet.type === type && !removeProperty.flat().includes(snippet.id)
       )
     );
-
-    // console.log('removeProperty', removeProperty);
-    // console.log('newCode', newCode);
 
     setCode(newCode);
   }, [codeSnippetDisplay, codeLang]);

@@ -94,8 +94,8 @@ const FilterPopup = ({isOpen, onClose, onSaveChanges, selectedTags }: {isOpen: b
   }
 
   const handleBackgroundClick = (scrollToTop: boolean) => {
-    const tagsWithoutIsSelected = tags.map(({ isSelected, ...rest }) => rest);
-    if (JSON.stringify(tagsWithoutIsSelected.filter((tag) => selectedTags.some((selectedTag) => selectedTag.id === tag.id))) !== JSON.stringify(selectedTags)) {
+    const selectedTagsWithoutIsSelected = tags.filter((tag) => tag.isSelected).map(({ isSelected, ...rest }) => rest);
+    if (JSON.stringify(selectedTagsWithoutIsSelected) !== JSON.stringify(selectedTags)) {
       setClosePopupIsOpen(true);
     } else {
       onClose(scrollToTop);
