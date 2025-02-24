@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import Tag from "../components/Tag";
 import parse from "html-react-parser";
 import DropdownInput from "./components/DropdownInput";

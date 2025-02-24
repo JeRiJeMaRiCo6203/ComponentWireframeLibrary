@@ -1,21 +1,21 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import SyntaxHighlighter from "react-syntax-highlighter";
 import { solarizedLight as theme } from "react-syntax-highlighter/dist/esm/styles/hljs";
 import { useState } from "react";
 import CopyPopup from "../../components/CopyPopup";
 import DropdownInput from "./DropdownInput";
 
-type CodeSnippet = {
-  name: string;
-  type: string;
-  codeSnippet: string;
-  editableCodeSnippet?: {
-    idx: number;
-    editableIdx: number;
-    type: string;
-    value: string[] | string;
-  }[];
-};
+// type CodeSnippet = {
+//   name: string;
+//   type: string;
+//   codeSnippet: string;
+//   editableCodeSnippet?: {
+//     idx: number;
+//     editableIdx: number;
+//     type: string;
+//     value: string[] | string;
+//   }[];
+// };
 
 const CodeSnippetTabs = ({
   codeSnippetDisplay,
@@ -33,11 +33,8 @@ const CodeSnippetTabs = ({
     { id: number; code: string; type: string; name: string }[]
   >([]);
 
-  const [isOpen, setIsOpen] = useState(false);
+  const [, setIsOpen] = useState(false);
 
-  const dropdownToggle = () => {
-    setIsOpen((prev) => !prev);
-  };
 
   const [codeLang, setcodeLang] = useState("HTML + CSS");
 

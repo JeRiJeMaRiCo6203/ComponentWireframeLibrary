@@ -1,4 +1,3 @@
-import React, { useState } from 'react'
 
 const IconX = ({size = 24}: {size: number}) => {
   return (

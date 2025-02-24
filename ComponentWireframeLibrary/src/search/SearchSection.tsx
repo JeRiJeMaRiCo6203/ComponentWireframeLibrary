@@ -1,8 +1,4 @@
-import React, { useState } from 'react'
 import TagSelected from '../components/TagSelected'
-import Tag from '../components/TagNotSelected'
-import IconX from '../svg/IconX'
-import FilterPopup from '../components/FilterPopup'
 
 const SearchSection = ({ openFilterPopup, tags, onTagDelete, searchInput, handleEnterSearch, searchTerm, onSearchDelete }: { openFilterPopup: () => void, tags: any, onTagDelete: (tagId: number) => void, searchInput: any, handleEnterSearch: () => void, searchTerm: string | undefined, onSearchDelete: () => void | undefined; }) => {
   // const [searchTerm, setSearchTerm] = useState('');

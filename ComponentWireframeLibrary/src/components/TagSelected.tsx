@@ -1,4 +1,3 @@
-import React from 'react'
 import IconX from '../svg/IconX';
 
 const TagSelected = ({title, onDelete}: { title: string, onDelete: () => void }) => {

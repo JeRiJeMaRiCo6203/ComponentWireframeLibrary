@@ -24,7 +24,7 @@ const Navbar = ({
   gotoEditables: () => void | undefined;
   gotoSnippet: () => void | undefined;
 }) => {
-  const [isHovered, setIsHovered] = useState(false);
+  const [, setIsHovered] = useState(false);
   const [visible, setVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
 

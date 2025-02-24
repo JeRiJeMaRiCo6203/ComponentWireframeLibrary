@@ -1,4 +1,3 @@
-import React from "react";
 
 const CopyPopup = ({ isVisible }: { isVisible: boolean }) => {
   if (!isVisible) return null;
