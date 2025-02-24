@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 import Tag from './Tag'
 import TagSelected from './TagSelected'
 import { useState } from 'react'
@@ -15,7 +15,7 @@ const FilterPopup = ({isOpen, onClose, onSaveChanges, selectedTags }: {isOpen: b
   const [rawTags, setRawTags] = useState<Tag[]>([]);
   const [tags, setTags] = useState<Tag[]>([]);
   const [searchedTags, setSearchedTags] = useState<Tag[]>([]);
-  const [previouslySelectedTags, setPreviouslySelectedTags] = useState<Tag[]>([]);
+  const [, setPreviouslySelectedTags] = useState<Tag[]>([]);
   const [closePopupIsOpen, setClosePopupIsOpen] = useState(false);
   
   useEffect(() => {

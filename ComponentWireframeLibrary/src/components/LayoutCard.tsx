@@ -1,7 +1,6 @@
-import React from 'react'
 import Tag from './Tag'
 
-const LayoutCard = ({id, name, image, tags}: {id: number, name: string, image: string, tags: string[]}) => {
+const LayoutCard = ({name, image, tags}: {id: number, name: string, image: string, tags: string[]}) => {
   return (
     <div
       onClick={() => console.log('clicked')}

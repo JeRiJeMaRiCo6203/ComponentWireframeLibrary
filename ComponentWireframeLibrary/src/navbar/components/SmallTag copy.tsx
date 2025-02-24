@@ -1,7 +1,6 @@
-import React from 'react'
 import IconX from '../../svg/IconX';
 
-const SmallTag = ({title, isSearch, onDelete}: { title: string; isSearch: boolean, onDelete: () => void }) => {
+const SmallTag = ({title, isSearch}: { title: string; isSearch: boolean, onDelete: () => void }) => {
   return (
     <div className="relative w-fit py-2 pl-4 pr-2 rounded-lg flex items-center gap-3 bg-white text-sm">
       {isSearch ? (

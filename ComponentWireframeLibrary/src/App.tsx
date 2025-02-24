@@ -4,7 +4,6 @@ import SearchSection from "./search/SearchSection";
 import FilterPopup from "./components/FilterPopup";
 import { useEffect, useRef, useState } from "react";
 import { api } from "./config/api";
-import Tag from "./components/Tag";
 import Footer from "./navbar/Footer";
 import LayoutCard from "./components/LayoutCard";
 import { NavLink } from "react-router-dom";
