@@ -2,24 +2,17 @@
 const Loading = () => {
   return (
     <>
-      <div className="w-full h-screen bg-white flex justify-center items-center">
-        <svg width="500" height="500" viewBox="0 0 100 100">
+      <div className="w-full min-h-screen bg-white flex justify-center">
+        <svg width="300" height="300" viewBox="0 0 100 100">
           {/* <circle cx="50" cy="50" r="3" fill="black" /> */}
           <circle cx="50" cy="50" r="3" fill="black" >
             <animate
               attributeName="r"
-              values="3;4.5;0;3;3"
+              values="3;4.5;1.5;3;3"
               dur="3s"
               keyTimes="0;0.15;.3;.5;1"
               calcMode="spline"
               keySplines="0.33 1 0.68 1;0.32 0 0.67 0;0.33 1 0.68 1;0 0 0 0"
-              repeatCount="indefinite"
-            />
-            <animate
-              attributeName="visibility"
-              values="hidden;visible;hidden;hidden"
-              dur="6s"
-              keyTimes="0;.15;.65;1"
               repeatCount="indefinite"
             />
           </circle>

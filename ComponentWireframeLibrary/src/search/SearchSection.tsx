@@ -1,4 +1,5 @@
 import TagSelected from '../components/TagSelected'
+import IconX from "../svg/IconX";
 
 const SearchSection = ({ openFilterPopup, tags, onTagDelete, searchInput, handleEnterSearch, searchTerm, onSearchDelete }: { openFilterPopup: () => void, tags: any, onTagDelete: (tagId: number) => void, searchInput: any, handleEnterSearch: () => void, searchTerm: string | undefined, onSearchDelete: () => void | undefined; }) => {
   // const [searchTerm, setSearchTerm] = useState('');

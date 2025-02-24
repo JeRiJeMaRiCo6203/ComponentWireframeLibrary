@@ -19,6 +19,8 @@ function App() {
   const [loading, setLoading] = useState(true);
 
   const getLayouts = (tagIds: number[] = [], searchInput: string = "") => {
+    setLoading(true);
+
     const tagIdsFilter =
       tagIds.length > 0 ? `&categoryIds=${tagIds.join(",")}` : "";
     const searchFilter = searchInput ? `&searchKeyword=${searchInput}` : "";
@@ -136,9 +138,6 @@ function App() {
     };
   }, [searchInputRef, selectedTags]);
 
-  if (loading) {
-    return <Loading />;
-  }
   return (
     <body className="bg-white w-full">
       <FilterPopup
@@ -167,30 +166,12 @@ function App() {
         searchTerm={searchInputRef.current?.value}
         onSearchDelete={handleSearchDelete}
       />
-      <div className="min-h-screen">
-        {layouts[0].length > 0 && (
-          <div className="grid grid-cols-3 gap-16 mx-48 pt-16">
-            {layouts[0].map((layout, index) => (
-              <NavLink to={`/wireframe/${layout.id}`}>
-                <div key={index}>
-                  <LayoutCard
-                    id={layout.id}
-                    name={layout.name}
-                    image={layout.image}
-                    tags={layout.tags}
-                  />
-                </div>
-              </NavLink>
-            ))}
-          </div>
-        )}
-        {layouts[1].length > 0 && (
-          <>
-            <div className="mx-48 pt-16 text-xs text-[#a6a6a6]">
-              Related by Category
-            </div>
-            <div className="grid grid-cols-3 gap-16 mx-48 pt-4">
-              {layouts[1].map((layout, index) => (
+      {loading ? <Loading /> :
+       (
+        <div className="min-h-screen">
+          {layouts[0].length > 0 && (
+            <div className="grid grid-cols-3 gap-16 mx-48 pt-16">
+              {layouts[0].map((layout, index) => (
                 <NavLink to={`/wireframe/${layout.id}`}>
                   <div key={index}>
                     <LayoutCard
@@ -203,14 +184,36 @@ function App() {
                 </NavLink>
               ))}
             </div>
-          </>
-        )}
-        {layouts[0].length === 0 && layouts[1].length === 0 && (
-          <div className="mx-48 pt-16 text-center text-sm">
-            <p>No Wireframes Found</p>
-          </div>
-        )}
-      </div>
+          )}
+          {layouts[1].length > 0 && (
+            <>
+              <div className="mx-48 pt-16 text-xs text-[#a6a6a6]">
+                Related by Category
+              </div>
+              <div className="grid grid-cols-3 gap-16 mx-48 pt-4">
+                {layouts[1].map((layout, index) => (
+                  <NavLink to={`/wireframe/${layout.id}`}>
+                    <div key={index}>
+                      <LayoutCard
+                        id={layout.id}
+                        name={layout.name}
+                        image={layout.image}
+                        tags={layout.tags}
+                      />
+                    </div>
+                  </NavLink>
+                ))}
+              </div>
+            </>
+          )}
+          {layouts[0].length === 0 && layouts[1].length === 0 && (
+            <div className="mx-48 pt-16 text-center text-sm">
+              <p>No Wireframes Found</p>
+            </div>
+          )}
+        </div>
+       )
+      }
       <Footer />
     </body>
   );

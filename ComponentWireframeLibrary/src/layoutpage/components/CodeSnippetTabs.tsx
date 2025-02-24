@@ -27,7 +27,7 @@ const CodeSnippetTabs = ({
     type: string;
     name: string;
   }[];
-  removeProperty: number[];
+  removeProperty: number[][];
 }) => {
   const [code, setCode] = useState<
     { id: number; code: string; type: string; name: string }[]

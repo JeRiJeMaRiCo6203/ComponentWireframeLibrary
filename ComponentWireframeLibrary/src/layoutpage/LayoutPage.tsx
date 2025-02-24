@@ -62,7 +62,7 @@ const LayoutPage = () => {
     { id: number; code: string; type: string; name: string }[]
   >([]);
 
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState([true,true,true]);
 
   useEffect(() => {
     api.get<{ data: any }>(`wireframeDetails/${id}`).then((res: any) => {
@@ -75,6 +75,8 @@ const LayoutPage = () => {
       });
 
       setWireframe(tempWireframe[0]);
+
+      setLoading((prev) => [false, prev[1], prev[2]]);
     });
 
     api
@@ -106,6 +108,8 @@ const LayoutPage = () => {
         });
 
         setRawCodeSnippet(codeSnippet);
+
+        setLoading((prev) => [prev[0], false, prev[2]]);
       });
 
     api.get<{ data: any }>(`editablesByWireframeId/${id}`).then((res: any) => {
@@ -137,7 +141,7 @@ const LayoutPage = () => {
 
       setRemoveProperty(Array(editables.length).fill([-1]));
 
-      setLoading(false);
+      setLoading((prev) => [prev[0], prev[1], false]);
     });
   }, [id]);
 
@@ -295,9 +299,6 @@ const LayoutPage = () => {
     }
   };
 
-  if (loading) {
-    return <Loading />;
-  }
   return (
     <body className="bg-white w-full">
       <Navbar
@@ -311,134 +312,142 @@ const LayoutPage = () => {
         gotoEditables={() => handleScroll("editables")}
         gotoSnippet={() => handleScroll("snippet")}
       />
-      <div className="gap-16 mx-48 mt-32 mb-16">
-        <p className="text-4xl pt-16 font-medium">{wireframe.title}</p>
-        <div className="flex flex-wrap gap-2 pt-4">
-          {wireframe.tags?.map((tag: any, index: number) => {
-            return <Tag key={index} title={tag} />;
-          })}
+      {loading.some((load) => load) ? (
+        <div className="mt-32">
+          <Loading />
         </div>
-      </div>
-      <div id="editables" className="mx-48 my-16">
-        <div className="flex justify-end">
-          <div
-            className="px-6 py-2 border-2 border-[#f4f4f4] rounded-lg hover:bg-[#e7e7e7] hover:border-[#e7e7e7] text-sm transition-all cursor-pointer"
-            onClick={resetEditables}
-          >
-            Reset to Default
+      ) : (
+        <>
+          <div className="gap-16 mx-48 mt-32 mb-16">
+            <p className="text-4xl pt-16 font-medium">{wireframe.title}</p>
+            <div className="flex flex-wrap gap-2 pt-4">
+              {wireframe.tags?.map((tag: any, index: number) => {
+                return <Tag key={index} title={tag} />;
+              })}
+            </div>
           </div>
-        </div>
-        <div className="pt-4 flex flex-wrap justify-center items-center gap-6">
-          {editables.map((editable, index) => {
-            return (
-              <div key={index} className="w-80">
-                <div className="mb-2">{editable.name}</div>
-                {editable.switchOptions ? (
-                  <SwitchInput
-                    options={editable.switchOptions as [string, string]}
-                    changeData={(value) => changeData(index, value)}
-                    reset={reset}
-                  />
-                ) : editable.dropdownOptions ? (
-                  <DropdownInput
-                    options={editable.dropdownOptions as string[]}
-                    changeData={(value) => changeData(index, value)}
-                    reset={reset}
-                  />
-                ) : (
-                  <NumberInput
-                    numberRange={editable.numberRange as [number, number]}
-                    changeData={(value) => changeData(index, value)}
-                    reset={reset}
-                  />
-                )}
+          <div id="editables" className="mx-48 my-16">
+            <div className="flex justify-end">
+              <div
+                className="px-6 py-2 border-2 border-[#f4f4f4] rounded-lg hover:bg-[#e7e7e7] hover:border-[#e7e7e7] text-sm transition-all cursor-pointer"
+                onClick={resetEditables}
+              >
+                Reset to Default
               </div>
-            );
-          })}
-        </div>
-      </div>
-      <div
-        className={
-          `bg-[#f4f4f4] w-full py-12 ` +
-          (aspect !== "your window" ? "px-48" : "border-x-4 border-[#f4f4f4]")
-        }
-      >
-        <div className="flex flex-col items-center gap-4 mb-12">
-          <div className="flex justify-center gap-2">
-            <div
-              className="hover:bg-[#e7e7e7] cursor-pointer py-2 w-28 rounded-lg text-sm text-center transition-all"
-              onClick={() => changeAspect("16/9")}
-            >
-              Desktop
             </div>
-            <div
-              className="hover:bg-[#e7e7e7] cursor-pointer py-2 w-28 rounded-lg text-sm text-center transition-all"
-              onClick={() => changeAspect("4/3")}
-            >
-              Tablet
-            </div>
-            <div
-              className="hover:bg-[#e7e7e7] cursor-pointer py-2 w-28 rounded-lg text-sm text-center transition-all"
-              onClick={() => changeAspect("9/16")}
-            >
-              Phone
-            </div>
-            <div
-              className="hover:bg-[#e7e7e7] cursor-pointer py-2 w-28 rounded-lg text-sm text-center transition-all"
-              onClick={() => changeAspect("your window")}
-            >
-              Fullwidth
+            <div className="pt-4 flex flex-wrap justify-center items-center gap-6">
+              {editables.map((editable, index) => {
+                return (
+                  <div key={index} className="w-80">
+                    <div className="mb-2">{editable.name}</div>
+                    {editable.switchOptions ? (
+                      <SwitchInput
+                        options={editable.switchOptions as [string, string]}
+                        changeData={(value) => changeData(index, value)}
+                        reset={reset}
+                      />
+                    ) : editable.dropdownOptions ? (
+                      <DropdownInput
+                        options={editable.dropdownOptions as string[]}
+                        changeData={(value) => changeData(index, value)}
+                        reset={reset}
+                      />
+                    ) : (
+                      <NumberInput
+                        numberRange={editable.numberRange as [number, number]}
+                        changeData={(value) => changeData(index, value)}
+                        reset={reset}
+                      />
+                    )}
+                  </div>
+                );
+              })}
             </div>
           </div>
-        </div>
-        <div className="aspect-video flex justify-center">
           <div
-            className="break-words overflow-y-auto bg-white transition-all duration-500"
-            style={{
-              aspectRatio: aspect !== "your window" ? aspect : "unset",
-              width: aspect !== "your window" ? "auto" : "100%",
-              fontSize:
-                aspect === "16/9"
-                  ? `${(window.innerWidth - 384) / 1440}em`
-                  : aspect === "4/3"
-                  ? `
-                ${((window.innerWidth - 384) * 1.05) / 1440}em`
-                  : aspect === "9/16"
-                  ? `
-                ${((window.innerWidth - 384) * 1.1) / 1440}em`
-                  : "1em",
-              scrollbarWidth: "thin",
-              scrollbarColor: "#e7e7e7 transparent",
-            }}
+            className={
+              `bg-[#f4f4f4] w-full py-12 ` +
+              (aspect !== "your window" ? "px-48" : "border-x-4 border-[#f4f4f4]")
+            }
           >
-            {parse(`
-                <style>
-                  .section > * {
-                    transition: all 150ms ease;
-                    transition-delay: 50ms;
-                  }
-                  ${
-                    codeSnippetDisplay.find(
-                      (snippet) => snippet.type === "preview-css"
-                    )?.code ?? ""
-                  }
-                </style>
-                <div style="width: 100%; height: 100%; min-height: max-content; display: flex; justify-content: center; align-items: center;">
-                  ${
-                    codeSnippetDisplay.find(
-                      (snippet) => snippet.type === "html"
-                    )?.code ?? ""
-                  }
+            <div className="flex flex-col items-center gap-4 mb-12">
+              <div className="flex justify-center gap-2">
+                <div
+                  className="hover:bg-[#e7e7e7] cursor-pointer py-2 w-28 rounded-lg text-sm text-center transition-all"
+                  onClick={() => changeAspect("16/9")}
+                >
+                  Desktop
                 </div>
-              `)}
+                <div
+                  className="hover:bg-[#e7e7e7] cursor-pointer py-2 w-28 rounded-lg text-sm text-center transition-all"
+                  onClick={() => changeAspect("4/3")}
+                >
+                  Tablet
+                </div>
+                <div
+                  className="hover:bg-[#e7e7e7] cursor-pointer py-2 w-28 rounded-lg text-sm text-center transition-all"
+                  onClick={() => changeAspect("9/16")}
+                >
+                  Phone
+                </div>
+                <div
+                  className="hover:bg-[#e7e7e7] cursor-pointer py-2 w-28 rounded-lg text-sm text-center transition-all"
+                  onClick={() => changeAspect("your window")}
+                >
+                  Fullwidth
+                </div>
+              </div>
+            </div>
+            <div className="aspect-video flex justify-center">
+              <div
+                className="break-words overflow-y-auto bg-white transition-all duration-500"
+                style={{
+                  aspectRatio: aspect !== "your window" ? aspect : "unset",
+                  width: aspect !== "your window" ? "auto" : "100%",
+                  fontSize:
+                    aspect === "16/9"
+                      ? `${(window.innerWidth - 384) / 1440}em`
+                      : aspect === "4/3"
+                      ? `
+                    ${((window.innerWidth - 384) * 1.05) / 1440}em`
+                      : aspect === "9/16"
+                      ? `
+                    ${((window.innerWidth - 384) * 1.1) / 1440}em`
+                      : "1em",
+                  scrollbarWidth: "thin",
+                  scrollbarColor: "#e7e7e7 transparent",
+                }}
+              >
+                {parse(`
+                    <style>
+                      .section > * {
+                        transition: all 150ms ease;
+                        transition-delay: 50ms;
+                      }
+                      ${
+                        codeSnippetDisplay.find(
+                          (snippet) => snippet.type === "preview-css"
+                        )?.code ?? ""
+                      }
+                    </style>
+                    <div style="width: 100%; height: 100%; min-height: max-content; display: flex; justify-content: center; align-items: center;">
+                      ${
+                        codeSnippetDisplay.find(
+                          (snippet) => snippet.type === "html"
+                        )?.code ?? ""
+                      }
+                    </div>
+                  `)}
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
-      <ExportGuide gotoSnippet={() => handleScroll("snippet")} />
-      <CodeSnippetTabs
-        codeSnippetDisplay={codeSnippetDisplay}
-        removeProperty={removeProperty}
-      />
+          <ExportGuide gotoSnippet={() => handleScroll("snippet")} />
+          <CodeSnippetTabs
+            codeSnippetDisplay={codeSnippetDisplay}
+            removeProperty={removeProperty}
+          />
+        </>
+      )}
       <Footer />
     </body>
   );
