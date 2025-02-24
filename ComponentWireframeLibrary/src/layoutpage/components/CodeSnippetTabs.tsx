@@ -66,13 +66,14 @@ const CodeSnippetTabs = ({
   }, [codeSnippetDisplay, codeLang]);
 
   const [selectedCode, setSelectedCode] = useState({
+    id: -1,
     type: "htmlbars",
     name: "HTML",
   });
 
   useEffect(() => {
     if (code.length > 0) {
-      setSelectedCode({ type: code[0].type, name: code[0].name });
+      setSelectedCode({ id: code[0].id, type: code[0].type, name: code[0].name });
     }
   }, [code]);
 
@@ -98,12 +99,12 @@ const CodeSnippetTabs = ({
         <div className="flex gap-2">
           {code.map((snippet) => (
             <div
-              key={snippet.name}
+              key={snippet.id}
               className={`cursor-pointer py-2 px-6 rounded-lg text-sm border-2 transition-all ${
                 selectedCode.name === snippet.name ? "bg-white border-[#f4f4f4]" : "border-white hover:bg-[#e7e7e7] hover:border-[#e7e7e7]"
               }`}
               onClick={() =>
-                setSelectedCode({ type: snippet.type, name: snippet.name })
+                setSelectedCode({ id: snippet.id, type: snippet.type, name: snippet.name })
               }
             >
               {snippet.name}
@@ -173,7 +174,7 @@ const CodeSnippetTabs = ({
             showLineNumbers={true}
           >
             {codeSnippetDisplay.find(
-              (snippet) => snippet.name === selectedCode.name
+              (snippet) => snippet.id === selectedCode.id
             )?.code ?? ""}
           </SyntaxHighlighter>
         </div>
