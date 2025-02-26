@@ -82,7 +82,7 @@ const CodeSnippetTabs = ({
   const handleCopy = async () => {
     try {
       await navigator.clipboard.writeText(
-        codeSnippetDisplay.find((snippet) => snippet.name === selectedCode.name)
+        codeSnippetDisplay.find((snippet) => snippet.id === selectedCode.id)
           ?.code ?? ""
       );
       setIsCopied(true);
