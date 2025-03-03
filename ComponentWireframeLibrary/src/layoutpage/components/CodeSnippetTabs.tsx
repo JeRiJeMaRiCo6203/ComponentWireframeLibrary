@@ -4,6 +4,7 @@ import { solarizedLight as theme } from "react-syntax-highlighter/dist/esm/style
 import { useState } from "react";
 import CopyPopup from "../../components/CopyPopup";
 import DropdownInput from "./DropdownInput";
+import sound from '../../../public/copy.mp3'
 
 // type CodeSnippet = {
 //   name: string;
@@ -86,6 +87,10 @@ const CodeSnippetTabs = ({
           ?.code ?? ""
       );
       setIsCopied(true);
+      const audio = new Audio(sound);
+      audio.playbackRate = 1.5;
+      audio.preservesPitch = false;
+      audio.play();
 
       setTimeout(() => setIsCopied(false), 2000);
     } catch (error) {
