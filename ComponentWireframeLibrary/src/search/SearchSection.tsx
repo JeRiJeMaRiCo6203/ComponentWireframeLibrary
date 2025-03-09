@@ -2,97 +2,10 @@ import TagSelected from '../components/TagSelected'
 import IconX from "../svg/IconX";
 
 const SearchSection = ({ openFilterPopup, tags, onTagDelete, searchInput, handleEnterSearch, searchTerm, onSearchDelete }: { openFilterPopup: () => void, tags: any, onTagDelete: (tagId: number) => void, searchInput: any, handleEnterSearch: () => void, searchTerm: string | undefined, onSearchDelete: () => void | undefined; }) => {
-  // const [searchTerm, setSearchTerm] = useState('');
-  // const [suggestions, setSuggestions] = useState<any[]>([]);
-  // const [activeSuggestionIndex, setActiveSuggestionIndex] = useState(-1); // Track active suggestion for keyboard navigation
-  // const [showSuggestions, setShowSuggestions] = useState(false); // Track if suggestions are visible
-
-  // const getSuggestions = (value: string) => {
-  //   return tags.filter((tag: any) => 
-  //     tag.name.toLowerCase().includes(value.toLowerCase())
-  //   );
-  // }
-
-  // Handle input change
-  // const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-  //   const value = event.target.value;
-  //   setSearchTerm(value);
-
-  //   if (value.length > 0) {
-  //     const filteredSuggestions = getSuggestions(value);
-  //     setSuggestions(filteredSuggestions);
-  //     setShowSuggestions(true);
-  //   } else {
-  //     setSuggestions([]); // Clear suggestions when the input is empty
-  //     setShowSuggestions(false);
-  //   }
-  //   setActiveSuggestionIndex(-1); // Reset active suggestion index when input changes
-  // };
-
-  // Handle key down event for arrow keys and Enter key
-  // const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-  //   if (showSuggestions) {
-  //     if (event.key === 'ArrowDown') {
-  //       console.log("down key pressed")
-  //       // Move down in the suggestions list
-  //       setActiveSuggestionIndex(prevIndex =>
-  //         prevIndex < suggestions.length - 1 ? prevIndex + 1 : 0
-  //       );
-  //     } else if (event.key === 'ArrowUp') {
-  //       // Move up in the suggestions list
-  //       setActiveSuggestionIndex(prevIndex =>
-  //         prevIndex > 0 ? prevIndex - 1 : suggestions.length - 1
-  //       );
-  //     } else if (event.key === 'Enter') {
-  //       // Select the current active suggestion
-  //       if (activeSuggestionIndex >= 0 && activeSuggestionIndex < suggestions.length) {
-  //         handleSuggestionSelect(suggestions[activeSuggestionIndex].name);
-  //       }
-  //     }
-  //   }
-  // };
-
-  // Handle click on suggestion
-  // const handleSuggestionSelect = (suggestionId: number) => {
-  //   setSearchTerm('')
-  //   setSuggestions([]); // Hide suggestions after selection
-  //   setShowSuggestions(false); // Hide suggestions
-  //   // Tag Select TAMBAHAIN
-  // };
 
   return (
     <div id='search-section' className='mx-48 pt-32'>
       <div className='w-full rounded-lg flex justify-between gap-2'>
-        {/* {showSuggestions && suggestions.length > 0 && (
-            <div className="absolute top-16 w-full h-fit bg-white border-2 border-[#f4f4f4] rounded-lg py-4 z-20">
-              <p className='px-6 pb-1 font-semibold text-xs'>titles</p>
-              {suggestions.map((item: any, index: number) => (
-                <div
-                key={item.id}
-                className={`px-6 py-1 cursor-pointer text-sm hover:bg-[#f4f4f4] ${
-                  index === activeSuggestionIndex ? 'bg-[#f4f4f4]' : ''
-                }`}
-                onClick={() => handleSuggestionSelect(item.id)}
-                >
-                  {item.name}
-                </div>
-              ))}
-              <hr className='border-t-2 mt-3 mb-4 border-[#f4f4f4]'/>
-              <p className='px-6 pb-2 font-semibold text-xs'>Tags</p>
-              <div className='px-6 flex flex-wrap gap-2'>
-                {suggestions.map((item: any) => (
-                  <Tag key={item.id} title={item.name}/>
-                ))}
-              </div>
-              <hr className='border-t-2 mt-3 mb-4 border-[#f4f4f4]'/>
-              <p className='px-6 pb-2 font-semibold text-xs'>Editables</p>
-              <div className='px-6 flex flex-wrap gap-2'>
-                {suggestions.map((item: any) => (
-                  <Tag key={item.id} title={item.name}/>
-                ))}
-              </div>
-            </div>
-          )} */}
         <div
           className='py-2 px-3 flex justify-center items-center gap-1 bg-white hover:bg-[#e7e7e7] border-2 border-[#f4f4f4] hover:border-[#e7e7e7] cursor-pointer rounded-lg transition-all'
           onClick={() => openFilterPopup()}
@@ -107,11 +20,6 @@ const SearchSection = ({ openFilterPopup, tags, onTagDelete, searchInput, handle
             type="text"
             name="search"
             id="search"
-            // value={searchTerm}
-            // onChange={handleInputChange}
-            // onKeyDown={handleKeyDown} // Attach keydown event 
-            // onFocus={() => setShowSuggestions(true)}
-            // onBlur={() => setShowSuggestions(false)}
             placeholder="Search..."
             className='w-80 py-2 px-3 bg-[#f4f4f4] border-2 border-[#f4f4f4] hover:bg-[#e7e7e7] hover:border-[#e7e7e7] focus:bg-[#e7e7e7] focus:border-[#e7e7e7] text-sm rounded-lg transition-all'
           />
