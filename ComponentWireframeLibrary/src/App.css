@@ -1,8 +1,7 @@
 :root{
   font-family: "Poppins", sans-serif;
   color: #222222;
-  /* font-size: 16px; */
-  /* line-height: 1.5rem; */
+  font-size: 16px;
 }
 
 .secondary {
@@ -36,4 +35,8 @@
 
 input {
   outline: none;
+}
+
+::-webkit-scrollbar-track {
+  background: #222222; /* Transparent track */
 }

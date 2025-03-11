@@ -1,61 +1,20 @@
+import { useEffect, useState } from "react";
 import "./App.css";
 import Navbar from "./navbar/Navbar";
 import SearchSection from "./search/SearchSection";
-import FilterPopup from "./components/FilterPopup";
-import { useEffect, useRef, useState } from "react";
+import { Link } from "react-router-dom";
+import Layout from "./interfaces/Layout";
 import { api } from "./config/api";
-import Footer from "./navbar/Footer";
-import LayoutCard from "./components/LayoutCard";
-import { NavLink } from "react-router-dom";
-import Loading from "./components/Loading";
+import LayoutPage from "./layoutpage/LayoutPage";
 
 function App() {
-  const [filterPopup, setFilterPopup] = useState(false);
-  const [selectedTags, setSelectedTags] = useState<
-    { id: number; name: string }[]
-  >([]);
-  const [layouts, setLayouts] = useState<[any[], any[]]>([[], []]);
-  const searchInputRef = useRef<HTMLInputElement>(null);
-  const [loading, setLoading] = useState(true);
+  const [layouts, setLayouts] = useState<Layout[]>([]);
 
-  const getLayouts = (tagIds: number[] = [], searchInput: string = "") => {
-    setLoading(true);
-
-    const tagIdsFilter =
-      tagIds.length > 0 ? `&categoryIds=${tagIds.join(",")}` : "";
-    const searchFilter = searchInput ? `&searchKeyword=${searchInput}` : "";
-    const url = `/wireframesCategories?${tagIdsFilter}${searchFilter}`;
-
-    console.log("url", url);
-
-    api.get<{ data: any[] }>(url).then((res: any) => {
-      let tempLayouts = res.data.layouts.map((data: any) => {
-        return {
-          id: data.id,
-          name: data.title,
-          image: data.cover,
-          tags: data.categories.sort((a: any, b: any) => a.localeCompare(b)),
-        };
-      });
-      let tempRelatedLayouts = res.data.related.map((data: any) => {
-        return {
-          id: data.id,
-          name: data.title,
-          image: data.cover,
-          tags: data.categories.sort((a: any, b: any) => a.localeCompare(b)),
-        };
-      });
-
-      console.log("tempLayouts", tempLayouts);
-      console.log("tempRelatedLayouts", tempRelatedLayouts);
-
-      setLayouts([tempLayouts, tempRelatedLayouts]);
-      setLoading(false);
-    });
-  };
-
+  // Get all layout
   useEffect(() => {
-    getLayouts();
+    api.get(`/wireframes/`).then((response) => {
+      setLayouts(response.data);
+    });
   }, []);
 
   useEffect(() => {
@@ -140,81 +99,24 @@ function App() {
 
   return (
     <body className="bg-white w-full">
-      <FilterPopup
-        isOpen={filterPopup}
-        onClose={closeFilterPopup}
-        onSaveChanges={handleTagSelect}
-        selectedTags={selectedTags}
-      />
-      <Navbar
-        openFilterPopup={openFilterPopup}
-        tags={selectedTags}
-        onTagDelete={handleTagDelete}
-        handleFocus={handleFocus}
-        onSearchDelete={handleSearchDelete}
-        searchTerm={searchInputRef.current?.value}
-        page={"home"}
-        gotoEditables={() => {}}
-        gotoSnippet={() => {}}
-      />
-      <SearchSection
-        openFilterPopup={openFilterPopup}
-        tags={selectedTags}
-        onTagDelete={handleTagDelete}
-        searchInput={searchInputRef}
-        handleEnterSearch={handleEnterSearch}
-        searchTerm={searchInputRef.current?.value}
-        onSearchDelete={handleSearchDelete}
-      />
-      {loading ? <Loading /> :
-       (
-        <div className="min-h-screen">
-          {layouts[0].length > 0 && (
-            <div className="grid grid-cols-3 gap-16 mx-48 pt-16">
-              {layouts[0].map((layout, index) => (
-                <NavLink to={`/wireframe/${layout.id}`}>
-                  <div key={index}>
-                    <LayoutCard
-                      id={layout.id}
-                      name={layout.name}
-                      image={layout.image}
-                      tags={layout.tags}
-                    />
-                  </div>
-                </NavLink>
-              ))}
+      <Navbar />
+      <SearchSection />
+      <div className="grid grid-cols-3 gap-16 mx-48 pt-16">
+        {layouts.map((layout) => (
+          <Link to={`/layout/${layout.id}`} key={layout.id}>
+            <div className="w-full">
+              <img
+                className="rounded-lg"
+                src="https://ik.imagekit.io/3wycpjx1go/Product-Landing-Page-Example.png?updatedAt=1726545222002"
+                width="100%"
+                alt=""
+              />
+              <p className="pt-2">{layout.title}</p>
             </div>
-          )}
-          {layouts[1].length > 0 && (
-            <>
-              <div className="mx-48 pt-16 text-xs text-[#a6a6a6]">
-                Related by Category
-              </div>
-              <div className="grid grid-cols-3 gap-16 mx-48 pt-4">
-                {layouts[1].map((layout, index) => (
-                  <NavLink to={`/wireframe/${layout.id}`}>
-                    <div key={index}>
-                      <LayoutCard
-                        id={layout.id}
-                        name={layout.name}
-                        image={layout.image}
-                        tags={layout.tags}
-                      />
-                    </div>
-                  </NavLink>
-                ))}
-              </div>
-            </>
-          )}
-          {layouts[0].length === 0 && layouts[1].length === 0 && (
-            <div className="mx-48 pt-16 text-center text-sm">
-              <p>No Wireframes Found</p>
-            </div>
-          )}
-        </div>
-       )
-      }
-      <Footer />
+          </Link>
+        ))}
+      </div>
+      <div className="h-[100rem]"></div>
     </body>
   );
 }

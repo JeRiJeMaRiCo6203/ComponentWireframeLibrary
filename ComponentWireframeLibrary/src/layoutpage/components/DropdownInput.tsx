@@ -1,12 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 interface DropdownProps {
   options: string[];
   changeData?: (value: string) => void;
-  reset?: boolean;
 }
 
-const DropdownInput: React.FC<DropdownProps> = ({ options, changeData, reset }) => {
+const DropdownInput: React.FC<DropdownProps> = ({ options, changeData }) => {
   const [selectedOption, setSelectedOption] = useState(options[0]);
   const [isOpen, setIsOpen] = useState(false);
 
@@ -26,20 +25,13 @@ const DropdownInput: React.FC<DropdownProps> = ({ options, changeData, reset }) 
     setIsOpen(false);
   };
 
-  useEffect(() => {
-    if (changeData) {
-      changeData(options[0]);
-    }
-    setSelectedOption(options[0]);
-    setIsOpen(false);
-  }, [reset]);
-
   return (
     <div className='relative' tabIndex={0} onBlur={handleBlur}>
       <div
         className={`
-          w-full p-2 px-4 flex justify-between items-center focus:bg-[#f4f4f4] border-2 border-[#f4f4f4] hover:border-[#e7e7e7] cursor-pointer select-none transition-all gap-2
-          ${isOpen ? "rounded-t-lg bg-[#f4f4f4] hover:bg-[#e7e7e7] min-w-48" : "rounded-lg bg-white"}
+          w-full mt-2 p-2 px-4 flex justify-between items-center hover:bg-[#e7e7e7] focus:bg-[#f4f4f4] border-2 border-[#f4f4f4] hover:border-[#e7e7e7] cursor-pointer select-none
+          ${isOpen ? "bg-[#f4f4f4]" : "bg-white"}
+          ${isOpen ? "rounded-t-lg" : "rounded-lg"}
         `}
         onClick={toggleDropdown}
       >
@@ -47,20 +39,17 @@ const DropdownInput: React.FC<DropdownProps> = ({ options, changeData, reset }) 
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7 10L12 15L17 10" stroke="#a6a6a6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </div>
       {isOpen && (
-        <>
-          <div className='absolute w-full rounded-b-lg bg-[#f4f4f4] z-30'>
-            {options.map((option, idx) => (
-              <div
-                key={option}
-                className={`cursor-pointer py-2 px-4 hover:bg-[#e7e7e7] border-2 border-[#f4f4f4] hover:border-[#e7e7e7] select-none`+ (idx === options.length - 1 ? ' rounded-b-lg' : '')}
-                onClick={() => handleOptionClick(option)}
-              >
-                {option}
-              </div>
-            ))}
-            <div className='absolute w-[calc(100%+4px)] h-[calc(100%+4px)] border-2 border-t-0 border-white -top-[2px] -left-[2px] pointer-events-none rounded-b-[10px] z-50'></div>
-          </div>
-        </>
+        <div className='absolute w-full rounded-b-lg bg-[#f4f4f4] overflow-hidden z-30'>
+          {options.map((option) => (
+            <div
+              key={option}
+              className='cursor-pointer p-2 px-4 hover:bg-[#e7e7e7] border-2 border-[#f4f4f4] hover:border-[#e7e7e7] select-none'
+              onClick={() => handleOptionClick(option)}
+            >
+              {option}
+            </div>
+          ))}
+        </div>
       )}
     </div>
   );

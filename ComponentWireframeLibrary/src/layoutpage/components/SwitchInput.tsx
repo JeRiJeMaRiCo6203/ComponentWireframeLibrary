@@ -1,12 +1,11 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 interface SwitchInputProps {
   options: [string, string];
   changeData?: (value: string) => void;
-  reset?: boolean;
 }
 
-const SwitchInput: React.FC<SwitchInputProps> = ({ options, changeData, reset }) => {
+const SwitchInput: React.FC<SwitchInputProps> = ({ options, changeData }) => {
   const [isOn, setIsOn] = useState(false);
 
   const handleSwitch = (value: boolean) => {
@@ -16,16 +15,9 @@ const SwitchInput: React.FC<SwitchInputProps> = ({ options, changeData, reset })
     }
   };
 
-  useEffect(() => {
-    if (changeData) {
-      changeData(options[0]);
-    }
-    setIsOn(false);
-  }, [reset]);
-
   return (
     <div 
-      className='w-full flex bg-[#f4f4f4] hover:bg-[#e7e7e7] border-2 border-[#f4f4f4] hover:border-[#e7e7e7] rounded-lg relative cursor-pointer transition-all'
+      className='w-full mt-2 flex bg-[#f4f4f4] hover:bg-[#e7e7e7] border-2 border-[#f4f4f4] hover:border-[#e7e7e7] rounded-lg relative cursor-pointer transition-all'
       onClick={() => handleSwitch(!isOn)}
     >
       <div

@@ -1,5 +1,9 @@
+import React, { useState } from 'react'
+import tagJson from '../tempJsons/tagJson.json'
 import TagSelected from '../components/TagSelected'
-import IconX from "../svg/IconX";
+import Tag from '../components/TagNotSelected'
+import IconX from '../svg/IconX'
+import FilterPopup from '../components/FilterPopup'
 
 const SearchSection = ({ openFilterPopup, tags, onTagDelete, searchInput, handleEnterSearch, searchTerm, onSearchDelete }: { openFilterPopup: () => void, tags: any, onTagDelete: (tagId: number) => void, searchInput: any, handleEnterSearch: () => void, searchTerm: string | undefined, onSearchDelete: () => void | undefined; }) => {
   // const [searchTerm, setSearchTerm] = useState('');
@@ -61,7 +65,7 @@ const SearchSection = ({ openFilterPopup, tags, onTagDelete, searchInput, handle
   // };
 
   return (
-    <div id='search-section' className='mx-48 pt-32'>
+    <div className='mx-48 pt-32'>
       <div className='w-full rounded-lg flex justify-between gap-2'>
         {/* {showSuggestions && suggestions.length > 0 && (
             <div className="absolute top-16 w-full h-fit bg-white border-2 border-[#f4f4f4] rounded-lg py-4 z-20">
@@ -94,7 +98,7 @@ const SearchSection = ({ openFilterPopup, tags, onTagDelete, searchInput, handle
             </div>
           )} */}
         <div
-          className='py-2 px-3 flex justify-center items-center gap-1 bg-white hover:bg-[#e7e7e7] border-2 border-[#f4f4f4] hover:border-[#e7e7e7] cursor-pointer rounded-lg transition-all'
+          className='py-2 px-3 flex justify-center items-center gap-1 bg-white hover:bg-[#f4f4f4] border-2 border-[#f4f4f4] cursor-pointer rounded-lg'
           onClick={() => openFilterPopup()}
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M22 3H2L10 12.46V19L14 21V12.46L22 3Z" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -144,48 +148,15 @@ const SearchSection = ({ openFilterPopup, tags, onTagDelete, searchInput, handle
           </div>
         </div>
       </div>
-      <div className='flex flex-wrap gap-2 py-4 border-b-2 border-[#f4f4f4]'>
-        {searchTerm && (
-          <div className="relative w-max h-fit py-1 pl-3 pr-2 rounded-lg flex items-center gap-2 bg-white text-sm border-2 border-[#f4f4f4]">
-            <div className="flex items-center gap-2">
-              <svg
-                width="12"
-                height="12"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M11 19C15.4183 19 19 15.4183 19 11C19 6.58172 15.4183 3 11 3C6.58172 3 3 6.58172 3 11C3 15.4183 6.58172 19 11 19Z"
-                  stroke="black"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-                <path
-                  d="M21 20.9992L16.7 16.6992"
-                  stroke="black"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
-              {searchTerm}
-            </div>
-            <div
-              onClick={onSearchDelete}
-              className="cursor-pointer"
-            >
-              <IconX size={16} />
-            </div>
-          </div>
-        )}
-        {tags.map((item: any) => (
-          <TagSelected key={item.id} title={item.name} onDelete={() => onTagDelete(item.id)}/>
+      <div className='flex flex-wrap gap-2 pt-4'>
+        {tagJson.map((item: any) => (
+          item.isSelected && (
+            <TagSelected key={item.id} title={item.name}/>
+          )
         ))}
       </div>
     </div>
   )
 }
 
-export default SearchSection
+export default Search

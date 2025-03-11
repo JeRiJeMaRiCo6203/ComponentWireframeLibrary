@@ -1,3 +1,5 @@
+import React from 'react'
+import IconX from '../svg/IconX';
 
 const TagNotSelected = ({title}: { title: string}) => {
   const onSelect = () => {
