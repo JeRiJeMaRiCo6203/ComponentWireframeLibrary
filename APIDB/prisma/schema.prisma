@@ -8,27 +8,67 @@ datasource db {
 }
 
 model categories {
-  id                 Int                  @id @default(autoincrement())
-  name               String               @db.VarChar(100)
-  wireframe_category wireframe_category[]
-}
-
-model wireframe_category {
-  wireframe_id Int
-  category_id  Int
-  categories   categories @relation(fields: [category_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  wireframes   wireframes @relation(fields: [wireframe_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-
-  @@id([wireframe_id, category_id])
+  id                    Int                     @id @default(autoincrement())
+  name                  String                  @db.VarChar(100)
+  category_relationship category_relationship[]
 }
 
 model wireframes {
-  id                 Int                  @id @default(autoincrement())
-  title              String               @db.VarChar(255)
-  codestringhtml     String?
-  codestringreact    String?
-  codestringlaravel  String?
-  codestringcss      String?
-  cover              String?
-  wireframe_category wireframe_category[]
+  id                    Int                     @id @default(autoincrement())
+  title                 String                  @db.VarChar(255)
+  cover                 String?
+  category_relationship category_relationship[]
+  codesnippets          codesnippets[]
+  editable_relationship editable_relationship[]
+}
+
+model editables {
+  id                    Int                     @id @default(autoincrement())
+  name                  String                  @db.VarChar(100)
+  dropdown_options      String[]
+  switch_options        String[]
+  number_range          Int[]
+  idx                   Int?
+  remove_property       Int[]
+  editable_relationship editable_relationship[]
+  editablecodes         editablecodes[]
+}
+
+model category_relationship {
+  id           Int         @id @default(autoincrement())
+  wireframe_id Int?
+  category_id  Int?
+  categories   categories? @relation(fields: [category_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  wireframes   wireframes? @relation(fields: [wireframe_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model codesnippets {
+  id            Int             @id @default(autoincrement())
+  name          String          @db.VarChar(100)
+  type          String?
+  wireframe_id  Int?
+  codesnippet   String?
+  idx           Int?
+  wireframes    wireframes?     @relation(fields: [wireframe_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  editablecodes editablecodes[]
+}
+
+model editable_relationship {
+  id           Int         @id @default(autoincrement())
+  wireframe_id Int?
+  editable_id  Int?
+  editables    editables?  @relation(fields: [editable_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  wireframes   wireframes? @relation(fields: [wireframe_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model editablecodes {
+  id             Int           @id @default(autoincrement())
+  type           String?
+  editable_id    Int?
+  idx            Int?
+  value          String[]
+  editable_idx   Int?
+  codesnippet_id Int?
+  codesnippets   codesnippets? @relation(fields: [codesnippet_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  editables      editables?    @relation(fields: [editable_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
