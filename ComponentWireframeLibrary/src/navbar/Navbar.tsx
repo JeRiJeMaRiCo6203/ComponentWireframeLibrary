@@ -31,18 +31,22 @@ const Navbar = ({
   const handleScroll = () => {
     const currentScrollY = window.scrollY;
 
+    // Check if the user is scrolling down
     if (currentScrollY > lastScrollY) {
-      setVisible(false); 
+      setVisible(false); // Hide navbar
     } else {
-      setVisible(true); 
+      setVisible(true); // Show navbar
     }
 
+    // Update the last scroll position
     setLastScrollY(currentScrollY);
   };
 
   useEffect(() => {
+    // Add scroll event listener
     window.addEventListener("scroll", handleScroll);
 
+    // Cleanup event listener on component unmount
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };

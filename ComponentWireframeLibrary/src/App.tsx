@@ -88,7 +88,7 @@ function App() {
   const handleScroll = (divId: string) => {
     const element = document.getElementById(divId);
     if (element) {
-      const yOffset = -100;
+      const yOffset = -100; // Adjust this value to leave a gap
       const yPosition =
         element.getBoundingClientRect().top + window.scrollY + yOffset;
       window.scrollTo({ top: yPosition, behavior: "smooth" });
