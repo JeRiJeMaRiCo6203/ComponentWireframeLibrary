@@ -5,24 +5,19 @@ import ReactDOM from "react-dom/client";
 import React from "react";
 import About from "./aboutpage/AboutPage.tsx";
 import LayoutPage from "./layoutpage/LayoutPage.tsx";
-import LandingPage from "./landingpage/LandingPage.tsx";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <LandingPage />,
-  },
-  {
-    path: "/layout",
     element: <App />,
-  },
-  {
-    path: "/wireframe/:id",
-    element: <LayoutPage />,
   },
   {
     path: "/about",
     element: <About />,
+  },
+  {
+    path: "/wireframe/:id",
+    element: <LayoutPage />,
   },
 ]);
 
